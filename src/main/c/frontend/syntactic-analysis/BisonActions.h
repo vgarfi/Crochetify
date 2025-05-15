@@ -1,22 +1,33 @@
 #ifndef BISON_ACTIONS_HEADER
 #define BISON_ACTIONS_HEADER
 
-#include "../../shared/CompilerState.h"
 #include "../../shared/Logger.h"
-#include "../../shared/Type.h"
 #include "AbstractSyntaxTree.h"
-#include "SyntacticAnalyzer.h"
 #include <stdlib.h>
+#include "../../shared/CompilerState.h"
+#include "../../shared/Type.h"
+#include "SyntacticAnalyzer.h"
 
-/** Initialize module's internal state. */
+/* Inicialización y destrucción del módulo */
 void initializeBisonActionsModule();
-
-/** Shutdown module's internal state. */
 void shutdownBisonActionsModule();
 
-/**
- * Bison semantic actions.
- */
+/* Acciones semánticas para cada tipo de nodo */
+Stitch *StitchSemanticAction(StitchType type);
+Row *RowSemanticAction(Sequence *elements);
+Turn *TurnSemanticAction(int chains, char *color);
+Repeat *RepeatSemanticAction(Sequence *pattern, int times, Stitch *extra);
+Mirror *MirrorSemanticAction(Sequence *pattern, int times);
+Pattern *PatternSemanticAction(char *name, Sequence *parameters, Sequence *body);
+PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments);
+ColorRow *ColorRowSemanticAction(char *color, Row *row);
+Parameter *ParameterSemanticAction(ParameterType type, char *name);
+Argument *ArgumentSemanticAction(char *name);
+Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *value);
+Assignment *AssignmentSemanticAction(char *varName, char *value);
+Sequence *SequenceSemanticAction(void *item, int itemType);
+Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, int itemType);
+Program *ProgramSemanticAction(CompilerState * compilerState,Sequence *body);
 
 Constant * IntegerConstantSemanticAction(const int value);
 Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type);

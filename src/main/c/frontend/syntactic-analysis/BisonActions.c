@@ -29,7 +29,144 @@ static void _logSyntacticAnalyzerAction(const char * functionName) {
 	logDebugging(_logger, "%s", functionName);
 }
 
-/* PUBLIC FUNCTIONS */
+Parameter *ParameterSemanticAction(ParameterType type, char *name) {
+    Parameter *p = calloc(1, sizeof(Parameter));
+    p->type = type;
+    p->name = strdup(name);
+    return p;
+}
+
+Argument *ArgumentSemanticAction(char *name) {
+    Argument *a = calloc(1, sizeof(Argument));
+    a->name = strdup(name);
+    return a;
+}
+
+Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *value) {
+    Declaration *d = calloc(1, sizeof(Declaration));
+    d->typeName = strdup(typeName);
+    d->varName = strdup(varName);
+    d->value = strdup(value);
+    return d;
+}
+
+Assignment *AssignmentSemanticAction(char *varName, char *value) {
+    Assignment *a = calloc(1, sizeof(Assignment));
+    a->varName = strdup(varName);
+    a->value = strdup(value);
+    return a;
+}
+
+
+
+
+
+
+Stitch *StitchSemanticAction(StitchType type) {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    Stitch *stitch = calloc(1, sizeof(Stitch));
+    stitch->type = type;
+    return stitch;
+}
+
+Row *RowSemanticAction(Sequence *elements) {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    Row *row = calloc(1, sizeof(Row));
+    row->elements = elements;
+    return row;
+}
+
+Turn *TurnSemanticAction(int chains, char *color) {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    Turn *turn = calloc(1, sizeof(Turn));
+    turn->chains = chains;
+    turn->color = color ? strdup(color) : NULL;
+    return turn;
+}
+
+Repeat *RepeatSemanticAction(Sequence *pattern, int times, Stitch *extra) {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    Repeat *repeat = calloc(1, sizeof(Repeat));
+    repeat->pattern = pattern;
+    repeat->times = times;
+    repeat->extra = extra;
+    return repeat;
+}
+
+Mirror *MirrorSemanticAction(Sequence *pattern, int times) {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    Mirror *mirror = calloc(1, sizeof(Mirror));
+    mirror->pattern = pattern;
+    mirror->times = times;
+    return mirror;
+}
+
+Pattern *PatternSemanticAction(char *name, Sequence *parameters, Sequence *body) {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    Pattern *pattern = calloc(1, sizeof(Pattern));
+    pattern->name = strdup(name);
+    pattern->parameters = parameters;
+    pattern->body = body;
+    return pattern;
+}
+
+PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments) {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    PatternUse *use = calloc(1, sizeof(PatternUse));
+    use->name = strdup(name);
+    use->arguments = arguments;
+    return use;
+}
+
+ColorRow *ColorRowSemanticAction(char *color, Row *row) {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    ColorRow *cr = calloc(1, sizeof(ColorRow));
+    cr->color = strdup(color);
+    cr->row = row;
+    return cr;
+}
+
+Sequence *SequenceSemanticAction(void *item, int itemType) {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    Sequence *seq = calloc(1, sizeof(Sequence));
+    seq->items = calloc(1, sizeof(void*));
+    seq->items[0] = item;
+    seq->count = 1;
+    // Puedes guardar el tipo en un array paralelo si lo necesitas
+    return seq;
+}
+
+Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, int itemType) {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    seq->items = realloc(seq->items, sizeof(void*) * (seq->count + 1));
+    seq->items[seq->count++] = item;
+    // Puedes guardar el tipo en un array paralelo si lo necesitas
+    return seq;
+}
+
+Program *ProgramSemanticAction(CompilerState * compilerState,Sequence *body) {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    Program *program = calloc(1, sizeof(Program));
+    program->body = body;
+    compilerState->abstractSyntaxtTree = program;
+	if (0 < flexCurrentContext()) {
+		logError(_logger, "The final context is not the default (0): %d", flexCurrentContext());
+		compilerState->succeed = false;
+	}
+	else {
+		compilerState->succeed = true;
+	}
+	return program;
+}
+
+
+
+
+
+
+
+
+
 
 Constant * IntegerConstantSemanticAction(const int value) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
@@ -47,14 +184,6 @@ Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Exp
 	return expression;
 }
 
-Expression * FactorExpressionSemanticAction(Factor * factor) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Expression * expression = calloc(1, sizeof(Expression));
-	expression->factor = factor;
-	expression->type = FACTOR;
-	return expression;
-}
-
 Factor * ConstantFactorSemanticAction(Constant * constant) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Factor * factor = calloc(1, sizeof(Factor));
@@ -62,7 +191,13 @@ Factor * ConstantFactorSemanticAction(Constant * constant) {
 	factor->type = CONSTANT;
 	return factor;
 }
-
+Expression * FactorExpressionSemanticAction(Factor * factor) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Expression * expression = calloc(1, sizeof(Expression));
+	expression->factor = factor;
+	expression->type = FACTOR;
+	return expression;
+}
 Factor * ExpressionFactorSemanticAction(Expression * expression) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Factor * factor = calloc(1, sizeof(Factor));
@@ -71,10 +206,12 @@ Factor * ExpressionFactorSemanticAction(Expression * expression) {
 	return factor;
 }
 
+
+
 Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Expression * expression) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Program * program = calloc(1, sizeof(Program));
-	program->expression = expression;
+	program->body = expression;
 	compilerState->abstractSyntaxtTree = program;
 	if (0 < flexCurrentContext()) {
 		logError(_logger, "The final context is not the default (0): %d", flexCurrentContext());
