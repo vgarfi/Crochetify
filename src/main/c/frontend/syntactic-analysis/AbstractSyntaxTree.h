@@ -29,9 +29,41 @@ typedef enum FactorType FactorType;
 
 void initializeAbstractSyntaxTreeModule();
 void shutdownAbstractSyntaxTreeModule();
+
 void releaseProgram(Program *program);
+void releaseRepeat(Repeat *repeat);
+void releaseMirror(Mirror *mirror);
+void releasePattern(Pattern *pattern);
+void releaseSequence(Sequence *seq);
+void releaseRow(Row *row);
+void releaseStitch(Stitch *stitch);
+void releaseParameter(Parameter *parameter);
+void releaseArgument(Argument *argument);
+void releaseDeclaration(Declaration *declaration);
+void releaseAssignment(Assignment *assignment);
+void releasePatternUse(PatternUse *patternUse);
 
+// TODO: REMOVE
+void releaseColorRow(ColorRow *colorRow);
+void releaseTurn(Turn *turn);
+void releaseConstant(Constant *constant);
+void releaseExpression(Expression *expression);
+void releaseFactor(Factor *factor);
 
+typedef enum {
+    ITEM_STITCH,
+    ITEM_ROW,
+    ITEM_TURN,
+    ITEM_REPEAT,
+    ITEM_MIRROR,
+    ITEM_PATTERN,
+    ITEM_PATTERN_USE,
+    ITEM_COLOR_ROW,
+    ITEM_PARAMETER,
+    ITEM_ARGUMENT,
+    ITEM_DECLARATION,
+    ITEM_ASSIGNMENT
+} ItemType;
 
 typedef enum {
     STITCH_CH,
@@ -60,17 +92,18 @@ struct Stitch {
 
 struct Row {
     Sequence *elements; // lista de Stitch, Repeat, Mirror, PatternUse, ColorRow, etc.
+    char * color;
+    int isTurn;
 };
 
 struct Turn {
-    int chains;
+    Sequence * chains;
     char *color; // NULL si no hay color
 };
 
 struct Repeat {
     Sequence *pattern; // lo que se repite
     int times;
-    Stitch *extra; // opcional, puede ser NULL, esto no va!
 };
 
 struct Mirror {
@@ -108,6 +141,7 @@ struct Assignment {
 
 struct Sequence {
     void **items; // array de punteros a cualquier struct anterior
+    ItemType * itemTypes;
     int count;
 };
 
@@ -154,4 +188,3 @@ struct Program {
 };
 
 #endif
-

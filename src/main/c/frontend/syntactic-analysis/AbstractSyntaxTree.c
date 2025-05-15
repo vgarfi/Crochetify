@@ -12,61 +12,103 @@ void shutdownAbstractSyntaxTreeModule() {
     }
 }
 
-// Destructor helpers
-static void releaseStitch(Stitch *stitch) {
-    if (stitch) free(stitch);
+void releaseStitch(Stitch *stitch) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    if (stitch) {
+        free(stitch);
+    }
 }
 
-static void releaseRow(Row *row);
-static void releaseTurn(Turn *turn) {
+void releaseParameter(Parameter *parameter) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    if (parameter) {
+        if (parameter->name) free(parameter->name);
+        free(parameter);
+    }
+}
+
+void releaseArgument(Argument *argument) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    if (argument) {
+        if (argument->name) free(argument->name);
+        free(argument);
+    }
+}
+
+void releaseDeclaration(Declaration *declaration) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    if (declaration) {
+        if (declaration->typeName) free(declaration->typeName);
+        if (declaration->varName) free(declaration->varName);
+        if (declaration->value) free(declaration->value);
+        free(declaration);
+    }
+}
+
+void releaseAssignment(Assignment *assignment) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    if (assignment) {
+        if (assignment->varName) free(assignment->varName);
+        if (assignment->value) free(assignment->value);
+        free(assignment);
+    }
+}
+
+void releaseTurn(Turn *turn) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
     if (turn) {
+        if (turn->chains) releaseSequence(turn->chains);
         if (turn->color) free(turn->color);
         free(turn);
     }
 }
-static void releaseRepeat(Repeat *repeat);
-static void releaseMirror(Mirror *mirror);
-static void releasePattern(Pattern *pattern);
-static void releasePatternUse(PatternUse *patternUse) {
+
+void releasePatternUse(PatternUse *patternUse) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
     if (patternUse) {
         if (patternUse->name) free(patternUse->name);
+        if (patternUse->arguments) releaseSequence(patternUse->arguments);
         free(patternUse);
     }
 }
-static void releaseColorRow(ColorRow *colorRow);
-static void releaseSequence(Sequence *seq);
 
-static void releaseRow(Row *row) {
+void releaseRow(Row *row) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
     if (row) {
-        releaseSequence(row->elements);
+        if (row->elements) releaseSequence(row->elements);
+        if (row->color) free(row->color);
         free(row);
     }
 }
 
-static void releaseRepeat(Repeat *repeat) {
+void releaseRepeat(Repeat *repeat) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
     if (repeat) {
-        releaseSequence(repeat->pattern);
-        if (repeat->extra) releaseStitch(repeat->extra);
+        if (repeat->pattern) releaseSequence(repeat->pattern);
         free(repeat);
     }
 }
 
-static void releaseMirror(Mirror *mirror) {
+void releaseMirror(Mirror *mirror) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
     if (mirror) {
-        releaseSequence(mirror->pattern);
+        if (mirror->pattern) releaseSequence(mirror->pattern);
         free(mirror);
     }
 }
 
-static void releasePattern(Pattern *pattern) {
+void releasePattern(Pattern *pattern) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
     if (pattern) {
         if (pattern->name) free(pattern->name);
-        releaseSequence(pattern->body);
+        if (pattern->parameters) releaseSequence(pattern->parameters);
+        if (pattern->body) releaseSequence(pattern->body);
         free(pattern);
     }
 }
 
-static void releaseColorRow(ColorRow *colorRow) {
+void releaseColorRow(ColorRow *colorRow) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
     if (colorRow) {
         if (colorRow->color) free(colorRow->color);
         if (colorRow->row) releaseRow(colorRow->row);
@@ -74,71 +116,107 @@ static void releaseColorRow(ColorRow *colorRow) {
     }
 }
 
-static void releaseSequence(Sequence *seq) {
+void releaseSequence(Sequence *seq) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
     if (seq) {
-        for (int i = 0; i < seq->count; ++i) {
-            void *item = seq->items[i];
-            // Aquí deberías tener un mecanismo para saber el tipo real de cada item.
-            // Por simplicidad, asume que todos son Row* (ajusta según tu implementación real).
-            // Por ejemplo, podrías tener un array paralelo de enums con el tipo de cada item.
-            // releaseRow((Row*)item);
-            // --- ADAPTA ESTO SEGÚN TU DISEÑO ---
-            // Ejemplo: si tienes un enum* seq->types;
-            // switch(seq->types[i]) { ... }
+        if (seq->items && seq->itemTypes) {
+            for (int i = 0; i < seq->count; ++i) {
+                if (seq->items[i] == NULL) continue;
+                
+                switch(seq->itemTypes[i]) {
+                    case ITEM_STITCH:
+                        releaseStitch((Stitch*)seq->items[i]);
+                        break;
+                    case ITEM_ROW:
+                        releaseRow((Row*)seq->items[i]);
+                        break;
+                    case ITEM_TURN:
+                        releaseTurn((Turn*)seq->items[i]);
+                        break;
+                    case ITEM_REPEAT:
+                        releaseRepeat((Repeat*)seq->items[i]);
+                        break;
+                    case ITEM_MIRROR:
+                        releaseMirror((Mirror*)seq->items[i]);
+                        break;
+                    case ITEM_PATTERN:
+                        releasePattern((Pattern*)seq->items[i]);
+                        break;
+                    case ITEM_PATTERN_USE:
+                        releasePatternUse((PatternUse*)seq->items[i]);
+                        break;
+                    case ITEM_COLOR_ROW:
+                        releaseColorRow((ColorRow*)seq->items[i]);
+                        break;
+                    case ITEM_PARAMETER:
+                        releaseParameter((Parameter*)seq->items[i]);
+                        break;
+                    case ITEM_ARGUMENT:
+                        releaseArgument((Argument*)seq->items[i]);
+                        break;
+                    case ITEM_DECLARATION:
+                        releaseDeclaration((Declaration*)seq->items[i]);
+                        break;
+                    case ITEM_ASSIGNMENT:
+                        releaseAssignment((Assignment*)seq->items[i]);
+                        break;
+                }
+            }
         }
-        free(seq->items);
+        
+        if (seq->items) free(seq->items);
+        if (seq->itemTypes) free(seq->itemTypes);
         free(seq);
     }
 }
 
-
 void releaseConstant(Constant * constant) {
-	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (constant != NULL) {
-		free(constant);
-	}
-
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    if (constant != NULL) {
+        free(constant);
+    }
 }
 
 void releaseExpression(Expression * expression) {
-	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (expression != NULL) {
-		switch (expression->type) {
-			case ADDITION:
-			case DIVISION:
-			case MULTIPLICATION:
-			case SUBTRACTION:
-				releaseExpression(expression->leftExpression);
-				releaseExpression(expression->rightExpression);
-				break;
-			case FACTOR:
-				releaseFactor(expression->factor);
-				break;
-		}
-		free(expression);
-	}
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    if (expression != NULL) {
+        switch (expression->type) {
+            case ADDITION:
+            case DIVISION:
+            case MULTIPLICATION:
+            case SUBTRACTION:
+                releaseExpression(expression->leftExpression);
+                releaseExpression(expression->rightExpression);
+                break;
+            case FACTOR:
+                releaseFactor(expression->factor);
+                break;
+        }
+        free(expression);
+    }
 }
 
 void releaseFactor(Factor * factor) {
-	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (factor != NULL) {
-		switch (factor->type) {
-			case CONSTANT:
-				releaseConstant(factor->constant);
-				break;
-			case EXPRESSION:
-				releaseExpression(factor->expression);
-				break;
-		}
-		free(factor);
-	}
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    if (factor != NULL) {
+        switch (factor->type) {
+            case CONSTANT:
+                releaseConstant(factor->constant);
+                break;
+            case EXPRESSION:
+                releaseExpression(factor->expression);
+                break;
+        }
+        free(factor);
+    }
 }
 
-
-
 void releaseProgram(Program *program) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
     if (program) {
-        releaseSequence(program->body);
+        if (program->body) {
+            releaseSequence(program->body);
+        }
         free(program);
     }
 }

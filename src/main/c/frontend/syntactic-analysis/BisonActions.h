@@ -14,9 +14,9 @@ void shutdownBisonActionsModule();
 
 /* Acciones semánticas para cada tipo de nodo */
 Stitch *StitchSemanticAction(StitchType type);
-Row *RowSemanticAction(Sequence *elements);
-Turn *TurnSemanticAction(int chains, char *color);
-Repeat *RepeatSemanticAction(Sequence *pattern, int times, Stitch *extra);
+Row *RowSemanticAction(Sequence *elements, char * color, int isTurn);
+Turn *TurnSemanticAction(Sequence * chains, char *color);
+Repeat *RepeatSemanticAction(Sequence *pattern, int times);
 Mirror *MirrorSemanticAction(Sequence *pattern, int times);
 Pattern *PatternSemanticAction(char *name, Sequence *parameters, Sequence *body);
 PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments);
@@ -25,8 +25,8 @@ Parameter *ParameterSemanticAction(ParameterType type, char *name);
 Argument *ArgumentSemanticAction(char *name);
 Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *value);
 Assignment *AssignmentSemanticAction(char *varName, char *value);
-Sequence *SequenceSemanticAction(void *item, int itemType);
-Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, int itemType);
+Sequence *SequenceSemanticAction(void *item, ItemType itemType);
+Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, ItemType itemType);
 Program *ProgramSemanticAction(CompilerState * compilerState,Sequence *body);
 
 Constant * IntegerConstantSemanticAction(const int value);

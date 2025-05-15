@@ -69,14 +69,20 @@ Stitch *StitchSemanticAction(StitchType type) {
     return stitch;
 }
 
-Row *RowSemanticAction(Sequence *elements) {
+Row *RowSemanticAction(Sequence *elements, char * color, int isTurn) {
     _logSyntacticAnalyzerAction(__FUNCTION__);
     Row *row = calloc(1, sizeof(Row));
     row->elements = elements;
+	if(color != NULL){
+		row->color = strdup(color);
+	} else {
+		row->color = strdup("#000000");
+	}
+	row->isTurn = isTurn;
     return row;
 }
 
-Turn *TurnSemanticAction(int chains, char *color) {
+Turn *TurnSemanticAction(Sequence * chains, char *color) {
     _logSyntacticAnalyzerAction(__FUNCTION__);
     Turn *turn = calloc(1, sizeof(Turn));
     turn->chains = chains;
@@ -84,12 +90,11 @@ Turn *TurnSemanticAction(int chains, char *color) {
     return turn;
 }
 
-Repeat *RepeatSemanticAction(Sequence *pattern, int times, Stitch *extra) {
+Repeat *RepeatSemanticAction(Sequence *pattern, int times) {
     _logSyntacticAnalyzerAction(__FUNCTION__);
     Repeat *repeat = calloc(1, sizeof(Repeat));
     repeat->pattern = pattern;
     repeat->times = times;
-    repeat->extra = extra;
     return repeat;
 }
 
@@ -104,7 +109,7 @@ Mirror *MirrorSemanticAction(Sequence *pattern, int times) {
 Pattern *PatternSemanticAction(char *name, Sequence *parameters, Sequence *body) {
     _logSyntacticAnalyzerAction(__FUNCTION__);
     Pattern *pattern = calloc(1, sizeof(Pattern));
-    pattern->name = strdup(name);
+	pattern->name = strdup(name);
     pattern->parameters = parameters;
     pattern->body = body;
     return pattern;
@@ -126,22 +131,31 @@ ColorRow *ColorRowSemanticAction(char *color, Row *row) {
     return cr;
 }
 
-Sequence *SequenceSemanticAction(void *item, int itemType) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    Sequence *seq = calloc(1, sizeof(Sequence));
-    seq->items = calloc(1, sizeof(void*));
-    seq->items[0] = item;
-    seq->count = 1;
-    // Puedes guardar el tipo en un array paralelo si lo necesitas
-    return seq;
+Sequence *SequenceSemanticAction(void *item, ItemType itemType) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Sequence *seq = calloc(1, sizeof(Sequence));
+	seq->items = calloc(1, sizeof(void*));
+	seq->items[0] = item;
+	seq->count = 1;
+	seq->itemTypes = calloc(1, sizeof(ItemType));
+	seq->itemTypes[0] = itemType;
+	return seq;
 }
 
-Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, int itemType) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    seq->items = realloc(seq->items, sizeof(void*) * (seq->count + 1));
-    seq->items[seq->count++] = item;
-    // Puedes guardar el tipo en un array paralelo si lo necesitas
-    return seq;
+// TOOD MIRAR
+
+Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, ItemType itemType) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	if (seq == NULL) {
+        return SequenceSemanticAction(item, itemType);
+    }
+	
+	seq->items = realloc(seq->items, sizeof(void*) * (seq->count + 1));
+	seq->itemTypes = realloc(seq->itemTypes, sizeof(ItemType) * (seq->count + 1));
+	seq->items[seq->count] = item;
+	seq->itemTypes[seq->count] = itemType;
+	seq->count++;
+	return seq;
 }
 
 Program *ProgramSemanticAction(CompilerState * compilerState,Sequence *body) {
@@ -162,18 +176,17 @@ Program *ProgramSemanticAction(CompilerState * compilerState,Sequence *body) {
 
 
 
-
-
-
-
-
-
 Constant * IntegerConstantSemanticAction(const int value) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Constant * constant = calloc(1, sizeof(Constant));
 	constant->value = value;
 	return constant;
 }
+
+
+
+
+
 
 Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
@@ -206,8 +219,7 @@ Factor * ExpressionFactorSemanticAction(Expression * expression) {
 	return factor;
 }
 
-
-
+/*
 Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Expression * expression) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Program * program = calloc(1, sizeof(Program));
@@ -222,3 +234,4 @@ Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Express
 	}
 	return program;
 }
+*/
