@@ -21,14 +21,29 @@ void shutdownFlexActionsModule();
  * Flex lexeme processing actions.
  */
 
-void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-void EndMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+void EndMultilineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+void IgnoredLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
-Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);
-Token IntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);
+Token PatternLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token EntryPointLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token ParenthesisLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token BracketLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token TypeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token StitchLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token FunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token EndlineLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token IdentifierLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token IntegerLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token SemicolonLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token ColorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token TurnLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token AssignmentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
-Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+LexicalAnalyzerContext* createLexicalAnalyzerContext();
+
+Token UnknownLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 #endif

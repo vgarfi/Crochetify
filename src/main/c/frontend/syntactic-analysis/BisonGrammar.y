@@ -12,6 +12,7 @@
 
 	int integer;
 	Token token;
+	const char * string;
 
 	/** Non-terminals. */
 
@@ -35,12 +36,31 @@
 
 /** Terminals. */
 %token <integer> INTEGER
-%token <token> ADD
+
 %token <token> CLOSE_PARENTHESIS
-%token <token> DIV
-%token <token> MUL
 %token <token> OPEN_PARENTHESIS
-%token <token> SUB
+%token <token> OPEN_BRACE
+%token <token> CLOSE_BRACE
+%token <token> OPEN_BRACKET
+%token <token> CLOSE_BRACKET
+%token <token> SEMICOLON
+%token <token> COMMA
+%token <token> PATTERN
+%token <token> COLOR
+%token <token> STITCH
+%token <token> CH
+%token <token> SC
+%token <token> DC
+%token <token> MIRROR
+%token <token> REPEAT
+%token <token> TURN
+%token <token> BEGIN_CROCHET
+%token <token> END_CROCHET
+%token <token> ENDLINE
+%token <token> ASSIGNMENT
+
+%token <string> IDENTIFIER
+%token <string> COLOR_VALUE
 
 %token <token> UNKNOWN
 
