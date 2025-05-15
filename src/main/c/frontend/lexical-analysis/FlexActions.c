@@ -135,7 +135,7 @@ Token EndlineLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 
 Token IdentifierLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-    lexicalAnalyzerContext->semanticValue->string = strdup(lexicalAnalyzerContext->lexeme);
+    lexicalAnalyzerContext->semanticValue->string = strndup(lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
     destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
     return IDENTIFIER;
 }
@@ -164,7 +164,7 @@ Token TurnLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 
 Token ColorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->string = strdup(lexicalAnalyzerContext->lexeme);
+	lexicalAnalyzerContext->semanticValue->string = strndup(lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 	return COLOR_VALUE;
 }

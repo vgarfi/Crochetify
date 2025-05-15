@@ -41,7 +41,7 @@ color #([0-9A-F]{6}|[0-9a-f]{6})
 <MULTILINE_COMMENT>.				{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
 "Pattern"                           { BEGIN(PATTERN); return PatternLexemeAction(createLexicalAnalyzerContext()); }
-<PATTERN>"}"                        { return BraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACE); }
+<PATTERN>"}"                        { BEGIN(INITIAL); return BraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACE); }
 <PATTERN>"{"                        { return BraceLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACE); }
 <PATTERN>"("                        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }
 <PATTERN>")"                        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
@@ -66,8 +66,7 @@ color #([0-9A-F]{6}|[0-9a-f]{6})
 <PATTERN>.                          { return UnknownLexemeAction(createLexicalAnalyzerContext()); }
 
 "BEGIN CROCHET"                     { BEGIN(CROCHET); return EntryPointLexemeAction(createLexicalAnalyzerContext(), BEGIN_CROCHET); }
-
-<CROCHET>"END CROCHET"              { return EntryPointLexemeAction(createLexicalAnalyzerContext(), END_CROCHET); }
+<CROCHET>"END CROCHET"              { BEGIN(INITIAL); return EntryPointLexemeAction(createLexicalAnalyzerContext(), END_CROCHET); }
 <CROCHET>"("                        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }
 <CROCHET>")"                        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
 <CROCHET>"["                        { return BracketLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACKET); }
