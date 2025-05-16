@@ -40,7 +40,7 @@ color #([0-9A-F]{6}|[0-9a-f]{6})
 <MULTILINE_COMMENT>[^*]+			{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <MULTILINE_COMMENT>.				{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
-"PATTERN"                           { BEGIN(PATTERN); return PatternLexemeAction(createLexicalAnalyzerContext()); }
+"Pattern"                           { BEGIN(PATTERN); return PatternLexemeAction(createLexicalAnalyzerContext()); }
 <PATTERN>"}"                        { BEGIN(INITIAL); return BraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACE); }
 <PATTERN>"{"                        { return BraceLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACE); }
 <PATTERN>"("                        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }

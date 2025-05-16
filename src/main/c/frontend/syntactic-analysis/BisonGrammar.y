@@ -134,7 +134,7 @@ argument: IDENTIFIER													{ $$ = ArgumentSemanticAction($1);free($1); }
     ;
 
 pattern_def: PATTERN IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS OPEN_BRACE sequence CLOSE_BRACE SEMICOLON                                     { $$ = PatternSemanticAction($2, $4, $7);free($2);  }
-    | PATTERN IDENTIFIER OPEN_BRACE sequence CLOSE_BRACE SEMICOLON                                                                                              { $$ = PatternSemanticAction($2, NULL, $4);free($2);  }
+    | PATTERN IDENTIFIER OPEN_PARENTHESIS CLOSE_PARENTHESIS OPEN_BRACE sequence CLOSE_BRACE SEMICOLON                                                           { $$ = PatternSemanticAction($2, NULL, $6);free($2);  }
     ;
 
 pattern_use: IDENTIFIER OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS { $$ = PatternUseSemanticAction($1, $3); free($1); }
