@@ -12,33 +12,35 @@ void shutdownAbstractSyntaxTreeModule() {
     }
 }
 
-
 void releaseStitch(Stitch *stitch) {
-    printf("[AST] Executing destructor: releaseStitch\n");
     if (stitch) {
+        printf("[AST] Releasing Stitch: type=%d\n", stitch->stichType);
         free(stitch);
     }
 }
 
 void releaseParameter(Parameter *parameter) {
-    printf("[AST] Executing destructor: releaseParameter (name=%s)\n", parameter && parameter->name ? parameter->name : "(null)");
     if (parameter) {
+        printf("[AST] Releasing Parameter: type=%d, name=%s\n", parameter->paramType, parameter->name ? parameter->name : "(null)");
         if (parameter->name) free(parameter->name);
         free(parameter);
     }
 }
 
 void releaseArgument(Argument *argument) {
-    printf("[AST] Executing destructor: releaseArgument (name=%s)\n", argument && argument->name ? argument->name : "(null)");
     if (argument) {
+        printf("[AST] Releasing Argument: name=%s\n", argument->name ? argument->name : "(null)");
         if (argument->name) free(argument->name);
         free(argument);
     }
 }
 
 void releaseDeclaration(Declaration *declaration) {
-    printf("[AST] Executing destructor: releaseDeclaration (var=%s)\n", declaration && declaration->varName ? declaration->varName : "(null)");
     if (declaration) {
+        printf("[AST] Releasing Declaration: type=%s, var=%s, value=%s\n",
+            declaration->typeName ? declaration->typeName : "(null)",
+            declaration->varName ? declaration->varName : "(null)",
+            declaration->value ? declaration->value : "(null)");
         if (declaration->typeName) free(declaration->typeName);
         if (declaration->varName) free(declaration->varName);
         if (declaration->value) free(declaration->value);
@@ -47,8 +49,10 @@ void releaseDeclaration(Declaration *declaration) {
 }
 
 void releaseAssignment(Assignment *assignment) {
-    printf("[AST] Executing destructor: releaseAssignment (var=%s)\n", assignment && assignment->varName ? assignment->varName : "(null)");
     if (assignment) {
+        printf("[AST] Releasing Assignment: var=%s, value=%s\n",
+            assignment->varName ? assignment->varName : "(null)",
+            assignment->value ? assignment->value : "(null)");
         if (assignment->varName) free(assignment->varName);
         if (assignment->value) free(assignment->value);
         free(assignment);
@@ -56,8 +60,8 @@ void releaseAssignment(Assignment *assignment) {
 }
 
 void releaseTurn(Turn *turn) {
-    printf("[AST] Executing destructor: releaseTurn\n");
     if (turn) {
+        printf("[AST] Releasing Turn: color=%s\n", turn->color ? turn->color : "(null)");
         if (turn->chains) releaseSequence(turn->chains);
         if (turn->color) free(turn->color);
         free(turn);
@@ -65,8 +69,8 @@ void releaseTurn(Turn *turn) {
 }
 
 void releasePatternUse(PatternUse *patternUse) {
-    printf("[AST] Executing destructor: releasePatternUse (name=%s)\n", patternUse && patternUse->name ? patternUse->name : "(null)");
     if (patternUse) {
+        printf("[AST] Releasing PatternUse: name=%s\n", patternUse->name ? patternUse->name : "(null)");
         if (patternUse->name) free(patternUse->name);
         if (patternUse->arguments) releaseSequence(patternUse->arguments);
         free(patternUse);
@@ -74,8 +78,8 @@ void releasePatternUse(PatternUse *patternUse) {
 }
 
 void releaseRow(Row *row) {
-    printf("[AST] Executing destructor: releaseRow\n");
     if (row) {
+        printf("[AST] Releasing Row: color=%s, isTurn=%d\n", row->color ? row->color : "(null)", row->isTurn);
         if (row->elements) releaseSequence(row->elements);
         if (row->color) free(row->color);
         free(row);
@@ -83,24 +87,24 @@ void releaseRow(Row *row) {
 }
 
 void releaseRepeat(Repeat *repeat) {
-    printf("[AST] Executing destructor: releaseRepeat\n");
     if (repeat) {
+        printf("[AST] Releasing Repeat: times=%d\n", repeat->times);
         if (repeat->pattern) releaseSequence(repeat->pattern);
         free(repeat);
     }
 }
 
 void releaseMirror(Mirror *mirror) {
-    printf("[AST] Executing destructor: releaseMirror\n");
     if (mirror) {
+        printf("[AST] Releasing Mirror: times=%d\n", mirror->times);
         if (mirror->pattern) releaseSequence(mirror->pattern);
         free(mirror);
     }
 }
 
 void releasePattern(Pattern *pattern) {
-    printf("[AST] Executing destructor: releasePattern (name=%s)\n", pattern && pattern->name ? pattern->name : "(null)");
     if (pattern) {
+        printf("[AST] Releasing Pattern: name=%s\n", pattern->name ? pattern->name : "(null)");
         if (pattern->name) free(pattern->name);
         if (pattern->parameters) releaseSequence(pattern->parameters);
         if (pattern->body) releaseSequence(pattern->body);
@@ -109,8 +113,8 @@ void releasePattern(Pattern *pattern) {
 }
 
 void releaseColorRow(ColorRow *colorRow) {
-    printf("[AST] Executing destructor: releaseColorRow\n");
     if (colorRow) {
+        printf("[AST] Releasing ColorRow: color=%s\n", colorRow->color ? colorRow->color : "(null)");
         if (colorRow->color) free(colorRow->color);
         if (colorRow->row) releaseRow(colorRow->row);
         free(colorRow);
@@ -118,8 +122,8 @@ void releaseColorRow(ColorRow *colorRow) {
 }
 
 void releaseSequence(Sequence *seq) {
-    printf("[AST] Executing destructor: releaseSequence (count=%d)\n", seq ? seq->count : 0);
     if (seq) {
+        printf("[AST] Releasing Sequence: count=%d\n", seq->count);
         if (seq->items && seq->itemTypes) {
             for (int i = 0; i < seq->count; ++i) {
                 if (seq->items[i] == NULL) continue;
@@ -170,15 +174,15 @@ void releaseSequence(Sequence *seq) {
 }
 
 void releaseConstant(Constant * constant) {
-    printf("[AST] Executing destructor: releaseConstant\n");
     if (constant != NULL) {
+        printf("[AST] Releasing Constant: value=%d\n", constant->value);
         free(constant);
     }
 }
 
 void releaseExpression(Expression * expression) {
-    printf("[AST] Executing destructor: releaseExpression\n");
     if (expression != NULL) {
+        printf("[AST] Releasing Expression: type=%d\n", expression->type);
         switch (expression->type) {
             case ADDITION:
             case DIVISION:
@@ -196,8 +200,8 @@ void releaseExpression(Expression * expression) {
 }
 
 void releaseFactor(Factor * factor) {
-    printf("[AST] Executing destructor: releaseFactor\n");
     if (factor != NULL) {
+        printf("[AST] Releasing Factor: type=%d\n", factor->type);
         switch (factor->type) {
             case CONSTANT:
                 releaseConstant(factor->constant);
@@ -211,8 +215,8 @@ void releaseFactor(Factor * factor) {
 }
 
 void releaseProgram(Program *program) {
-    printf("[AST] Executing destructor: releaseProgram\n");
     if (program) {
+        printf("[AST] Releasing Program\n");
         if (program->declarationsAndPatterns) {
             releaseSequence(program->declarationsAndPatterns);
         }

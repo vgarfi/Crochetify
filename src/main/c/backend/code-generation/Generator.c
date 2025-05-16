@@ -30,7 +30,9 @@ static void _output(const unsigned int indentationLevel, const char * const form
 static void _generateSequence(Sequence *seq);
 static void _generateRepeat(Repeat *repeat);
 static void _generateTurn(Turn *turn); 
+static void printSequence(Sequence *seq, int indent);
 /**
+ * 
  * Converts and expression type to the proper character of the operation
  * involved, or returns '\0' if that's not possible.
  */
@@ -113,143 +115,135 @@ static void _generateFactor(const unsigned int indentationLevel, Factor * factor
 	_output(indentationLevel, "%s", "]\n");
 }
 
+static void printIndent(int indent) {
+    for (int i = 0; i < indent; ++i) putchar(' ');
+}
 
-static void _generateStitch(Stitch *stitch) {
+static void printStitch(Stitch *stitch, int indent) {
     if (!stitch) return;
     const char *name = stitch->stichType == STITCH_CH ? "CH" :
                        stitch->stichType == STITCH_SC ? "SC" : "DC";
-    printf("[Stitch(%s)]", name);
+    printIndent(indent); printf("Stitch(%s)\n", name);
 }
-static void _generateArgument(Argument *arg) {
+
+static void printArgument(Argument *arg, int indent) {
     if (!arg) return;
-    printf("Argument(%s)", arg->name);
+    printIndent(indent); printf("Argument(%s)\n", arg->name);
 }
 
-
-
-static void _generateRow(Row *row) {
+static void printRow(Row *row, int indent) {
     if (!row) return;
-    printf("[Row color=%s, isTurn=%d", row->color ? row->color : "#000000", row->isTurn);
-    if (row->elements) _generateSequence(row->elements);
-    printf("]");
+    printIndent(indent);
+    printf("Row color=%s, isTurn=%d\n", row->color ? row->color : "#000000", row->isTurn);
+    if (row->elements) printSequence(row->elements, indent + 2);
 }
 
-static void _generatePatternUse(PatternUse *use) {
+static void printPatternUse(PatternUse *use, int indent) {
     if (!use) return;
-    printf("PatternUse(name=%s, arguments=[", use->name);
-    if (use->arguments) _generateSequence(use->arguments);
-    printf("])");
+    printIndent(indent); printf("PatternUse name=%s\n", use->name);
+    if (use->arguments) printSequence(use->arguments, indent + 2);
 }
 
-static void _generatePattern(Pattern *pattern) {
+static void printPattern(Pattern *pattern, int indent) {
     if (!pattern) return;
-    printf("[Pattern(name=%s", pattern->name);
+    printIndent(indent); printf("Pattern name=%s\n", pattern->name);
     if (pattern->parameters) {
-        printf("\n  [parameters");
-        _generateSequence(pattern->parameters);
-        printf("]");
+        printIndent(indent + 2); printf("parameters:\n");
+        printSequence(pattern->parameters, indent + 4);
     }
     if (pattern->body) {
-        printf("\n  [body");
-        _generateSequence(pattern->body);
-        printf("]");
+        printIndent(indent + 2); printf("body:\n");
+        printSequence(pattern->body, indent + 4);
     }
-    printf("]");
 }
 
-static void _generateDeclaration(Declaration *decl) {
+static void printDeclaration(Declaration *decl, int indent) {
     if (!decl) return;
-	printf("[{\\shortstack{Declaration(\\\\type=%s,\\\\var=%s,\\\\value=\\#%s)}}]", decl->typeName, decl->varName, decl->value);
+    printIndent(indent);
+    printf("Declaration(type=%s, var=%s, value=%s)\n", decl->typeName, decl->varName, decl->value);
 }
 
-static void _generateAssignment(Assignment *assign) {
+static void printAssignment(Assignment *assign, int indent) {
     if (!assign) return;
-    printf("Assignment(var=%s, value=%s)", assign->varName, assign->value);
+    printIndent(indent);
+    printf("Assignment(var=%s, value=%s)\n", assign->varName, assign->value);
 }
 
-static void _generateSequence(Sequence *seq) {
-    if (!seq) return;
-    for (int i = 0; i < seq->count; ++i) {
-        printf("\n  "); // Indent for readability
-        switch (seq->itemTypes[i]) {
-            case ITEM_STITCH:
-                _generateStitch((Stitch*)seq->items[i]);
-                break;
-            case ITEM_ROW:
-                _generateRow((Row*)seq->items[i]);
-                break;
-            case ITEM_TURN:
-                _generateTurn((Turn*)seq->items[i]);
-                break;
-            case ITEM_REPEAT:
-                _generateRepeat((Repeat*)seq->items[i]);
-                break;
-            case ITEM_MIRROR:
-                printf("[Mirror]");
-                break;
-            case ITEM_PATTERN:
-                _generatePattern((Pattern*)seq->items[i]);
-                break;
-            case ITEM_PATTERN_USE:
-                _generatePatternUse((PatternUse*)seq->items[i]);
-                break;
-            case ITEM_COLOR_ROW:
-                printf("[ColorRow]");
-                break;
-            case ITEM_PARAMETER:
-                printf("[Parameter]");
-                break;
-            case ITEM_ARGUMENT:
-                _generateArgument((Argument*)seq->items[i]);
-                break;
-            case ITEM_DECLARATION:
-                _generateDeclaration((Declaration*)seq->items[i]);
-                break;
-            case ITEM_ASSIGNMENT:
-                _generateAssignment((Assignment*)seq->items[i]);
-                break;
-            default:
-                printf("[UnknownItem]");
-                break;
-        }
-    }
-}
-static void _generateTurn(Turn *turn) {
+static void printTurn(Turn *turn, int indent) {
     if (!turn) return;
-    printf("[Turn");
+    printIndent(indent); printf("Turn");
     if (turn->chains) {
-        printf(" chains=");
-        _generateSequence(turn->chains);
+        printf(" chains:\n");
+        printSequence(turn->chains, indent + 2);
     }
     if (turn->color) {
         printf(" color=%s", turn->color);
     }
-    printf("]");
+    printf("\n");
 }
 
-static void _generateRepeat(Repeat *repeat) {
+static void printRepeat(Repeat *repeat, int indent) {
     if (!repeat) return;
-    printf("[Repeat");
-    if (repeat->pattern) {
-        printf(" pattern=");
-        _generateSequence(repeat->pattern);
-    }
-	
-    printf(" count=%d", repeat->times); // Assuming you have a count field
-    printf("]");
+    printIndent(indent); printf("Repeat count=%d\n", repeat->times);
+    if (repeat->pattern) printSequence(repeat->pattern, indent + 2);
 }
 
-/**
- * Generates the output of the program.
- */
-static void _generateProgram(Program *program) {
-    printf("[Program\n");
-    printf("[declarationsAndPatterns\n");
-    if (program->declarationsAndPatterns) _generateSequence(program->declarationsAndPatterns);
-    printf("]\n[body\n");
-    if (program->body) _generateSequence(program->body);
-    printf("]\n]\n");
+static void printSequence(Sequence *seq, int indent) {
+    if (!seq) return;
+    for (int i = 0; i < seq->count; ++i) {
+        switch (seq->itemTypes[i]) {
+            case ITEM_STITCH:
+                printStitch((Stitch*)seq->items[i], indent);
+                break;
+            case ITEM_ROW:
+                printRow((Row*)seq->items[i], indent);
+                break;
+            case ITEM_TURN:
+                printTurn((Turn*)seq->items[i], indent);
+                break;
+            case ITEM_REPEAT:
+                printRepeat((Repeat*)seq->items[i], indent);
+                break;
+            case ITEM_MIRROR:
+                printIndent(indent); printf("Mirror\n");
+                break;
+            case ITEM_PATTERN:
+                printPattern((Pattern*)seq->items[i], indent);
+                break;
+            case ITEM_PATTERN_USE:
+                printPatternUse((PatternUse*)seq->items[i], indent);
+                break;
+            case ITEM_COLOR_ROW:
+                printIndent(indent); printf("ColorRow\n");
+                break;
+            case ITEM_PARAMETER:
+                printIndent(indent); printf("Parameter\n");
+                break;
+            case ITEM_ARGUMENT:
+                printArgument((Argument*)seq->items[i], indent);
+                break;
+            case ITEM_DECLARATION:
+                printDeclaration((Declaration*)seq->items[i], indent);
+                break;
+            case ITEM_ASSIGNMENT:
+                printAssignment((Assignment*)seq->items[i], indent);
+                break;
+            default:
+                printIndent(indent); printf("UnknownItem\n");
+                break;
+        }
+    }
 }
+
+static void printProgram(Program *program, int indent) {
+    printIndent(indent); printf("Program\n");
+    printIndent(indent + 2); printf("declarationsAndPatterns:\n");
+    if (program->declarationsAndPatterns) printSequence(program->declarationsAndPatterns, indent + 4);
+    printIndent(indent + 2); printf("body:\n");
+    if (program->body) printSequence(program->body, indent + 4);
+}
+
+
 
 /**
  * Creates the prologue of the generated output, a Latex document that renders
@@ -299,11 +293,11 @@ static void _output(const unsigned int indentationLevel, const char * const form
 /** PUBLIC FUNCTIONS */
 
 void generate(CompilerState * compilerState) {
-	logDebugging(_logger, "Generating final output...");
-	_generatePrologue();
+
+    logDebugging(_logger, "Generating final output...");
     Program *program = (Program*)compilerState->abstractSyntaxtTree;
-    _generateProgram(program);
-	_generateEpilogue(compilerState->value);
-	logDebugging(_logger, "Generation is done.");
+    printProgram(program, 0);
+    logDebugging(_logger, "Generation is done.");
+
 }
 

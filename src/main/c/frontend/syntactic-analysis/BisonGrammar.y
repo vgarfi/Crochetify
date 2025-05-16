@@ -109,7 +109,7 @@ sequence: %empty														{ $$ = NULL; }
     ;
 
 declaration: COLOR IDENTIFIER ASSIGNMENT COLOR_VALUE SEMICOLON			{ $$ = DeclarationSemanticAction("Color", $2, $4); free($2); free($4);}
-    | STITCH IDENTIFIER ASSIGNMENT stitch SEMICOLON						{ $$ = DeclarationSemanticAction("Stitch", $2, $4->type == STITCH_CH ? "CH" : $4->type == STITCH_SC ? "SC" : "DC"); }
+    | STITCH IDENTIFIER ASSIGNMENT stitch SEMICOLON						{ $$ = DeclarationSemanticAction("Stitch", $2, $4->type == STITCH_CH ? "CH" : $4->type == STITCH_SC ? "SC" : "DC");  free($2);releaseStitch($4); }
     ;
 
 assignment: IDENTIFIER ASSIGNMENT IDENTIFIER SEMICOLON					{ $$ = AssignmentSemanticAction($1, $3); free($1); free($3);}
@@ -124,13 +124,13 @@ parameter: COLOR IDENTIFIER												{ $$ = ParameterSemanticAction(PARAM_COLO
     | PATTERN IDENTIFIER												{ $$ = ParameterSemanticAction(PARAM_PATTERN, $2); free($2);}
     ;
 
-argument_list: argument													{ $$ = SequenceSemanticAction($1, 0); }
-    | argument COMMA argument_list										{ $$ = AppendToSequenceSemanticAction($3, $1, 0); }
+argument_list: argument													{ $$ = SequenceSemanticAction($1, ITEM_ARGUMENT); }
+    | argument COMMA argument_list										{ $$ = AppendToSequenceSemanticAction($3, $1, ITEM_ARGUMENT); }
     ;
 
 argument: IDENTIFIER													{ $$ = ArgumentSemanticAction($1);free($1); }
     | COLOR_VALUE														{ $$ = ArgumentSemanticAction($1); free($1);}
-    | stitch															{ $$ = ArgumentSemanticAction($1->type == STITCH_CH ? "CH" : $1->type == STITCH_SC ? "SC" : "DC"); }
+    | stitch															{ $$ = ArgumentSemanticAction($1->type == STITCH_CH ? "CH" : $1->type == STITCH_SC ? "SC" : "DC");releaseStitch($1); }
     ;
 
 pattern_def: PATTERN IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS OPEN_BRACE sequence CLOSE_BRACE SEMICOLON                                     { $$ = PatternSemanticAction($2, $4, $7);free($2);  }
@@ -144,7 +144,7 @@ pattern_use: IDENTIFIER OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS { $$ = 
 row_element: stitch   { $$ = $1; }
            | repeat   { $$ = $1; }
            | mirror   { $$ = $1; }
-           | IDENTIFIER { $$ = ArgumentSemanticAction($1); }
+           | IDENTIFIER { $$ = ArgumentSemanticAction($1);free($1); }
 
 row_elements: row_element { $$ = SequenceSemanticAction($1, getItemType($1)); }
             | row_elements row_element { $$ = AppendToSequenceSemanticAction($1, $2, getItemType($2)); }

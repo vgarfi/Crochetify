@@ -29,8 +29,14 @@ static void _logSyntacticAnalyzerAction(const char * functionName) {
 	logDebugging(_logger, "%s", functionName);
 }
 
+ItemType getItemType(void *item) {
+    return *((ItemType*)item); // Seguro porque type es el primer campo
+}
+
 Parameter *ParameterSemanticAction(ParameterType type, char *name) {
-    printf("[BisonActions] Creating Parameter: type=%d, name=%s\n", type, name);
+    printf("[BisonActions] Creating Parameter: type=%d (%s), name=%s\n", type,
+        type == PARAM_COLOR ? "Color" : type == PARAM_STITCH ? "Stitch" : "Pattern",
+        name ? name : "(null)");
     Parameter *p = calloc(1, sizeof(Parameter));
     p->type = ITEM_PARAMETER;
     p->paramType = type;
@@ -39,7 +45,7 @@ Parameter *ParameterSemanticAction(ParameterType type, char *name) {
 }
 
 Argument *ArgumentSemanticAction(char *name) {
-    printf("[BisonActions] Creating Argument: name=%s\n", name);
+    printf("[BisonActions] Creating Argument: name=%s\n", name ? name : "(null)");
     Argument *a = calloc(1, sizeof(Argument));
     a->type = ITEM_ARGUMENT;
     a->name = strdup(name);
@@ -47,7 +53,10 @@ Argument *ArgumentSemanticAction(char *name) {
 }
 
 Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *value) {
-    printf("[BisonActions] Creating Declaration: type=%s, var=%s, value=%s\n", typeName, varName, value);
+    printf("[BisonActions] Creating Declaration: type=%s, var=%s, value=%s\n",
+        typeName ? typeName : "(null)",
+        varName ? varName : "(null)",
+        value ? value : "(null)");
     Declaration *d = calloc(1, sizeof(Declaration));
     d->type = ITEM_DECLARATION;
     d->typeName = strdup(typeName);
@@ -57,7 +66,9 @@ Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *valu
 }
 
 Assignment *AssignmentSemanticAction(char *varName, char *value) {
-    printf("[BisonActions] Creating Assignment: var=%s, value=%s\n", varName, value);
+    printf("[BisonActions] Creating Assignment: var=%s, value=%s\n",
+        varName ? varName : "(null)",
+        value ? value : "(null)");
     Assignment *a = calloc(1, sizeof(Assignment));
     a->type = ITEM_ASSIGNMENT;
     a->varName = strdup(varName);
@@ -66,8 +77,8 @@ Assignment *AssignmentSemanticAction(char *varName, char *value) {
 }
 
 Stitch *StitchSemanticAction(StitchType type) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Creating Stitch: type=%d\n", type);
+    printf("[BisonActions] Creating Stitch: type=%d (%s)\n", type,
+        type == STITCH_CH ? "CH" : type == STITCH_SC ? "SC" : "DC");
     Stitch *stitch = calloc(1, sizeof(Stitch));
     stitch->type = ITEM_STITCH;
     stitch->stichType = type;
@@ -75,23 +86,18 @@ Stitch *StitchSemanticAction(StitchType type) {
 }
 
 Row *RowSemanticAction(Sequence *elements, char * color, int isTurn) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Creating Row: color=%s, isTurn=%d\n", color ? color : "(null)", isTurn);
+    printf("[BisonActions] Creating Row: color=%s, isTurn=%d, elements=%p\n",
+        color ? color : "#000000", isTurn, (void*)elements);
     Row *row = calloc(1, sizeof(Row));
     row->type = ITEM_ROW;
     row->elements = elements;
-    if(color != NULL){
-        row->color = strdup(color);
-    } else {
-        row->color = strdup("#000000");
-    }
+    row->color = color ? strdup(color) : strdup("#000000");
     row->isTurn = isTurn;
     return row;
 }
 
 Turn *TurnSemanticAction(Sequence * chains, char *color) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Creating Turn: color=%s\n", color ? color : "(null)");
+    printf("[BisonActions] Creating Turn: color=%s, chains=%p\n", color ? color : "(null)", (void*)chains);
     Turn *turn = calloc(1, sizeof(Turn));
     turn->type = ITEM_TURN;
     turn->chains = chains;
@@ -100,8 +106,7 @@ Turn *TurnSemanticAction(Sequence * chains, char *color) {
 }
 
 Repeat *RepeatSemanticAction(Sequence *pattern, int times) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Creating Repeat: times=%d\n", times);
+    printf("[BisonActions] Creating Repeat: times=%d, pattern=%p\n", times, (void*)pattern);
     Repeat *repeat = calloc(1, sizeof(Repeat));
     repeat->type = ITEM_REPEAT;
     repeat->pattern = pattern;
@@ -110,8 +115,7 @@ Repeat *RepeatSemanticAction(Sequence *pattern, int times) {
 }
 
 Mirror *MirrorSemanticAction(Sequence *pattern, int times) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Creating Mirror: times=%d\n", times);
+    printf("[BisonActions] Creating Mirror: times=%d, pattern=%p\n", times, (void*)pattern);
     Mirror *mirror = calloc(1, sizeof(Mirror));
     mirror->type = ITEM_MIRROR;
     mirror->pattern = pattern;
@@ -120,8 +124,8 @@ Mirror *MirrorSemanticAction(Sequence *pattern, int times) {
 }
 
 Pattern *PatternSemanticAction(char *name, Sequence *parameters, Sequence *body) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Creating Pattern: name=%s\n", name);
+    printf("[BisonActions] Creating Pattern: name=%s, parameters=%p, body=%p\n",
+        name ? name : "(null)", (void*)parameters, (void*)body);
     Pattern *pattern = calloc(1, sizeof(Pattern));
     pattern->type = ITEM_PATTERN;
     pattern->name = strdup(name);
@@ -131,8 +135,8 @@ Pattern *PatternSemanticAction(char *name, Sequence *parameters, Sequence *body)
 }
 
 PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Creating PatternUse: name=%s\n", name);
+    printf("[BisonActions] Creating PatternUse: name=%s, arguments=%p\n",
+        name ? name : "(null)", (void*)arguments);
     PatternUse *use = calloc(1, sizeof(PatternUse));
     use->type = ITEM_PATTERN_USE;
     use->name = strdup(name);
@@ -141,8 +145,7 @@ PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments) {
 }
 
 ColorRow *ColorRowSemanticAction(char *color, Row *row) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Creating ColorRow: color=%s\n", color);
+    printf("[BisonActions] Creating ColorRow: color=%s, row=%p\n", color ? color : "(null)", (void*)row);
     ColorRow *cr = calloc(1, sizeof(ColorRow));
     cr->type = ITEM_COLOR_ROW;
     cr->color = strdup(color);
@@ -151,8 +154,7 @@ ColorRow *ColorRowSemanticAction(char *color, Row *row) {
 }
 
 Sequence *SequenceSemanticAction(void *item, ItemType itemType) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Creating Sequence: itemType=%d\n", itemType);
+    printf("[BisonActions] Creating Sequence: itemType=%d, item=%p\n", itemType, item);
     Sequence *seq = calloc(1, sizeof(Sequence));
     seq->items = calloc(1, sizeof(void*));
     seq->items[0] = item;
@@ -163,8 +165,7 @@ Sequence *SequenceSemanticAction(void *item, ItemType itemType) {
 }
 
 Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, ItemType itemType) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Appending to Sequence: itemType=%d, newCount=%d\n", itemType, seq ? seq->count + 1 : 1);
+    printf("[BisonActions] Appending to Sequence: itemType=%d, newCount=%d, item=%p\n", itemType, seq ? seq->count + 1 : 1, item);
     if (seq == NULL) {
         return SequenceSemanticAction(item, itemType);
     }
@@ -177,8 +178,7 @@ Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, ItemType ite
 }
 
 Program *ProgramSemanticAction(CompilerState * compilerState, Sequence *declarationsAndPatterns, Sequence *body) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Creating Program\n");
+    printf("[BisonActions] Creating Program: declarationsAndPatterns=%p, body=%p\n", (void*)declarationsAndPatterns, (void*)body);
     Program *program = calloc(1, sizeof(Program));
     program->declarationsAndPatterns = declarationsAndPatterns;
     program->body = body;
@@ -194,20 +194,14 @@ Program *ProgramSemanticAction(CompilerState * compilerState, Sequence *declarat
 }
 
 Constant * IntegerConstantSemanticAction(const int value) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
     printf("[BisonActions] Creating Constant: value=%d\n", value);
     Constant * constant = calloc(1, sizeof(Constant));
     constant->value = value;
     return constant;
 }
 
-ItemType getItemType(void *item) {
-    return *((ItemType*)item); // Seguro porque type es el primer campo
-}
-
 Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Creating ArithmeticExpression: type=%d\n", type);
+    printf("[BisonActions] Creating ArithmeticExpression: type=%d, left=%p, right=%p\n", type, (void*)leftExpression, (void*)rightExpression);
     Expression * expression = calloc(1, sizeof(Expression));
     expression->leftExpression = leftExpression;
     expression->rightExpression = rightExpression;
@@ -216,42 +210,25 @@ Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Exp
 }
 
 Factor * ConstantFactorSemanticAction(Constant * constant) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Creating ConstantFactor\n");
+    printf("[BisonActions] Creating ConstantFactor: constant=%p\n", (void*)constant);
     Factor * factor = calloc(1, sizeof(Factor));
     factor->constant = constant;
     factor->type = CONSTANT;
     return factor;
 }
+
 Expression * FactorExpressionSemanticAction(Factor * factor) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Creating FactorExpression\n");
+    printf("[BisonActions] Creating FactorExpression: factor=%p\n", (void*)factor);
     Expression * expression = calloc(1, sizeof(Expression));
     expression->factor = factor;
     expression->type = FACTOR;
     return expression;
 }
+
 Factor * ExpressionFactorSemanticAction(Expression * expression) {
-    _logSyntacticAnalyzerAction(__FUNCTION__);
-    printf("[BisonActions] Creating ExpressionFactor\n");
+    printf("[BisonActions] Creating ExpressionFactor: expression=%p\n", (void*)expression);
     Factor * factor = calloc(1, sizeof(Factor));
     factor->expression = expression;
     factor->type = EXPRESSION;
     return factor;
 }
-/*
-Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Expression * expression) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Program * program = calloc(1, sizeof(Program));
-	program->body = expression;
-	compilerState->abstractSyntaxtTree = program;
-	if (0 < flexCurrentContext()) {
-		logError(_logger, "The final context is not the default (0): %d", flexCurrentContext());
-		compilerState->succeed = false;
-	}
-	else {
-		compilerState->succeed = true;
-	}
-	return program;
-}
-*/
