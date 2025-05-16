@@ -1,3 +1,4 @@
+Color red = #FF0000;
 BEGIN CROCHET
     CH CH CH;
     TURN CH;

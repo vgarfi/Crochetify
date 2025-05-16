@@ -143,16 +143,23 @@ static void _generatePatternUse(PatternUse *use) {
 
 static void _generatePattern(Pattern *pattern) {
     if (!pattern) return;
-    printf("Pattern(name=%s, parameters=[", pattern->name);
-    if (pattern->parameters) _generateSequence(pattern->parameters);
-    printf("], body=[");
-    if (pattern->body) _generateSequence(pattern->body);
-    printf("])");
+    printf("[Pattern(name=%s", pattern->name);
+    if (pattern->parameters) {
+        printf("\n  [parameters");
+        _generateSequence(pattern->parameters);
+        printf("]");
+    }
+    if (pattern->body) {
+        printf("\n  [body");
+        _generateSequence(pattern->body);
+        printf("]");
+    }
+    printf("]");
 }
 
 static void _generateDeclaration(Declaration *decl) {
     if (!decl) return;
-    printf("Declaration(type=%s, var=%s, value=%s)", decl->typeName, decl->varName, decl->value);
+	printf("[{\\shortstack{Declaration(\\\\type=%s,\\\\var=%s,\\\\value=\\#%s)}}]", decl->typeName, decl->varName, decl->value);
 }
 
 static void _generateAssignment(Assignment *assign) {
@@ -163,55 +170,46 @@ static void _generateAssignment(Assignment *assign) {
 static void _generateSequence(Sequence *seq) {
     if (!seq) return;
     for (int i = 0; i < seq->count; ++i) {
-        printf("\n");
+        printf("\n  "); // Indent for readability
         switch (seq->itemTypes[i]) {
             case ITEM_STITCH:
-                printf("  ");
                 _generateStitch((Stitch*)seq->items[i]);
                 break;
             case ITEM_ROW:
-                printf("  ");
                 _generateRow((Row*)seq->items[i]);
                 break;
             case ITEM_TURN:
-                printf("  ");
                 _generateTurn((Turn*)seq->items[i]);
                 break;
             case ITEM_REPEAT:
-                printf("  ");
                 _generateRepeat((Repeat*)seq->items[i]);
                 break;
             case ITEM_MIRROR:
-                printf("  [Mirror]");
+                printf("[Mirror]");
                 break;
             case ITEM_PATTERN:
-                printf("  ");
                 _generatePattern((Pattern*)seq->items[i]);
                 break;
             case ITEM_PATTERN_USE:
-                printf("  ");
                 _generatePatternUse((PatternUse*)seq->items[i]);
                 break;
             case ITEM_COLOR_ROW:
-                printf("  [ColorRow]");
+                printf("[ColorRow]");
                 break;
             case ITEM_PARAMETER:
-                printf("  [Parameter]");
+                printf("[Parameter]");
                 break;
             case ITEM_ARGUMENT:
-                printf("  ");
                 _generateArgument((Argument*)seq->items[i]);
                 break;
             case ITEM_DECLARATION:
-                printf("  ");
                 _generateDeclaration((Declaration*)seq->items[i]);
                 break;
             case ITEM_ASSIGNMENT:
-                printf("  ");
                 _generateAssignment((Assignment*)seq->items[i]);
                 break;
             default:
-                printf("  [UnknownItem]");
+                printf("[UnknownItem]");
                 break;
         }
     }
