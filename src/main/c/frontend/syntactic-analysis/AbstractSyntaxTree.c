@@ -1,6 +1,22 @@
 #include "AbstractSyntaxTree.h"
 
 static Logger * _logger = NULL;
+typedef void (*ReleaseFunc)(void *);
+
+static ReleaseFunc releaseFuncs[] = {
+    [ITEM_STITCH]      = (ReleaseFunc)releaseStitch,
+    [ITEM_ROW]         = (ReleaseFunc)releaseRow,
+    [ITEM_TURN]        = (ReleaseFunc)releaseTurn,
+    [ITEM_REPEAT]      = (ReleaseFunc)releaseRepeat,
+    [ITEM_MIRROR]      = (ReleaseFunc)releaseMirror,
+    [ITEM_PATTERN]     = (ReleaseFunc)releasePattern,
+    [ITEM_PATTERN_USE] = (ReleaseFunc)releasePatternUse,
+    [ITEM_COLOR_ROW]   = (ReleaseFunc)releaseColorRow,
+    [ITEM_PARAMETER]   = (ReleaseFunc)releaseParameter,
+    [ITEM_ARGUMENT]    = (ReleaseFunc)releaseArgument,
+    [ITEM_DECLARATION] = (ReleaseFunc)releaseDeclaration,
+    [ITEM_ASSIGNMENT]  = (ReleaseFunc)releaseAssignment
+};
 
 void initializeAbstractSyntaxTreeModule() {
     _logger = createLogger("AbstractSyntaxTree");
@@ -127,43 +143,9 @@ void releaseSequence(Sequence *seq) {
         if (seq->items && seq->itemTypes) {
             for (int i = 0; i < seq->count; ++i) {
                 if (seq->items[i] == NULL) continue;
-                switch(seq->itemTypes[i]) {
-                    case ITEM_STITCH:
-                        releaseStitch((Stitch*)seq->items[i]);
-                        break;
-                    case ITEM_ROW:
-                        releaseRow((Row*)seq->items[i]);
-                        break;
-                    case ITEM_TURN:
-                        releaseTurn((Turn*)seq->items[i]);
-                        break;
-                    case ITEM_REPEAT:
-                        releaseRepeat((Repeat*)seq->items[i]);
-                        break;
-                    case ITEM_MIRROR:
-                        releaseMirror((Mirror*)seq->items[i]);
-                        break;
-                    case ITEM_PATTERN:
-                        releasePattern((Pattern*)seq->items[i]);
-                        break;
-                    case ITEM_PATTERN_USE:
-                        releasePatternUse((PatternUse*)seq->items[i]);
-                        break;
-                    case ITEM_COLOR_ROW:
-                        releaseColorRow((ColorRow*)seq->items[i]);
-                        break;
-                    case ITEM_PARAMETER:
-                        releaseParameter((Parameter*)seq->items[i]);
-                        break;
-                    case ITEM_ARGUMENT:
-                        releaseArgument((Argument*)seq->items[i]);
-                        break;
-                    case ITEM_DECLARATION:
-                        releaseDeclaration((Declaration*)seq->items[i]);
-                        break;
-                    case ITEM_ASSIGNMENT:
-                        releaseAssignment((Assignment*)seq->items[i]);
-                        break;
+                ItemType type = seq->itemTypes[i];
+                if (type >= 0 && type < (sizeof(releaseFuncs)/sizeof(releaseFuncs[0])) && releaseFuncs[type]) {
+                    releaseFuncs[type](seq->items[i]);
                 }
             }
         }
@@ -172,7 +154,6 @@ void releaseSequence(Sequence *seq) {
         free(seq);
     }
 }
-
 void releaseConstant(Constant * constant) {
     if (constant != NULL) {
         printf("[AST] Releasing Constant: value=%d\n", constant->value);
