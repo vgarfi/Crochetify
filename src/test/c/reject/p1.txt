@@ -1,0 +1,5 @@
+Pattern myPattern(){
+    CH CH CH;
+    TURN CH CH CH;
+    CH DC CH;
+};

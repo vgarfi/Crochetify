@@ -1,4 +1,4 @@
-PATTERN myPattern(Color col,Pattern pattern){
+Pattern myPattern(Color col,Pattern pattern){
     pattern;
     TURN CH CH CH;
     col pattern;
@@ -6,7 +6,7 @@ PATTERN myPattern(Color col,Pattern pattern){
 
 Color red = #FF0000;
 Stich myStich = CH;
-PATTERN myPattern2(Color col,Stitch st,Stitch st2){
+Pattern myPattern2(Color col,Stitch st,Stitch st2){
     st st2 st;
     TURN CH CH CH;
     col CH CH CH;
