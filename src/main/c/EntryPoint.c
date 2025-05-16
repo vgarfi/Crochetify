@@ -40,6 +40,7 @@ const int main(const int count, const char ** arguments) {
 	if (syntacticAnalysisStatus == ACCEPT) {
 		// ----------------------------------------------------------------------------------------
 		// Beginning of the Backend... ------------------------------------------------------------
+		/*
 		logDebugging(logger, "Computing expression value...");
 		ComputationResult computationResult = computeExpression(program->expression);
 		if (computationResult.succeed) {
@@ -52,7 +53,10 @@ const int main(const int count, const char ** arguments) {
 		}
 		// ...end of the Backend. -----------------------------------------------------------------
 		// ----------------------------------------------------------------------------------------
-	}
+		*/
+	        generate(&compilerState);
+
+		}
 	else {
 		logError(logger, "The syntactic-analysis phase rejects the input program.");
 		compilationStatus = FAILED;

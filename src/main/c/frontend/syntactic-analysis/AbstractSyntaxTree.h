@@ -78,63 +78,75 @@ typedef enum {
 } ParameterType;
 
 struct Parameter {
-    ParameterType type;
+    ItemType type;
+    ParameterType paramType;
     char *name;
 };
 
 struct Argument {
+    ItemType type;
     char *name; // Puede ser nombre de variable o literal
 };
 
 struct Stitch {
-    StitchType type;
+    ItemType type;
+    StitchType stichType;
 };
 
 struct Row {
+    ItemType type;
     Sequence *elements; // lista de Stitch, Repeat, Mirror, PatternUse, ColorRow, etc.
     char * color;
     int isTurn;
 };
 
 struct Turn {
+    ItemType type;
     Sequence * chains;
     char *color; // NULL si no hay color
 };
 
 struct Repeat {
+    ItemType type;
     Sequence *pattern; // lo que se repite
     int times;
 };
 
 struct Mirror {
+    ItemType type;
     Sequence *pattern;
     int times;
 };
 
 struct Pattern {
+    ItemType type;
     char *name;
     Sequence *parameters; // lista de Parameter*
     Sequence *body;
 };
 
 struct PatternUse {
+     ItemType type;
     char *name;
     Sequence *arguments; // lista de Argument*
 
 };
 
 struct ColorRow {
+     ItemType type;
     char *color;
     Row *row;
 };
 
 struct Declaration {
+    ItemType type;
     char *typeName; // "Color", "Stitch", etc.
     char *varName;
     char *value; // literal o nombre
 };
 
 struct Assignment {
+    ItemType type;
     char *varName;
     char *value;
 };
@@ -185,6 +197,8 @@ struct Program {
         Sequence *body; // lista de Row, PatternUse, Pattern, etc.
         Expression * expression; // TODO esto vuela con la calculadora
     };
+        Sequence *declarationsAndPatterns; // lo que va antes del main
+
 };
 
 #endif

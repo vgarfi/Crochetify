@@ -12,15 +12,16 @@ void shutdownAbstractSyntaxTreeModule() {
     }
 }
 
+
 void releaseStitch(Stitch *stitch) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseStitch\n");
     if (stitch) {
         free(stitch);
     }
 }
 
 void releaseParameter(Parameter *parameter) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseParameter (name=%s)\n", parameter && parameter->name ? parameter->name : "(null)");
     if (parameter) {
         if (parameter->name) free(parameter->name);
         free(parameter);
@@ -28,7 +29,7 @@ void releaseParameter(Parameter *parameter) {
 }
 
 void releaseArgument(Argument *argument) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseArgument (name=%s)\n", argument && argument->name ? argument->name : "(null)");
     if (argument) {
         if (argument->name) free(argument->name);
         free(argument);
@@ -36,7 +37,7 @@ void releaseArgument(Argument *argument) {
 }
 
 void releaseDeclaration(Declaration *declaration) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseDeclaration (var=%s)\n", declaration && declaration->varName ? declaration->varName : "(null)");
     if (declaration) {
         if (declaration->typeName) free(declaration->typeName);
         if (declaration->varName) free(declaration->varName);
@@ -46,7 +47,7 @@ void releaseDeclaration(Declaration *declaration) {
 }
 
 void releaseAssignment(Assignment *assignment) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseAssignment (var=%s)\n", assignment && assignment->varName ? assignment->varName : "(null)");
     if (assignment) {
         if (assignment->varName) free(assignment->varName);
         if (assignment->value) free(assignment->value);
@@ -55,7 +56,7 @@ void releaseAssignment(Assignment *assignment) {
 }
 
 void releaseTurn(Turn *turn) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseTurn\n");
     if (turn) {
         if (turn->chains) releaseSequence(turn->chains);
         if (turn->color) free(turn->color);
@@ -64,7 +65,7 @@ void releaseTurn(Turn *turn) {
 }
 
 void releasePatternUse(PatternUse *patternUse) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releasePatternUse (name=%s)\n", patternUse && patternUse->name ? patternUse->name : "(null)");
     if (patternUse) {
         if (patternUse->name) free(patternUse->name);
         if (patternUse->arguments) releaseSequence(patternUse->arguments);
@@ -73,7 +74,7 @@ void releasePatternUse(PatternUse *patternUse) {
 }
 
 void releaseRow(Row *row) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseRow\n");
     if (row) {
         if (row->elements) releaseSequence(row->elements);
         if (row->color) free(row->color);
@@ -82,7 +83,7 @@ void releaseRow(Row *row) {
 }
 
 void releaseRepeat(Repeat *repeat) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseRepeat\n");
     if (repeat) {
         if (repeat->pattern) releaseSequence(repeat->pattern);
         free(repeat);
@@ -90,7 +91,7 @@ void releaseRepeat(Repeat *repeat) {
 }
 
 void releaseMirror(Mirror *mirror) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseMirror\n");
     if (mirror) {
         if (mirror->pattern) releaseSequence(mirror->pattern);
         free(mirror);
@@ -98,7 +99,7 @@ void releaseMirror(Mirror *mirror) {
 }
 
 void releasePattern(Pattern *pattern) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releasePattern (name=%s)\n", pattern && pattern->name ? pattern->name : "(null)");
     if (pattern) {
         if (pattern->name) free(pattern->name);
         if (pattern->parameters) releaseSequence(pattern->parameters);
@@ -108,7 +109,7 @@ void releasePattern(Pattern *pattern) {
 }
 
 void releaseColorRow(ColorRow *colorRow) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseColorRow\n");
     if (colorRow) {
         if (colorRow->color) free(colorRow->color);
         if (colorRow->row) releaseRow(colorRow->row);
@@ -117,12 +118,11 @@ void releaseColorRow(ColorRow *colorRow) {
 }
 
 void releaseSequence(Sequence *seq) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseSequence (count=%d)\n", seq ? seq->count : 0);
     if (seq) {
         if (seq->items && seq->itemTypes) {
             for (int i = 0; i < seq->count; ++i) {
                 if (seq->items[i] == NULL) continue;
-                
                 switch(seq->itemTypes[i]) {
                     case ITEM_STITCH:
                         releaseStitch((Stitch*)seq->items[i]);
@@ -163,7 +163,6 @@ void releaseSequence(Sequence *seq) {
                 }
             }
         }
-        
         if (seq->items) free(seq->items);
         if (seq->itemTypes) free(seq->itemTypes);
         free(seq);
@@ -171,14 +170,14 @@ void releaseSequence(Sequence *seq) {
 }
 
 void releaseConstant(Constant * constant) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseConstant\n");
     if (constant != NULL) {
         free(constant);
     }
 }
 
 void releaseExpression(Expression * expression) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseExpression\n");
     if (expression != NULL) {
         switch (expression->type) {
             case ADDITION:
@@ -197,7 +196,7 @@ void releaseExpression(Expression * expression) {
 }
 
 void releaseFactor(Factor * factor) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseFactor\n");
     if (factor != NULL) {
         switch (factor->type) {
             case CONSTANT:
@@ -212,8 +211,11 @@ void releaseFactor(Factor * factor) {
 }
 
 void releaseProgram(Program *program) {
-    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    printf("[AST] Executing destructor: releaseProgram\n");
     if (program) {
+        if (program->declarationsAndPatterns) {
+            releaseSequence(program->declarationsAndPatterns);
+        }
         if (program->body) {
             releaseSequence(program->body);
         }
