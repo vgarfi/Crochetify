@@ -1,11 +1,17 @@
-Pattern myPattern(Color col,Pattern pattern){
+Pattern myPattern4(Stitch s, Stitch s2, Stitch s3, PatternParam pattern){
+    pattern;
+    TURN CH CH CH s;
+    pattern;
+};
+
+Pattern myPattern(Color col,PatternParam pattern){
     pattern;
     TURN CH CH CH;
     col pattern;
 };
 
 Color red = #FF0000;
-Stich myStich = CH;
+
 Pattern myPattern2(Color col,Stitch st,Stitch st2){
     st st2 st;
     TURN CH CH CH;
@@ -16,6 +22,4 @@ BEGIN CROCHET
     myPattern(red,CH);
     TURN CH;
     myPattern(red,DC);
-    REPEAT(myPattern2(red,CD,myStich), 3) CH;
-    MIRROR(myPattern2(red,CD,myStich), 3) CH;
 END CROCHET

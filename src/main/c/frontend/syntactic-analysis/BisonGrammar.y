@@ -50,6 +50,7 @@
 %token SC
 %token DC
 %token PATTERN
+%token PATTERN_PARAM
 %token TURN
 %token MIRROR
 %token REPEAT
@@ -121,7 +122,7 @@ parameter_list: parameter												{ $$ = SequenceSemanticAction($1, ITEM_PARA
 
 parameter: COLOR IDENTIFIER												{ $$ = ParameterSemanticAction(PARAM_COLOR, $2); free($2);}
     | STITCH IDENTIFIER													{ $$ = ParameterSemanticAction(PARAM_STITCH, $2);free($2); }
-    | PATTERN IDENTIFIER												{ $$ = ParameterSemanticAction(PARAM_PATTERN, $2); free($2);}
+    | PATTERN_PARAM IDENTIFIER											{ $$ = ParameterSemanticAction(PARAM_PATTERN, $2); free($2);}
     ;
 
 argument_list: argument													{ $$ = SequenceSemanticAction($1, ITEM_ARGUMENT); }

@@ -51,7 +51,7 @@ color #([0-9A-F]{6}|[0-9a-f]{6})
 <PATTERN>","                        { return CommaLexemeAction(createLexicalAnalyzerContext()); }
 <PATTERN>"Color"                    { return TypeLexemeAction(createLexicalAnalyzerContext(), COLOR); }
 <PATTERN>"Stitch"                   { return TypeLexemeAction(createLexicalAnalyzerContext(), STITCH); }
-<PATTERN>"Pattern"                  { return TypeLexemeAction(createLexicalAnalyzerContext(), PATTERN); }
+<PATTERN>"PatternParam"             { return TypeLexemeAction(createLexicalAnalyzerContext(), PATTERN_PARAM); }
 <PATTERN>"CH"                       { return StitchLexemeAction(createLexicalAnalyzerContext(), CH); }
 <PATTERN>"SC"                       { return StitchLexemeAction(createLexicalAnalyzerContext(), SC); }
 <PATTERN>"DC"                       { return StitchLexemeAction(createLexicalAnalyzerContext(), DC); }
