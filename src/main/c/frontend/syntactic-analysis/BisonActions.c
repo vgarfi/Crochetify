@@ -69,6 +69,13 @@ Mirror *AnonymousMirrorSemanticAction(PatternUse *anon) {
     return mirror;
 }
 
+Repeat* AnonymousRepeatSemanticAction(PatternUse *anon) {
+    printf("[BisonActions] Creating AnonymousRepeat: patternUse=%p\n", (void*)anon);
+    Repeat *repeat = calloc(1, sizeof(Repeat));
+    repeat->type = ITEM_REPEAT;
+    repeat->anon = anon;
+    return repeat;
+}
 
 Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *value) {
     printf("[BisonActions] Creating Declaration: type=%s, var=%s, value=%s\n",

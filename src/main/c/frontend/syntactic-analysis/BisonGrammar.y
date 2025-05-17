@@ -168,6 +168,8 @@ stitch: CH																{ $$ = StitchSemanticAction(STITCH_CH); }
     ;
 
 repeat: REPEAT OPEN_PARENTHESIS pattern_use COMMA INTEGER CLOSE_PARENTHESIS															{ $$ = RepeatSemanticAction(NULL, $5); }
+    | REPEAT OPEN_PARENTHESIS OPEN_BRACKET stitch_list CLOSE_BRACKET COMMA INTEGER CLOSE_PARENTHESIS                { PatternUse *anon = PatternUseSemanticAction(NULL, $4);  $$ = AnonymousRepeatSemanticAction(anon);}
+
     ;
 
 mirror: MIRROR OPEN_PARENTHESIS pattern_use COMMA INTEGER CLOSE_PARENTHESIS											{ $$ = MirrorSemanticAction($3, $5); }

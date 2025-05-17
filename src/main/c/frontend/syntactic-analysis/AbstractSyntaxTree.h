@@ -110,6 +110,7 @@ struct Turn {
 struct Repeat {
     ItemType type;
     Sequence *pattern; // lo que se repite
+    PatternUse *anon;
     int times;
 };
 

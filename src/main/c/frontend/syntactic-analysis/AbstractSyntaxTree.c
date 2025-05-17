@@ -106,6 +106,7 @@ void releaseRow(Row *row) {
 void releaseRepeat(Repeat *repeat) {
     if (repeat) {
         printf("[AST] Releasing Repeat: times=%d\n", repeat->times);
+        if (repeat->anon) releasePatternUse(repeat->anon);
         if (repeat->pattern) releaseSequence(repeat->pattern);
         free(repeat);
     }
