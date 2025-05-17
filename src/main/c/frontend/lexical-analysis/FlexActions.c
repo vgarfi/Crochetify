@@ -57,6 +57,20 @@ void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
+
+void BeginInlineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext){
+	if (_logIgnoredLexemes) {
+		_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	}
+	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
+}
+void EndInlineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+	if (_logIgnoredLexemes) {
+		_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	}
+	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
+}
+
 Token IntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	//    printf("[FLEX][TOKEN] INTEGER: '%.*s' (line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->line);

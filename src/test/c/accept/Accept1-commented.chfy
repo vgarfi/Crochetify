@@ -8,6 +8,7 @@
 *
 */
 
+// You can make inline comments 
 BEGIN CROCHET
-    CH;
+    CH; // And even comments inside your crochet. Nice crochet tho!
 END CROCHET

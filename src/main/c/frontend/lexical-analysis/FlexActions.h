@@ -25,6 +25,9 @@ void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerCo
 void EndMultilineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 void IgnoredLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
+void BeginInlineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+void EndInlineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+
 Token PatternLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token EntryPointLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token ParenthesisLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
