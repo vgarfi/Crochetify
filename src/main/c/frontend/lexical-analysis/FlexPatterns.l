@@ -60,7 +60,7 @@ color #([0-9A-F]{6}|[0-9a-f]{6})
 <PATTERN_DEFINITION>"TURN"                     { return TurnLexemeAction(createLexicalAnalyzerContext()); }  
 <PATTERN_DEFINITION>{color}                    { return ColorLexemeAction(createLexicalAnalyzerContext()); }
 <PATTERN_DEFINITION>{integer}                  { return IntegerLexemeAction(createLexicalAnalyzerContext()); }
-<PATTERN_DEFINITION>{endline}                  {  }
+<PATTERN_DEFINITION>{endline}                  { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <PATTERN_DEFINITION>{inlineWhitespace}         { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <PATTERN_DEFINITION>{identifierName}           { return IdentifierLexemeAction(createLexicalAnalyzerContext()); }
 <PATTERN_DEFINITION>.                          { return UnknownLexemeAction(createLexicalAnalyzerContext()); }
@@ -81,12 +81,12 @@ color #([0-9A-F]{6}|[0-9a-f]{6})
 <CROCHET>"TURN"                     { return TurnLexemeAction(createLexicalAnalyzerContext()); }  
 <CROCHET>{color}                    { return ColorLexemeAction(createLexicalAnalyzerContext()); }
 <CROCHET>{integer}                  { return IntegerLexemeAction(createLexicalAnalyzerContext()); }
-<CROCHET>{endline}                  { }
+<CROCHET>{endline}                  { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <CROCHET>{inlineWhitespace}         { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <CROCHET>{identifierName}           { return IdentifierLexemeAction(createLexicalAnalyzerContext()); }
 <CROCHET>.                          { return UnknownLexemeAction(createLexicalAnalyzerContext()); }
 
-{endline}                            { /* Ignorar en cualquier contexto */ }
+{endline}                           { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 "Stitch"                            { return TypeLexemeAction(createLexicalAnalyzerContext(), STITCH); }
 "Color"                             { return TypeLexemeAction(createLexicalAnalyzerContext(), COLOR); }
 "="                                 { return AssignmentLexemeAction(createLexicalAnalyzerContext()); }
