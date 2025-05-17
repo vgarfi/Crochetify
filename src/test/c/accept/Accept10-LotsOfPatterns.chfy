@@ -13,10 +13,9 @@ Pattern second(Pattern x){
 
 Pattern third(Color c){
     CH CH CH;
-    c TURN CH;
     second(first());
     TURN CH;
-    REPEAT([CH, CH], 3);
+    MIRROR([CH CH], 3);
 };
 
 Pattern fourth(Color c, Pattern x, Stitch y){

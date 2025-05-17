@@ -116,6 +116,7 @@ struct Repeat {
 struct Mirror {
     ItemType type;
     Sequence *pattern;
+    PatternUse *anon;
     int times;
 };
 

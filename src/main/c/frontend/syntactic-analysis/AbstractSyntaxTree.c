@@ -115,6 +115,7 @@ void releaseMirror(Mirror *mirror) {
     if (mirror) {
         printf("[AST] Releasing Mirror: times=%d\n", mirror->times);
         if (mirror->pattern) releaseSequence(mirror->pattern);
+        if (mirror->anon) releasePatternUse(mirror->anon);
         free(mirror);
     }
 }

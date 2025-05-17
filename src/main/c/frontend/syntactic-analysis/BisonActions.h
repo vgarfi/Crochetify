@@ -18,6 +18,7 @@ Row *RowSemanticAction(Sequence *elements, char * color, int isTurn);
 Turn *TurnSemanticAction(Sequence * chains, char *color);
 Repeat *RepeatSemanticAction(Sequence *pattern, int times);
 Mirror *MirrorSemanticAction(Sequence *pattern, int times);
+Mirror *AnonymousMirrorSemanticAction(PatternUse *anon);
 Pattern *PatternSemanticAction(char *name, Sequence *parameters, Sequence *body);
 PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments);
 ColorRow *ColorRowSemanticAction(char *color, Row *row);

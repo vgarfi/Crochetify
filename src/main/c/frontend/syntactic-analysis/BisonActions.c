@@ -61,6 +61,14 @@ Argument *AnonymousArgumentSemanticAction(PatternUse *anon) {
     return a;
 }
 
+Mirror *AnonymousMirrorSemanticAction(PatternUse *anon) {
+    printf("[BisonActions] Creating AnonymousMirror: patternUse=%p\n", (void*)anon);
+    Mirror *mirror = calloc(1, sizeof(Mirror));
+    mirror->type = ITEM_MIRROR;
+    mirror->anon = anon;
+    return mirror;
+}
+
 
 Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *value) {
     printf("[BisonActions] Creating Declaration: type=%s, var=%s, value=%s\n",
@@ -149,11 +157,8 @@ PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments) {
         name ? name : "(null)", (void*)arguments);
     PatternUse *use = calloc(1, sizeof(PatternUse));
     use->type = ITEM_PATTERN_USE;
-    if(name) {
-        use->name = strdup(name);
-    }
+    if(name) use->name = strdup(name);
     use->arguments = arguments;
-    printf("Creado cheto\n");
     return use;
 }
 
