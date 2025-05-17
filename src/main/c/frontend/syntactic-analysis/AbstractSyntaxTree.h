@@ -86,6 +86,7 @@ struct Parameter {
 struct Argument {
     ItemType type;
     char *name; // Puede ser nombre de variable o literal
+    PatternUse *anon; // Para patron anónimo
 };
 
 struct Stitch {

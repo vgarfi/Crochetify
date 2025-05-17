@@ -1,0 +1,110 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "Crochetify",
+    "patterns": [
+        { "include": "#comments" },
+        { "include": "#keywords" },
+        { "include": "#strings" },
+        { "include": "#entry-points" },
+        { "include": "#stitches" },
+        { "include": "#functions" },
+        { "include": "#types" },
+        { "include": "#constants" },
+        { "include": "#identifiers" }
+    ],
+    "repository": {
+        "comments": {
+            "patterns": [
+                {
+                    "name": "comment.block.crochetify",
+                    "begin": "/\\*",
+                    "end": "\\*/"
+                },
+                {
+                    "name": "comment.line.double-slash.crochetify",
+                    "match": "//.*$"
+                }
+            ]
+        },
+        "keywords": {
+            "patterns": [
+                {
+                    "name": "keyword.control.crochetify",
+                    "match": "\\b(TURN|REPEAT|MIRROR)\\b"
+                },
+                {
+                    "name": "keyword.operator.crochetify",
+                    "match": "="
+                }
+            ]
+        },
+        "strings": {
+            "patterns": [
+                {
+                    "name": "string.quoted.double.crochetify",
+                    "begin": "\"",
+                    "end": "\"",
+                    "patterns": [
+                        {
+                            "name": "constant.character.escape.crochetify",
+                            "match": "\\\\."
+                        }
+                    ]
+                }
+            ]
+        },
+        "entry-points": {
+            "patterns": [
+                {
+                    "name": "keyword.control.crochetify",
+                    "match": "\\b(BEGIN CROCHET|END CROCHET)\\b"
+                }
+            ]
+        },
+        "stitches": {
+            "patterns": [
+                {
+                    "name": "entity.name.function.crochetify",
+                    "match": "\\b(CH|SC|DC)\\b"
+                }
+            ]
+        },
+        "functions": {
+            "patterns": [
+                {
+                    "name": "entity.name.function.crochetify",
+                    "match": "\\b(MIRROR|REPEAT)\\b"
+                }
+            ]
+        },
+        "types": {
+            "patterns": [
+                {
+                    "name": "storage.type.crochetify",
+                    "match": "\\b(Pattern|Color|Stitch)\\b"
+                }
+            ]
+        },
+        "constants": {
+            "patterns": [
+                {
+                    "name": "constant.numeric.crochetify",
+                    "match": "\\b[0-9]+\\b"
+                },
+                {
+                    "name": "constant.other.color.crochetify",
+                    "match": "#([0-9A-Fa-f]{6})"
+                }
+            ]
+        },
+        "identifiers": {
+            "patterns": [
+                {
+                    "name": "variable.other.crochetify",
+                    "match": "\\b[a-zA-Z][a-zA-Z0-9_]*\\b"
+                }
+            ]
+        }
+    },
+    "scopeName": "source.crochetify"
+}

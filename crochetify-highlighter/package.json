@@ -1,0 +1,29 @@
+{
+    "name": "crochetify-highlighter",
+    "displayName": "Crochetify Language Support",
+    "description": "Syntax highlighting for Crochetify language",
+    "version": "0.1.0",
+    "engines": {
+        "vscode": "^1.60.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "crochetify",
+                "aliases": ["Crochetify", "crochetify"],
+                "extensions": [".chfy"],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "crochetify",
+                "scopeName": "source.crochetify",
+                "path": "./syntaxes/crochetify.tmLanguage.json"
+            }
+        ]
+    }
+}

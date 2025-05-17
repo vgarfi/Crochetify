@@ -46,6 +46,9 @@ void releaseParameter(Parameter *parameter) {
 void releaseArgument(Argument *argument) {
     if (argument) {
         printf("[AST] Releasing Argument: name=%s\n", argument->name ? argument->name : "(null)");
+        if (argument->anon) {
+            printf("[AST] Releasing Anonymous Argument ! !  ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! : patternUse=%p\n", (void*)argument->anon);
+            releasePatternUse(argument->anon);}
         if (argument->name) free(argument->name);
         free(argument);
     }

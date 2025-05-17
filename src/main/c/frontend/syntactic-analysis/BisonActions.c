@@ -44,13 +44,23 @@ Parameter *ParameterSemanticAction(ParameterType type, char *name) {
     return p;
 }
 
+
 Argument *ArgumentSemanticAction(char *name) {
     printf("[BisonActions] Creating Argument: name=%s\n", name ? name : "(null)");
     Argument *a = calloc(1, sizeof(Argument));
     a->type = ITEM_ARGUMENT;
-    a->name = strdup(name);
+    if(name) a->name = strdup(name);
     return a;
 }
+
+Argument *AnonymousArgumentSemanticAction(PatternUse *anon) {
+    printf("[BisonActions] Creating AnonymousArgument: patternUse=%p\n", (void*)anon);
+    Argument *a = calloc(1, sizeof(Argument));
+    a->type = ITEM_ARGUMENT;
+    a->anon = anon;
+    return a;
+}
+
 
 Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *value) {
     printf("[BisonActions] Creating Declaration: type=%s, var=%s, value=%s\n",
@@ -139,8 +149,11 @@ PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments) {
         name ? name : "(null)", (void*)arguments);
     PatternUse *use = calloc(1, sizeof(PatternUse));
     use->type = ITEM_PATTERN_USE;
-    use->name = strdup(name);
+    if(name) {
+        use->name = strdup(name);
+    }
     use->arguments = arguments;
+    printf("Creado cheto\n");
     return use;
 }
 

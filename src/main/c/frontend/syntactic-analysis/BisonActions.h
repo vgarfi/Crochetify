@@ -23,6 +23,7 @@ PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments);
 ColorRow *ColorRowSemanticAction(char *color, Row *row);
 Parameter *ParameterSemanticAction(ParameterType type, char *name);
 Argument *ArgumentSemanticAction(char *name);
+Argument *AnonymousArgumentSemanticAction(PatternUse *anon);
 Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *value);
 Assignment *AssignmentSemanticAction(char *varName, char *value);
 Sequence *SequenceSemanticAction(void *item, ItemType itemType);
