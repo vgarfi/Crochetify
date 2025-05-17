@@ -11,4 +11,9 @@
 // You can make inline comments 
 BEGIN CROCHET
     CH; // And even comments inside your crochet. Nice crochet tho!
+    /*
+        And doc your crochet like a pro
+    */
+    TURN CH CH;
+    SC SC SC; // Ok this is enough
 END CROCHET

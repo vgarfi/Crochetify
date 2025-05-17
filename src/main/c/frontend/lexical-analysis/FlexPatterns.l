@@ -48,6 +48,7 @@ color #([0-9A-F]{6}|[0-9a-f]{6})
 "Pattern"                                      { BEGIN(PATTERN_DEFINITION); return PatternLexemeAction(createLexicalAnalyzerContext()); }
 <PATTERN_DEFINITION>"}"                        { BEGIN(INITIAL); return BraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACE); }
 <PATTERN_DEFINITION>"//"                       { yy_push_state(INLINE_COMMENT); BeginInlineCommentLexemeAction(createLexicalAnalyzerContext()); }
+<PATTERN_DEFINITION>"/*"                       { yy_push_state(MULTILINE_COMMENT); BeginMultilineCommentLexemeAction(createLexicalAnalyzerContext()); }
 
 <PATTERN_DEFINITION>"{"                        { return BraceLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACE); }
 <PATTERN_DEFINITION>"("                        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }
@@ -75,6 +76,7 @@ color #([0-9A-F]{6}|[0-9a-f]{6})
 "BEGIN CROCHET"                                { BEGIN(CROCHET); return EntryPointLexemeAction(createLexicalAnalyzerContext(), BEGIN_CROCHET); }
 <CROCHET>"END CROCHET"                         { BEGIN(INITIAL); return EntryPointLexemeAction(createLexicalAnalyzerContext(), END_CROCHET); }
 <CROCHET>"//"                                  { yy_push_state(INLINE_COMMENT); BeginInlineCommentLexemeAction(createLexicalAnalyzerContext()); }
+<CROCHET>"/*"                                  { yy_push_state(MULTILINE_COMMENT); BeginMultilineCommentLexemeAction(createLexicalAnalyzerContext()); }
 
 <CROCHET>"("                                   { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }
 <CROCHET>")"                                   { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
