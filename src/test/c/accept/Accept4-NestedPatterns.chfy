@@ -1,0 +1,19 @@
+Pattern myPattern(Color col, Pattern pattern){
+    pattern;
+    TURN CH CH CH;
+    pattern;
+};
+
+Color red = #FF0000;
+
+Pattern myPattern2(Color col,Stitch st,Stitch st2){
+    st st2 st;
+    TURN CH CH CH;
+    col CH CH CH;
+};
+
+BEGIN CROCHET
+    myPattern(red,myPattern2(red,CH,CH));
+    TURN CH;
+    myPattern(red,myPattern2(red,CH,CH));
+END CROCHET

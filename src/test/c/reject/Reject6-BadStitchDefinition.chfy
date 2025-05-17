@@ -1,0 +1,5 @@
+Stitch myStitchISuppose = #FF00FF;
+
+BEGIN CROCHET
+    CH myStitchISuppose CH;
+END CROCHET

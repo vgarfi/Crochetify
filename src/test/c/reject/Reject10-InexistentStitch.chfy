@@ -1,0 +1,8 @@
+Stitch a = CH;
+Stitch b = SC;
+Stitch c = DC; 
+Stitch d = TC; /* 🤓☝️ Uhmmmm actually this stitch does exist, just not in this filet crochet language */
+
+BEGIN CROCHET
+    a b c d;
+END CROCHET

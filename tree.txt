@@ -1,0 +1,44 @@
+\documentclass{standalone}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{forest}
+\usepackage{microtype}
+
+\begin{document}
+    \centering
+    \begin{forest}
+        [ \text{$=$}, circle, draw, purple
+            [ $E$, circle, draw, black!20
+                [ $E$, circle, draw, black!20
+                    [ $F$, circle, draw, black!20
+                        [ $C$, circle, draw, black!20
+                            [ $2$, circle, draw ]
+                        ]
+                    ]
+                ]
+                [ $-$, circle, draw, purple ]
+                [ $E$, circle, draw, black!20
+                    [ $E$, circle, draw, black!20
+                        [ $F$, circle, draw, black!20
+                            [ $C$, circle, draw, black!20
+                                [ $6$, circle, draw ]
+                            ]
+                        ]
+                    ]
+                    [ $*$, circle, draw, purple ]
+                    [ $E$, circle, draw, black!20
+                        [ $F$, circle, draw, black!20
+                            [ $C$, circle, draw, black!20
+                                [ $4$, circle, draw ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+            [ $-22$, circle, draw, blue ]
+        ]
+    \end{forest}
+\end{document}
+

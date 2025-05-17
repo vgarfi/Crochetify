@@ -1,0 +1,8 @@
+Color red = #FF0000;
+Color blue = #0000FF;
+Stitch deir = CH;
+BEGIN CROCHET
+    CH CH CH;
+    TURN CH;
+    CH CH CH;
+END CROCHET

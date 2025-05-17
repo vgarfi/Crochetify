@@ -27,8 +27,12 @@ static void _generateProgram(Program * program);
 static void _generatePrologue(void);
 static char * _indentation(const unsigned int indentationLevel);
 static void _output(const unsigned int indentationLevel, const char * const format, ...);
-
+static void _generateSequence(Sequence *seq);
+static void _generateRepeat(Repeat *repeat);
+static void _generateTurn(Turn *turn); 
+static void printSequence(Sequence *seq, int indent);
 /**
+ * 
  * Converts and expression type to the proper character of the operation
  * involved, or returns '\0' if that's not possible.
  */
@@ -111,12 +115,135 @@ static void _generateFactor(const unsigned int indentationLevel, Factor * factor
 	_output(indentationLevel, "%s", "]\n");
 }
 
-/**
- * Generates the output of the program.
- */
-static void _generateProgram(Program * program) {
-	_generateExpression(3, program->expression);
+static void printIndent(int indent) {
+    for (int i = 0; i < indent; ++i) putchar(' ');
 }
+
+static void printStitch(Stitch *stitch, int indent) {
+    if (!stitch) return;
+    const char *name = stitch->stichType == STITCH_CH ? "CH" :
+                       stitch->stichType == STITCH_SC ? "SC" : "DC";
+    printIndent(indent); printf("Stitch(%s)\n", name);
+}
+
+static void printArgument(Argument *arg, int indent) {
+    if (!arg) return;
+    printIndent(indent); printf("Argument(%s)\n", arg->name);
+}
+
+static void printRow(Row *row, int indent) {
+    if (!row) return;
+    printIndent(indent);
+    printf("Row color=%s, isTurn=%d\n", row->color ? row->color : "#000000", row->isTurn);
+    if (row->elements) printSequence(row->elements, indent + 2);
+}
+
+static void printPatternUse(PatternUse *use, int indent) {
+    if (!use) return;
+    printIndent(indent); printf("PatternUse name=%s\n", use->name);
+    if (use->arguments) printSequence(use->arguments, indent + 2);
+}
+
+static void printPattern(Pattern *pattern, int indent) {
+    if (!pattern) return;
+    printIndent(indent); printf("Pattern name=%s\n", pattern->name);
+    if (pattern->parameters) {
+        printIndent(indent + 2); printf("parameters:\n");
+        printSequence(pattern->parameters, indent + 4);
+    }
+    if (pattern->body) {
+        printIndent(indent + 2); printf("body:\n");
+        printSequence(pattern->body, indent + 4);
+    }
+}
+
+static void printDeclaration(Declaration *decl, int indent) {
+    if (!decl) return;
+    printIndent(indent);
+    printf("Declaration(type=%s, var=%s, value=%s)\n", decl->typeName, decl->varName, decl->value);
+}
+
+static void printAssignment(Assignment *assign, int indent) {
+    if (!assign) return;
+    printIndent(indent);
+    printf("Assignment(var=%s, value=%s)\n", assign->varName, assign->value);
+}
+
+static void printTurn(Turn *turn, int indent) {
+    if (!turn) return;
+    printIndent(indent); printf("Turn");
+    if (turn->chains) {
+        printf(" chains:\n");
+        printSequence(turn->chains, indent + 2);
+    }
+    if (turn->color) {
+        printf(" color=%s", turn->color);
+    }
+    printf("\n");
+}
+
+static void printRepeat(Repeat *repeat, int indent) {
+    if (!repeat) return;
+    printIndent(indent); printf("Repeat count=%d\n", repeat->times);
+    if (repeat->pattern) printSequence(repeat->pattern, indent + 2);
+}
+
+static void printSequence(Sequence *seq, int indent) {
+    if (!seq) return;
+    for (int i = 0; i < seq->count; ++i) {
+        switch (seq->itemTypes[i]) {
+            case ITEM_STITCH:
+                printStitch((Stitch*)seq->items[i], indent);
+                break;
+            case ITEM_ROW:
+                printRow((Row*)seq->items[i], indent);
+                break;
+            case ITEM_TURN:
+                printTurn((Turn*)seq->items[i], indent);
+                break;
+            case ITEM_REPEAT:
+                printRepeat((Repeat*)seq->items[i], indent);
+                break;
+            case ITEM_MIRROR:
+                printIndent(indent); printf("Mirror\n");
+                break;
+            case ITEM_PATTERN:
+                printPattern((Pattern*)seq->items[i], indent);
+                break;
+            case ITEM_PATTERN_USE:
+                printPatternUse((PatternUse*)seq->items[i], indent);
+                break;
+            case ITEM_COLOR_ROW:
+                printIndent(indent); printf("ColorRow\n");
+                break;
+            case ITEM_PARAMETER:
+                printIndent(indent); printf("Parameter\n");
+                break;
+            case ITEM_ARGUMENT:
+                printArgument((Argument*)seq->items[i], indent);
+                break;
+            case ITEM_DECLARATION:
+                printDeclaration((Declaration*)seq->items[i], indent);
+                break;
+            case ITEM_ASSIGNMENT:
+                printAssignment((Assignment*)seq->items[i], indent);
+                break;
+            default:
+                printIndent(indent); printf("UnknownItem\n");
+                break;
+        }
+    }
+}
+
+static void printProgram(Program *program, int indent) {
+    printIndent(indent); printf("Program\n");
+    printIndent(indent + 2); printf("declarationsAndPatterns:\n");
+    if (program->declarationsAndPatterns) printSequence(program->declarationsAndPatterns, indent + 4);
+    printIndent(indent + 2); printf("body:\n");
+    if (program->body) printSequence(program->body, indent + 4);
+}
+
+
 
 /**
  * Creates the prologue of the generated output, a Latex document that renders
@@ -166,9 +293,11 @@ static void _output(const unsigned int indentationLevel, const char * const form
 /** PUBLIC FUNCTIONS */
 
 void generate(CompilerState * compilerState) {
-	logDebugging(_logger, "Generating final output...");
-	_generatePrologue();
-	_generateProgram(compilerState->abstractSyntaxtTree);
-	_generateEpilogue(compilerState->value);
-	logDebugging(_logger, "Generation is done.");
+
+    logDebugging(_logger, "Generating final output...");
+    Program *program = (Program*)compilerState->abstractSyntaxtTree;
+    printProgram(program, 0);
+    logDebugging(_logger, "Generation is done.");
+
 }
+

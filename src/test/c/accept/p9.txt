@@ -1,0 +1,14 @@
+Pattern myPattern(Color c, Pattern p) {
+    c p p;
+    TURN CH CH CH;
+    TURN CH CH CH;
+    c p p;
+};
+
+BEGIN CROCHET
+    myPattern(#FF0000, [DC DC SC DC DC]);
+    #FAFAFA TURN CH CH CH CH;
+    myPattern(#FFBBBB, [DC DC SC CH]);
+    #FAFAFA TURN CH CH CH CH;
+    myPattern(#FF0000, [SC CH CH]);
+END CROCHET

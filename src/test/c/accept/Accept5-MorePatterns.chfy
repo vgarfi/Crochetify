@@ -1,0 +1,25 @@
+Pattern myPattern4(Stitch s, Stitch s2, Stitch s3, Pattern pattern){
+    pattern;
+    TURN CH CH CH s;
+    pattern;
+};
+
+Pattern myPattern(Color col,Pattern pattern){
+    pattern;
+    TURN CH CH CH;
+    col pattern;
+};
+
+Color red = #FF0000;
+
+Pattern myPattern2(Color col,Stitch st,Stitch st2){
+    st st2 st;
+    TURN CH CH CH;
+    col CH CH CH;
+};
+
+BEGIN CROCHET
+    myPattern(red,CH);
+    TURN CH;
+    myPattern(red,DC);
+END CROCHET

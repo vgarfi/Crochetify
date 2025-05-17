@@ -1,23 +1,37 @@
 #ifndef BISON_ACTIONS_HEADER
 #define BISON_ACTIONS_HEADER
 
-#include "../../shared/CompilerState.h"
 #include "../../shared/Logger.h"
-#include "../../shared/Type.h"
 #include "AbstractSyntaxTree.h"
-#include "SyntacticAnalyzer.h"
 #include <stdlib.h>
+#include "../../shared/CompilerState.h"
+#include "../../shared/Type.h"
+#include "SyntacticAnalyzer.h"
 
-/** Initialize module's internal state. */
+/* Inicialización y destrucción del módulo */
 void initializeBisonActionsModule();
-
-/** Shutdown module's internal state. */
 void shutdownBisonActionsModule();
 
-/**
- * Bison semantic actions.
- */
-
+/* Acciones semánticas para cada tipo de nodo */
+Stitch *StitchSemanticAction(StitchType type);
+Row *RowSemanticAction(Sequence *elements, char * color, int isTurn);
+Turn *TurnSemanticAction(Sequence * chains, char *color);
+Repeat *RepeatSemanticAction(Sequence *pattern, int times);
+Repeat *AnonymousRepeatSemanticAction(PatternUse *anon);
+Mirror *MirrorSemanticAction(Sequence *pattern, int times);
+Mirror *AnonymousMirrorSemanticAction(PatternUse *anon);
+Pattern *PatternSemanticAction(char *name, Sequence *parameters, Sequence *body);
+PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments);
+ColorRow *ColorRowSemanticAction(char *color, Row *row);
+Parameter *ParameterSemanticAction(ParameterType type, char *name);
+Argument *ArgumentSemanticAction(char *name);
+Argument *AnonymousArgumentSemanticAction(PatternUse *anon);
+Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *value);
+Assignment *AssignmentSemanticAction(char *varName, char *value);
+Sequence *SequenceSemanticAction(void *item, ItemType itemType);
+Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, ItemType itemType);
+Program *ProgramSemanticAction(CompilerState * compilerState, Sequence *declarationsAndPatterns, Sequence *body);
+ItemType getItemType(void *item);
 Constant * IntegerConstantSemanticAction(const int value);
 Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type);
 Expression * FactorExpressionSemanticAction(Factor * factor);
