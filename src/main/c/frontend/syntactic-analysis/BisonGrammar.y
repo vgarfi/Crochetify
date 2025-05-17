@@ -131,6 +131,7 @@ argument_list: argument													{ $$ = SequenceSemanticAction($1, ITEM_ARGUM
 argument: IDENTIFIER													{ $$ = ArgumentSemanticAction($1);free($1); }
     | COLOR_VALUE														{ $$ = ArgumentSemanticAction($1); free($1);}
     | stitch															{ $$ = ArgumentSemanticAction($1->type == STITCH_CH ? "CH" : $1->type == STITCH_SC ? "SC" : "DC");releaseStitch($1); }
+    | pattern_use                                                       { $$ = ArgumentSemanticAction($1); releasePatternUse($1); }
     ;
 
 pattern_def: PATTERN IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS OPEN_BRACE sequence CLOSE_BRACE SEMICOLON                                     { $$ = PatternSemanticAction($2, $4, $7);free($2);  }

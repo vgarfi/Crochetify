@@ -1,4 +1,4 @@
-Pattern myPattern(Color col,Pattern pattern){
+Pattern myPattern(Color col, Pattern pattern){
     pattern;
     TURN CH CH CH;
     pattern;
