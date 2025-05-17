@@ -1,6 +1,11 @@
 #ifndef ABSTRACT_SYNTAX_TREE_HEADER
 #define ABSTRACT_SYNTAX_TREE_HEADER
 
+#define ISTURN 1
+#define ISNOTTURN 0
+#define COLOR_NAME "Color"
+#define STITCH_NAME "Stitch"
+
 #include "../../shared/Logger.h"
 #include <stdlib.h>
 
@@ -19,13 +24,11 @@ typedef struct Declaration Declaration;
 typedef struct Assignment Assignment;
 typedef struct Program Program;
 
-
 typedef struct Constant Constant;
 typedef struct Expression Expression;
 typedef struct Factor Factor;
 typedef enum ExpressionType ExpressionType;
 typedef enum FactorType FactorType;
-
 
 void initializeAbstractSyntaxTreeModule();
 void shutdownAbstractSyntaxTreeModule();

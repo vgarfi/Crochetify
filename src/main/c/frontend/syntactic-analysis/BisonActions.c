@@ -30,7 +30,20 @@ static void _logSyntacticAnalyzerAction(const char * functionName) {
 }
 
 ItemType getItemType(void *item) {
-    return *((ItemType*)item); // Seguro porque type es el primer campo
+    return *((ItemType*)item);
+}
+
+char * getStitchValue(StitchType type){
+    char * stitch = malloc(3);
+    stitch[2] = '\0';
+    if(type == STITCH_CH){
+        strcpy(stitch, "CH");
+    } else if(type == STITCH_SC){
+        strcpy(stitch, "SC");
+    } else {
+        strcpy(stitch, "DC");
+    }
+    return stitch;
 }
 
 Parameter *ParameterSemanticAction(ParameterType type, char *name) {
