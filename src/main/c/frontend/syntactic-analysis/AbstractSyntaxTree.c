@@ -11,11 +11,13 @@ static ReleaseFunc releaseFuncs[] = {
     [ITEM_MIRROR]      = (ReleaseFunc)releaseMirror,
     [ITEM_PATTERN]     = (ReleaseFunc)releasePattern,
     [ITEM_PATTERN_USE] = (ReleaseFunc)releasePatternUse,
-    [ITEM_COLOR_ROW]   = (ReleaseFunc)releaseColorRow,
     [ITEM_PARAMETER]   = (ReleaseFunc)releaseParameter,
     [ITEM_ARGUMENT]    = (ReleaseFunc)releaseArgument,
     [ITEM_DECLARATION] = (ReleaseFunc)releaseDeclaration,
-    [ITEM_ASSIGNMENT]  = (ReleaseFunc)releaseAssignment
+    [ITEM_ASSIGNMENT]  = (ReleaseFunc)releaseAssignment,
+    [ITEM_IDENTIFIER] = free,
+    [ITEM_COLOR_VALUE] = free,
+    [ITEM_SEQUENCE] = (ReleaseFunc)releaseSequence
 };
 
 void initializeAbstractSyntaxTreeModule() {
@@ -45,9 +47,10 @@ void releaseParameter(Parameter *parameter) {
 
 void releaseArgument(Argument *argument) {
     if (argument) {
-        printf("[AST] Releasing Argument: name=%s\n", argument->name ? argument->name : "(null)");
-        if (argument->anon) releasePatternUse(argument->anon);
-        if (argument->name) free(argument->name);
+        printf("[AST] Releasing Argument: value=%d\n", argument->argumentType);
+        if(argument->value){
+            releaseFuncs[argument->argumentType](argument->value);
+        }
         free(argument);
     }
 }
@@ -106,8 +109,7 @@ void releaseRow(Row *row) {
 void releaseRepeat(Repeat *repeat) {
     if (repeat) {
         printf("[AST] Releasing Repeat: times=%d\n", repeat->times);
-        if (repeat->anon) releasePatternUse(repeat->anon);
-        if (repeat->pattern) releaseSequence(repeat->pattern);
+        if (repeat->pattern) releasePatternUse(repeat->pattern);
         free(repeat);
     }
 }
@@ -115,8 +117,7 @@ void releaseRepeat(Repeat *repeat) {
 void releaseMirror(Mirror *mirror) {
     if (mirror) {
         printf("[AST] Releasing Mirror: times=%d\n", mirror->times);
-        if (mirror->pattern) releaseSequence(mirror->pattern);
-        if (mirror->anon) releasePatternUse(mirror->anon);
+        if (mirror->pattern) releasePatternUse(mirror->pattern);
         free(mirror);
     }
 }

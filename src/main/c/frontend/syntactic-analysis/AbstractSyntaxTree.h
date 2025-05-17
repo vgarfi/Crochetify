@@ -58,11 +58,13 @@ typedef enum {
     ITEM_MIRROR,
     ITEM_PATTERN,
     ITEM_PATTERN_USE,
-    ITEM_COLOR_ROW,
     ITEM_PARAMETER,
     ITEM_ARGUMENT,
     ITEM_DECLARATION,
-    ITEM_ASSIGNMENT
+    ITEM_ASSIGNMENT,
+    ITEM_IDENTIFIER,
+    ITEM_COLOR_VALUE,
+    ITEM_SEQUENCE
 } ItemType;
 
 typedef enum {
@@ -85,8 +87,8 @@ struct Parameter {
 
 struct Argument {
     ItemType type;
-    char *name; // Puede ser nombre de variable o literal
-    PatternUse *anon; // Para patron anónimo
+    ItemType argumentType;
+    void * value;
 };
 
 struct Stitch {
@@ -109,15 +111,13 @@ struct Turn {
 
 struct Repeat {
     ItemType type;
-    Sequence *pattern; // lo que se repite
-    PatternUse *anon;
+    PatternUse *pattern;
     int times;
 };
 
 struct Mirror {
     ItemType type;
-    Sequence *pattern;
-    PatternUse *anon;
+    PatternUse *pattern;
     int times;
 };
 

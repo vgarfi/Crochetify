@@ -45,36 +45,13 @@ Parameter *ParameterSemanticAction(ParameterType type, char *name) {
 }
 
 
-Argument *ArgumentSemanticAction(char *name) {
-    printf("[BisonActions] Creating Argument: name=%s\n", name ? name : "(null)");
+Argument *ArgumentSemanticAction(void *argumentValue, ItemType argumentType) {
+    printf("[BisonActions] Creating Argument: type=%d\n", argumentType);
     Argument *a = calloc(1, sizeof(Argument));
     a->type = ITEM_ARGUMENT;
-    if(name) a->name = strdup(name);
+    a->argumentType = argumentType;
+    a->value = argumentValue;
     return a;
-}
-
-Argument *AnonymousArgumentSemanticAction(PatternUse *anon) {
-    printf("[BisonActions] Creating AnonymousArgument: patternUse=%p\n", (void*)anon);
-    Argument *a = calloc(1, sizeof(Argument));
-    a->type = ITEM_ARGUMENT;
-    a->anon = anon;
-    return a;
-}
-
-Mirror *AnonymousMirrorSemanticAction(PatternUse *anon) {
-    printf("[BisonActions] Creating AnonymousMirror: patternUse=%p\n", (void*)anon);
-    Mirror *mirror = calloc(1, sizeof(Mirror));
-    mirror->type = ITEM_MIRROR;
-    mirror->anon = anon;
-    return mirror;
-}
-
-Repeat* AnonymousRepeatSemanticAction(PatternUse *anon) {
-    printf("[BisonActions] Creating AnonymousRepeat: patternUse=%p\n", (void*)anon);
-    Repeat *repeat = calloc(1, sizeof(Repeat));
-    repeat->type = ITEM_REPEAT;
-    repeat->anon = anon;
-    return repeat;
 }
 
 Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *value) {
@@ -130,7 +107,7 @@ Turn *TurnSemanticAction(Sequence * chains, char *color) {
     return turn;
 }
 
-Repeat *RepeatSemanticAction(Sequence *pattern, int times) {
+Repeat *RepeatSemanticAction(PatternUse *pattern, int times) {
     printf("[BisonActions] Creating Repeat: times=%d, pattern=%p\n", times, (void*)pattern);
     Repeat *repeat = calloc(1, sizeof(Repeat));
     repeat->type = ITEM_REPEAT;
@@ -139,7 +116,7 @@ Repeat *RepeatSemanticAction(Sequence *pattern, int times) {
     return repeat;
 }
 
-Mirror *MirrorSemanticAction(Sequence *pattern, int times) {
+Mirror *MirrorSemanticAction(PatternUse *pattern, int times) {
     printf("[BisonActions] Creating Mirror: times=%d, pattern=%p\n", times, (void*)pattern);
     Mirror *mirror = calloc(1, sizeof(Mirror));
     mirror->type = ITEM_MIRROR;
@@ -167,15 +144,6 @@ PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments) {
     if(name) use->name = strdup(name);
     use->arguments = arguments;
     return use;
-}
-
-ColorRow *ColorRowSemanticAction(char *color, Row *row) {
-    printf("[BisonActions] Creating ColorRow: color=%s, row=%p\n", color ? color : "(null)", (void*)row);
-    ColorRow *cr = calloc(1, sizeof(ColorRow));
-    cr->type = ITEM_COLOR_ROW;
-    cr->color = strdup(color);
-    cr->row = row;
-    return cr;
 }
 
 Sequence *SequenceSemanticAction(void *item, ItemType itemType) {

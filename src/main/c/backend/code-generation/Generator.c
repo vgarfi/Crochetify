@@ -128,7 +128,7 @@ static void printStitch(Stitch *stitch, int indent) {
 
 static void printArgument(Argument *arg, int indent) {
     if (!arg) return;
-    printIndent(indent); printf("Argument(%s)\n", arg->name);
+    printIndent(indent); printf("Argument(%d)\n", arg->argumentType);
 }
 
 static void printRow(Row *row, int indent) {
@@ -185,7 +185,7 @@ static void printTurn(Turn *turn, int indent) {
 static void printRepeat(Repeat *repeat, int indent) {
     if (!repeat) return;
     printIndent(indent); printf("Repeat count=%d\n", repeat->times);
-    if (repeat->pattern) printSequence(repeat->pattern, indent + 2);
+    if (repeat->pattern) printPatternUse(repeat->pattern, indent + 2);
 }
 
 static void printSequence(Sequence *seq, int indent) {
@@ -212,9 +212,6 @@ static void printSequence(Sequence *seq, int indent) {
                 break;
             case ITEM_PATTERN_USE:
                 printPatternUse((PatternUse*)seq->items[i], indent);
-                break;
-            case ITEM_COLOR_ROW:
-                printIndent(indent); printf("ColorRow\n");
                 break;
             case ITEM_PARAMETER:
                 printIndent(indent); printf("Parameter\n");
