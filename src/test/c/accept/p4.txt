@@ -1,10 +1,10 @@
-Pattern myPattern4(Stitch s, Stitch s2, Stitch s3, PatternParam pattern){
+Pattern myPattern4(Stitch s, Stitch s2, Stitch s3, Pattern pattern){
     pattern;
     TURN CH CH CH s;
     pattern;
 };
 
-Pattern myPattern(Color col,PatternParam pattern){
+Pattern myPattern(Color col,Pattern pattern){
     pattern;
     TURN CH CH CH;
     col pattern;
