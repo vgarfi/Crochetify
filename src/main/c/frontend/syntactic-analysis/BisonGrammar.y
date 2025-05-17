@@ -154,8 +154,8 @@ row_element: stitch                                                     { $$ = $
            | IDENTIFIER                                                 { $$ = ArgumentSemanticAction($1, ITEM_IDENTIFIER); }
             ;
 
-row_elements: row_element { $$ = SequenceSemanticAction($1, getItemType($1)); }
-            | row_elements row_element { $$ = AppendToSequenceSemanticAction($1, $2, getItemType($2)); }
+row_elements: row_element                                               { $$ = SequenceSemanticAction($1, getItemType($1)); }
+            | row_elements row_element                                  { $$ = AppendToSequenceSemanticAction($1, $2, getItemType($2)); }
 
 row: row_elements SEMICOLON												{ $$ = RowSemanticAction($1, NULL, ISNOTTURN); }
 	|	COLOR_VALUE row_elements SEMICOLON								{ $$ = RowSemanticAction($2, $1, ISNOTTURN);free($1); }
