@@ -1,0 +1,7 @@
+BEGIN CROCHET
+    myPattern(red,CH);
+    TURN CH;
+    myPattern2(red,DC);
+END CROCHET
+
+Color red = #FF0000;

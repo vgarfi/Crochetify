@@ -1,0 +1,10 @@
+/*
+* This program won't work because someone
+* forgot how to code a .chfy file
+*/
+
+BEGIN CROCHET
+    CH CH 
+    TURN CH
+    CH CH;
+END CROCHET

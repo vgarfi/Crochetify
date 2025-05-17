@@ -1,0 +1,13 @@
+/*
+*
+*   Hi! This is a very basic program for testing purposes.
+*   
+*   As the main program is not our concern, now that you are reading this, you should really
+*   think about the oportunity of sewing your next table cloth
+*   designed using the world's #1 filest crochet language!
+*
+*/
+
+BEGIN CROCHET
+    CH;
+END CROCHET

@@ -1,0 +1,9 @@
+Pattern myWronglyDefinedPattern(c, x, y){
+    CH CH CH;
+    c TURN CH;
+    x y x;
+};
+
+BEGIN CROCHET
+    CH CH myWronglyDefinedPattern(#FFFFF0, [CH], [DC]);
+END CROCHET

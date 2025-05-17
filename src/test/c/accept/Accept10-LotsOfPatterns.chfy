@@ -1,0 +1,30 @@
+Color intense = #F10ABC;
+Stitch supersecretstitchformynexttablecloth = CH;
+
+Pattern first(){
+    CH CH CH;
+};
+
+Pattern second(Pattern x){
+    x;
+    TURN CH;
+    CH CH CH;
+};
+
+Pattern third(Color c){
+    CH CH CH;
+    c TURN CH;
+    second(first());
+    TURN CH;
+    REPEAT([CH, CH], 3);
+};
+
+Pattern fourth(Color c, Pattern x, Stitch y){
+    y y y;
+    TURN CH;
+    c x;
+};
+
+BEGIN CROCHET
+    fourth(intense, third(intense), supersecretstitchformynexttablecloth);
+END CROCHET
