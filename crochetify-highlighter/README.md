@@ -10,20 +10,11 @@ This extension provides syntax highlighting for the Crochetify language, a domai
 - Pattern definition highlighting
 - Block and line comment support
 
-## Installation
-
-### Local Installation
+## Local Installation
 
 1. Copy this folder to `~/.vscode/extensions/` (or equivalent location for your OS)
 2. Restart VS Code
-3. Open a `.croc` file or change the language mode to "Crochetify"
-
-### Building from Source
-
-1. Clone this repository
-2. Run `npm install -g @vscode/vsce` if you don't have vsce installed
-3. Run `vsce package` in the root of this project
-4. Install the generated `.vsix` file using VS Code's "Install from VSIX..." command
+3. Open a `.chfy` file or change the language mode to "Crochetify"
 
 ## Example
 
