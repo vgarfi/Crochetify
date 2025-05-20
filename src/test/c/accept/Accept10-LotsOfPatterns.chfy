@@ -14,7 +14,7 @@ Pattern second(Pattern x){
 Pattern third(Color c){
     CH CH CH;
     second(first());
-    REPEAT ([SC SC SC], 2);
+    REPEAT ([SC SC SC], 2); // You can also comment inside a pattern definition
     TURN CH;
     MIRROR([CH CH], 3);
 };

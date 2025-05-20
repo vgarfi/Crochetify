@@ -1,0 +1,7 @@
+
+// This is a good comment
+
+BEGIN CROCHET
+    CH CH CH; /*  But not this one, because I forgot to close it
+    TURN DC DC DC;
+END CROCHET

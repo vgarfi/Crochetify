@@ -1,0 +1,13 @@
+Pattern p(){
+ CH CH CH;
+ #FFB2AC TURN DC DC DC;
+ SC SC SC;   
+ #AB2DAC TURN DC DC DC;
+ SC SC SC;
+};
+
+BEGIN CROCHET
+    p p p;
+    TURN #FFFFF CH CH CH;
+    p p p;
+END CROCHET
