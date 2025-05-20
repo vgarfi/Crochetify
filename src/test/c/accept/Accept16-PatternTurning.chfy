@@ -1,5 +1,9 @@
 Color lime = #C7ED2B;
 
+Pattern myPattern(Color c, Stitch s){
+    c s s s;
+};
+
 BEGIN CROCHET
     myPattern(lime,CH);
     TURN REPEAT([CH], 3);

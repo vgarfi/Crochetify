@@ -1,0 +1,13 @@
+/*
+    This is a test program with multiline comments
+*/
+
+// Either outside the main program area
+
+BEGIN CROCHET
+    CH CH CH;
+    // Or inside the main program
+    TURN CH CH CH;
+    CH DC DC;
+    // Either way works!
+END CROCHET
