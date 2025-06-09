@@ -46,13 +46,6 @@ void releaseDeclaration(Declaration *declaration);
 void releaseAssignment(Assignment *assignment);
 void releasePatternUse(PatternUse *patternUse);
 
-// TODO: REMOVE
-void releaseColorRow(ColorRow *colorRow);
-void releaseTurn(Turn *turn);
-void releaseConstant(Constant *constant);
-void releaseExpression(Expression *expression);
-void releaseFactor(Factor *factor);
-
 typedef enum {
     ITEM_STITCH,
     ITEM_ROW,
@@ -69,12 +62,6 @@ typedef enum {
     ITEM_COLOR_VALUE,
     ITEM_SEQUENCE
 } ItemType;
-
-typedef enum {
-    STITCH_CH,
-    STITCH_SC,
-    STITCH_DC
-} StitchType;
 
 typedef enum {
     PARAM_COLOR,

@@ -79,15 +79,6 @@ void releaseAssignment(Assignment *assignment) {
     }
 }
 
-void releaseTurn(Turn *turn) {
-    if (turn) {
-        printf("[AST] Releasing Turn: color=%s\n", turn->color ? turn->color : "(null)");
-        if (turn->chains) releaseSequence(turn->chains);
-        if (turn->color) free(turn->color);
-        free(turn);
-    }
-}
-
 void releasePatternUse(PatternUse *patternUse) {
     if (patternUse) {
         printf("[AST] Releasing PatternUse: name=%s\n", patternUse->name ? patternUse->name : "(null)");
@@ -132,15 +123,6 @@ void releasePattern(Pattern *pattern) {
     }
 }
 
-void releaseColorRow(ColorRow *colorRow) {
-    if (colorRow) {
-        printf("[AST] Releasing ColorRow: color=%s\n", colorRow->color ? colorRow->color : "(null)");
-        if (colorRow->color) free(colorRow->color);
-        if (colorRow->row) releaseRow(colorRow->row);
-        free(colorRow);
-    }
-}
-
 void releaseSequence(Sequence *seq) {
     if (seq) {
         printf("[AST] Releasing Sequence: count=%d\n", seq->count);
@@ -156,46 +138,6 @@ void releaseSequence(Sequence *seq) {
         if (seq->items) free(seq->items);
         if (seq->itemTypes) free(seq->itemTypes);
         free(seq);
-    }
-}
-void releaseConstant(Constant * constant) {
-    if (constant != NULL) {
-        printf("[AST] Releasing Constant: value=%d\n", constant->value);
-        free(constant);
-    }
-}
-
-void releaseExpression(Expression * expression) {
-    if (expression != NULL) {
-        printf("[AST] Releasing Expression: type=%d\n", expression->type);
-        switch (expression->type) {
-            case ADDITION:
-            case DIVISION:
-            case MULTIPLICATION:
-            case SUBTRACTION:
-                releaseExpression(expression->leftExpression);
-                releaseExpression(expression->rightExpression);
-                break;
-            case FACTOR:
-                releaseFactor(expression->factor);
-                break;
-        }
-        free(expression);
-    }
-}
-
-void releaseFactor(Factor * factor) {
-    if (factor != NULL) {
-        printf("[AST] Releasing Factor: type=%d\n", factor->type);
-        switch (factor->type) {
-            case CONSTANT:
-                releaseConstant(factor->constant);
-                break;
-            case EXPRESSION:
-                releaseExpression(factor->expression);
-                break;
-        }
-        free(factor);
     }
 }
 

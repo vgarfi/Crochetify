@@ -6,6 +6,18 @@ typedef enum {
 	true = 1
 } boolean;
 
+typedef enum {
+    STITCH_CH,
+    STITCH_SC,
+    STITCH_DC
+} StitchType;
+
+typedef enum {
+	COLOR,
+	STITCH,
+	PATTERN
+} VariableType;
+
 typedef int Token;
 
 #endif
