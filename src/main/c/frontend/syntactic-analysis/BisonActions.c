@@ -1,11 +1,16 @@
 #include "BisonActions.h"
 
+static RowNodeListADT _rowNodeList = NULL;
+static ScopeListADT _scopeList = NULL;
+
 /* MODULE INTERNAL STATE */
 
 static Logger * _logger = NULL;
 
 void initializeBisonActionsModule() {
 	_logger = createLogger("BisonActions");
+    _rowNodeList = newRowNodeList();
+    _scopeList = newScopeList();
 }
 
 void shutdownBisonActionsModule() {

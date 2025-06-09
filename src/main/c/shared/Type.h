@@ -18,6 +18,11 @@ typedef enum {
 	PATTERN
 } VariableType;
 
+typedef struct RowData {
+	char color[7];
+    StitchType* stitches;
+} RowData;
+
 typedef int Token;
 
 #endif

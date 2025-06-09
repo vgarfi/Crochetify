@@ -7,6 +7,9 @@
 #include "../../shared/CompilerState.h"
 #include "../../shared/Type.h"
 #include "SyntacticAnalyzer.h"
+#include "../../shared/structures/RowNodeListADT.h"
+#include "../../shared/structures/SymbolTable.h"
+#include "../../shared/structures/ScopeListADT.h"
 
 /* Inicialización y destrucción del módulo */
 void initializeBisonActionsModule();

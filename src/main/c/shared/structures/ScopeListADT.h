@@ -1,7 +1,7 @@
 #ifndef SCOPE_LIST_ADT_H
 #define SCOPE_LIST_ADT_H
 
-#include <SymbolTableEntry.h>
+#include "SymbolTable.h"
 
 typedef struct ScopeListCDT * ScopeListADT;
 
