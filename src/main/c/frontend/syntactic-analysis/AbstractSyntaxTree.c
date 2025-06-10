@@ -97,6 +97,15 @@ void releaseRow(Row *row) {
     }
 }
 
+void releaseTurn(Turn *turn) {
+    if (turn) {
+        printf("[AST] Releasing Turn: color=%s\n", turn->color ? turn->color : "(null)");
+        if (turn->chains) releaseSequence(turn->chains);
+        if (turn->color) free(turn->color);
+        free(turn);
+    }
+}
+
 void releaseRepeat(Repeat *repeat) {
     if (repeat) {
         printf("[AST] Releasing Repeat: times=%d\n", repeat->times);

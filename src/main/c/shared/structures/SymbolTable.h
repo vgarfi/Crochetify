@@ -5,7 +5,8 @@
 #include "RowNodeListADT.h"
 #include "KHash.h"
 
-typedef khash_t(symbol_table) * SymbolTablePtr;
+// typedef khash_t(symbol_table) * SymbolTablePtr;
+typedef void* SymbolTablePtr;
 
 typedef struct {
     VariableType type;

@@ -39,12 +39,19 @@ void releaseMirror(Mirror *mirror);
 void releasePattern(Pattern *pattern);
 void releaseSequence(Sequence *seq);
 void releaseRow(Row *row);
+void releaseTurn(Turn *turn);
 void releaseStitch(Stitch *stitch);
 void releaseParameter(Parameter *parameter);
 void releaseArgument(Argument *argument);
 void releaseDeclaration(Declaration *declaration);
 void releaseAssignment(Assignment *assignment);
 void releasePatternUse(PatternUse *patternUse);
+
+typedef enum {
+    PARAM_COLOR,
+    PARAM_STITCH,
+    PARAM_PATTERN
+} ParameterType;
 
 typedef enum {
     ITEM_STITCH,
@@ -65,7 +72,8 @@ typedef enum {
 
 struct Parameter {
     ItemType type;
-    VariableType paramType;
+    // VariableType paramType;
+    ParameterType paramType;
     char *name;
 };
 

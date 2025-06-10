@@ -1,5 +1,5 @@
 #include "BisonActions.h"
-#include "../shared/structures/ScopeListADT.h"
+#include "../../shared/structures/ScopeListADT.h"
 
 static RowNodeListADT _rowNodeList = NULL;
 static ScopeListADT _scopeList = NULL;
@@ -10,9 +10,9 @@ static Logger * _logger = NULL;
 
 void initializeBisonActionsModule() {
 	_logger = createLogger("BisonActions");
-    _rowNodeList = newRowNodeList();
-    _scopeList = newScopeList();
-    insertNewScope(_scopeList, NULL);
+    // _rowNodeList = newRowNodeList();
+    // _scopeList = newScopeList();
+    // insertNewScope(_scopeList, NULL);
 }
 
 void shutdownBisonActionsModule() {
@@ -20,10 +20,10 @@ void shutdownBisonActionsModule() {
 		destroyLogger(_logger);
 	}
     if(_rowNodeList != NULL){
-        freeRowNodeList(_rowNodeList);
+        // freeRowNodeList(_rowNodeList);
     }
     if(_scopeList != NULL){
-        freeScopeList(_scopeList);
+        // freeScopeList(_scopeList);
     }
 }
 
@@ -59,9 +59,9 @@ char * getStitchValue(StitchType type){
     return stitch;
 }
 
-Parameter *ParameterSemanticAction(VariableType type, char *name) {
+Parameter *ParameterSemanticAction(ParameterType type, char *name) {
     printf("[BisonActions] Creating Parameter: type=%d (%s), name=%s\n", type,
-        type == COLOR ? "Color" : type == STITCH ? "Stitch" : "Pattern",
+        type == PARAM_COLOR ? "Color" : type == PARAM_STITCH ? "Stitch" : "Pattern",
         name ? name : "(null)");
     Parameter *p = calloc(1, sizeof(Parameter));
     p->type = ITEM_PARAMETER;
