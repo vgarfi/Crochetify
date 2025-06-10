@@ -117,13 +117,14 @@ assignment: IDENTIFIER ASSIGNMENT IDENTIFIER SEMICOLON					{ $$ = AssignmentSema
     ;
 
 parameter_list: parameter												{ $$ = SequenceSemanticAction($1, ITEM_PARAMETER); }
-    | parameter COMMA parameter_list									{ $$ = AppendToSequenceSemanticAction($3, $1, ITEM_PARAMETER); }
+    | parameter_list COMMA parameter		  						{ $$ = AppendToSequenceSemanticAction($1, $3, ITEM_PARAMETER); }
     ;
 
 parameter: COLOR IDENTIFIER												{ $$ = ParameterSemanticAction(PARAM_COLOR, $2); free($2);}
     | STITCH IDENTIFIER													{ $$ = ParameterSemanticAction(PARAM_STITCH, $2);free($2); }
     | PATTERN IDENTIFIER											    { $$ = ParameterSemanticAction(PARAM_PATTERN, $2); free($2);}
-    
+    ;
+
 argument_list: argument													{ $$ = SequenceSemanticAction($1, ITEM_ARGUMENT); }
     | argument COMMA argument_list										{ $$ = AppendToSequenceSemanticAction($3, $1, ITEM_ARGUMENT); }
     ;
@@ -136,8 +137,8 @@ argument: IDENTIFIER													{ $$ = ArgumentSemanticAction($1, ITEM_IDENTIFI
     ;
 
 pattern_def: PATTERN IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS OPEN_BRACE sequence CLOSE_BRACE SEMICOLON                                     { $$ = PatternSemanticAction($2, $4, $7);free($2);  }
-            | PATTERN IDENTIFIER OPEN_PARENTHESIS CLOSE_PARENTHESIS OPEN_BRACE sequence CLOSE_BRACE SEMICOLON                                                           { $$ = PatternSemanticAction($2, NULL, $6);free($2);  }
-            ;
+    | PATTERN IDENTIFIER OPEN_PARENTHESIS CLOSE_PARENTHESIS OPEN_BRACE sequence CLOSE_BRACE SEMICOLON                                                           { $$ = PatternSemanticAction($2, NULL, $6);free($2);  }
+    ;
 
 pattern_use: IDENTIFIER OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS    { $$ = PatternUseSemanticAction($1, $3); free($1); }
            | IDENTIFIER OPEN_PARENTHESIS CLOSE_PARENTHESIS                  { $$ = PatternUseSemanticAction($1, NULL);free($1);  }

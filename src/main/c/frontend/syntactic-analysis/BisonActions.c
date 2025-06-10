@@ -60,9 +60,9 @@ char * getStitchValue(StitchType type){
 }
 
 Parameter *ParameterSemanticAction(ParameterType type, char *name) {
-    printf("[BisonActions] Creating Parameter: type=%d (%s), name=%s\n", type,
-        type == PARAM_COLOR ? "Color" : type == PARAM_STITCH ? "Stitch" : "Pattern",
-        name ? name : "(null)");
+//    printf("[BisonActions] Creating Parameter: type=%d (%s), name=%s\n", type,
+  //      type == PARAM_COLOR ? "Color" : type == PARAM_STITCH ? "Stitch" : "Pattern",
+    //    name ? name : "(null)");
     Parameter *p = calloc(1, sizeof(Parameter));
     p->type = ITEM_PARAMETER;
     p->paramType = type;
@@ -72,7 +72,7 @@ Parameter *ParameterSemanticAction(ParameterType type, char *name) {
 
 
 Argument *ArgumentSemanticAction(void *argumentValue, ItemType argumentType) {
-    printf("[BisonActions] Creating Argument: type=%d\n", argumentType);
+//    printf("[BisonActions] Creating Argument: type=%d\n", argumentType);
     Argument *a = calloc(1, sizeof(Argument));
     a->type = ITEM_ARGUMENT;
     a->argumentType = argumentType;
@@ -81,10 +81,10 @@ Argument *ArgumentSemanticAction(void *argumentValue, ItemType argumentType) {
 }
 
 Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *value) {
-    printf("[BisonActions] Creating Declaration: type=%s, var=%s, value=%s\n",
-        typeName ? typeName : "(null)",
-        varName ? varName : "(null)",
-        value ? value : "(null)");
+  //  printf("[BisonActions] Creating Declaration: type=%s, var=%s, value=%s\n",
+    //    typeName ? typeName : "(null)",
+      //  varName ? varName : "(null)",
+      //  value ? value : "(null)");
     Declaration *d = calloc(1, sizeof(Declaration));
     d->type = ITEM_DECLARATION;
     d->typeName = strdup(typeName);
@@ -94,9 +94,9 @@ Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *valu
 }
 
 Assignment *AssignmentSemanticAction(char *varName, char *value) {
-    printf("[BisonActions] Creating Assignment: var=%s, value=%s\n",
-        varName ? varName : "(null)",
-        value ? value : "(null)");
+ //   printf("[BisonActions] Creating Assignment: var=%s, value=%s\n",
+   //     varName ? varName : "(null)",
+     //   value ? value : "(null)");
     Assignment *a = calloc(1, sizeof(Assignment));
     a->type = ITEM_ASSIGNMENT;
     a->varName = strdup(varName);
@@ -105,8 +105,8 @@ Assignment *AssignmentSemanticAction(char *varName, char *value) {
 }
 
 Stitch *StitchSemanticAction(StitchType type) {
-    printf("[BisonActions] Creating Stitch: type=%d (%s)\n", type,
-        type == STITCH_CH ? "CH" : type == STITCH_SC ? "SC" : "DC");
+  //  printf("[BisonActions] Creating Stitch: type=%d (%s)\n", type,
+    //    type == STITCH_CH ? "CH" : type == STITCH_SC ? "SC" : "DC");
     Stitch *stitch = calloc(1, sizeof(Stitch));
     stitch->type = ITEM_STITCH;
     stitch->stichType = type;
@@ -114,8 +114,8 @@ Stitch *StitchSemanticAction(StitchType type) {
 }
 
 Row *RowSemanticAction(Sequence *elements, char * color, int isTurn) {
-    printf("[BisonActions] Creating Row: color=%s, isTurn=%d, elements=%p\n",
-        color ? color : "#000000", isTurn, (void*)elements);
+ //   printf("[BisonActions] Creating Row: color=%s, isTurn=%d, elements=%p\n",
+  //      color ? color : "#000000", isTurn, (void*)elements);
     Row *row = calloc(1, sizeof(Row));
     row->type = ITEM_ROW;
     row->elements = elements;
@@ -125,7 +125,7 @@ Row *RowSemanticAction(Sequence *elements, char * color, int isTurn) {
 }
 
 Turn *TurnSemanticAction(Sequence * chains, char *color) {
-    printf("[BisonActions] Creating Turn: color=%s, chains=%p\n", color ? color : "(null)", (void*)chains);
+  //  printf("[BisonActions] Creating Turn: color=%s, chains=%p\n", color ? color : "(null)", (void*)chains);
     Turn *turn = calloc(1, sizeof(Turn));
     turn->type = ITEM_TURN;
     turn->chains = chains;
@@ -134,7 +134,7 @@ Turn *TurnSemanticAction(Sequence * chains, char *color) {
 }
 
 Repeat *RepeatSemanticAction(PatternUse *pattern, int times) {
-    printf("[BisonActions] Creating Repeat: times=%d, pattern=%p\n", times, (void*)pattern);
+  //  printf("[BisonActions] Creating Repeat: times=%d, pattern=%p\n", times, (void*)pattern);
     Repeat *repeat = calloc(1, sizeof(Repeat));
     repeat->type = ITEM_REPEAT;
     repeat->pattern = pattern;
@@ -143,7 +143,7 @@ Repeat *RepeatSemanticAction(PatternUse *pattern, int times) {
 }
 
 Mirror *MirrorSemanticAction(PatternUse *pattern, int times) {
-    printf("[BisonActions] Creating Mirror: times=%d, pattern=%p\n", times, (void*)pattern);
+  //  printf("[BisonActions] Creating Mirror: times=%d, pattern=%p\n", times, (void*)pattern);
     Mirror *mirror = calloc(1, sizeof(Mirror));
     mirror->type = ITEM_MIRROR;
     mirror->pattern = pattern;
@@ -152,8 +152,71 @@ Mirror *MirrorSemanticAction(PatternUse *pattern, int times) {
 }
 
 Pattern *PatternSemanticAction(char *name, Sequence *parameters, Sequence *body) {
-    printf("[BisonActions] Creating Pattern: name=%s, parameters=%p, body=%p\n",
-        name ? name : "(null)", (void*)parameters, (void*)body);
+    printf("\n[BisonActions] === Creating Pattern ===\n");
+    printf("  Name: %s\n", name ? name : "(null)");
+
+    // Print parameters
+    printf("  Parameters:\n");
+    if (parameters && parameters->count > 0) {
+        for (int i = 0; i < parameters->count; ++i) {
+            if (parameters->itemTypes[i] == ITEM_PARAMETER) {
+                Parameter *param = (Parameter *)parameters->items[i];
+                const char *paramTypeStr =
+                    param->paramType == PARAM_COLOR   ? "Color" :
+                    param->paramType == PARAM_STITCH  ? "Stitch" :
+                    param->paramType == PARAM_PATTERN ? "Pattern" : "Unknown";
+                printf("    - %s %s\n", paramTypeStr, param->name);
+            } else {
+                printf("    - [Unknown parameter type: %d]\n", parameters->itemTypes[i]);
+            }
+        }
+    } else {
+        printf("    (none)\n");
+    }
+
+    // Print body
+    printf("  Body:\n");
+    if (body && body->count > 0) {
+        for (int i = 0; i < body->count; ++i) {
+            ItemType type = body->itemTypes[i];
+            void *item = body->items[i];
+            switch (type) {
+                case ITEM_ROW: {
+                    Row *row = (Row *)item;
+                    printf("    - Row (isTurn: %d, color: %s)\n", row->isTurn, row->color ? row->color : "none");
+                    break;
+                }
+                case ITEM_PATTERN_USE: {
+                    PatternUse *use = (PatternUse *)item;
+                    printf("    - PatternUse: %s\n", use->name ? use->name : "(anonymous)");
+                    break;
+                }
+                case ITEM_DECLARATION: {
+                    Declaration *decl = (Declaration *)item;
+                    printf("    - Declaration: %s %s = %s\n", decl->typeName, decl->varName, decl->value);
+                    break;
+                }
+                case ITEM_ASSIGNMENT: {
+                    Assignment *assign = (Assignment *)item;
+                    printf("    - Assignment: %s = %s\n", assign->varName, assign->value);
+                    break;
+                }
+                case ITEM_PATTERN: {
+                    Pattern *p = (Pattern *)item;
+                    printf("    - Nested Pattern: %s\n", p->name ? p->name : "(null)");
+                    break;
+                }
+                default:
+                    printf("    - Unknown item type: %d\n", type);
+            }
+        }
+    } else {
+        printf("    (none)\n");
+    }
+
+    printf("=====================================\n\n");
+
+    // Construct and return the Pattern node
     Pattern *pattern = calloc(1, sizeof(Pattern));
     pattern->type = ITEM_PATTERN;
     pattern->name = strdup(name);
@@ -162,9 +225,10 @@ Pattern *PatternSemanticAction(char *name, Sequence *parameters, Sequence *body)
     return pattern;
 }
 
+
 PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments) {
-    printf("[BisonActions] Creating PatternUse: name=%s, arguments=%p\n",
-        name ? name : "(null)", (void*)arguments);
+  //  printf("[BisonActions] Creating PatternUse: name=%s, arguments=%p\n",
+    //    name ? name : "(null)", (void*)arguments);
     PatternUse *use = calloc(1, sizeof(PatternUse));
     use->type = ITEM_PATTERN_USE;
     if(name) use->name = strdup(name);
@@ -173,7 +237,7 @@ PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments) {
 }
 
 Sequence *SequenceSemanticAction(void *item, ItemType itemType) {
-    printf("[BisonActions] Creating Sequence: itemType=%d, item=%p\n", itemType, item);
+//    printf("[BisonActions] Creating Sequence: itemType=%d, item=%p\n", itemType, item);
     Sequence *seq = calloc(1, sizeof(Sequence));
     seq->items = calloc(1, sizeof(void*));
     seq->items[0] = item;
@@ -184,7 +248,7 @@ Sequence *SequenceSemanticAction(void *item, ItemType itemType) {
 }
 
 Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, ItemType itemType) {
-    printf("[BisonActions] Appending to Sequence: itemType=%d, newCount=%d, item=%p\n", itemType, seq ? seq->count + 1 : 1, item);
+  //  printf("[BisonActions] Appending to Sequence: itemType=%d, newCount=%d, item=%p\n", itemType, seq ? seq->count + 1 : 1, item);
     if (seq == NULL) {
         return SequenceSemanticAction(item, itemType);
     }
@@ -197,13 +261,13 @@ Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, ItemType ite
 }
 
 Program *ProgramSemanticAction(CompilerState * compilerState, Sequence *declarationsAndPatterns, Sequence *body) {
-    printf("[BisonActions] Creating Program: declarationsAndPatterns=%p, body=%p\n", (void*)declarationsAndPatterns, (void*)body);
+   // printf("[BisonActions] Creating Program: declarationsAndPatterns=%p, body=%p\n", (void*)declarationsAndPatterns, (void*)body);
     Program *program = calloc(1, sizeof(Program));
     program->declarationsAndPatterns = declarationsAndPatterns;
     program->body = body;
     compilerState->abstractSyntaxtTree = program;
     if (0 < flexCurrentContext()) {
-        printf("[BisonActions][ERROR] The final context is not the default (0): %d\n", flexCurrentContext());
+     //   printf("[BisonActions][ERROR] The final context is not the default (0): %d\n", flexCurrentContext());
         compilerState->succeed = false;
     }
     else {
@@ -213,7 +277,7 @@ Program *ProgramSemanticAction(CompilerState * compilerState, Sequence *declarat
 }
 
 Constant * IntegerConstantSemanticAction(const int value) {
-    printf("[BisonActions] Creating Constant: value=%d\n", value);
+  //  printf("[BisonActions] Creating Constant: value=%d\n", value);
     Constant * constant = calloc(1, sizeof(Constant));
     constant->value = value;
     return constant;
