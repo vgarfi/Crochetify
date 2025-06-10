@@ -17,7 +17,7 @@ void shutdownGeneratorModule() {
 }
 
 /** PRIVATE FUNCTIONS */
-
+static void printPatternUse(PatternUse *use, int indent);
 static const char _expressionTypeToCharacter(const ExpressionType type);
 static void _generateConstant(const unsigned int indentationLevel, Constant * constant);
 static void _generateEpilogue(const int value);
@@ -31,9 +31,36 @@ static void _generateSequence(Sequence *seq);
 static void _generateRepeat(Repeat *repeat);
 static void _generateTurn(Turn *turn); 
 static void printSequence(Sequence *seq, int indent);
+
+static const char * itemTypeToString(ItemType type) {
+    switch (type) {
+        case ITEM_STITCH: return "Stitch";
+        case ITEM_ROW: return "Row";
+        case ITEM_TURN: return "Turn";
+        case ITEM_REPEAT: return "Repeat";
+        case ITEM_MIRROR: return "Mirror";
+        case ITEM_PATTERN: return "Pattern";
+        case ITEM_PATTERN_USE: return "PatternUse";
+        case ITEM_PARAMETER: return "Parameter";
+        case ITEM_ARGUMENT: return "Argument";
+        case ITEM_DECLARATION: return "Declaration";
+        case ITEM_ASSIGNMENT: return "Assignment";
+        case ITEM_IDENTIFIER: return "Identifier";
+        case ITEM_COLOR_VALUE: return "ColorValue";
+        case ITEM_SEQUENCE: return "Sequence";
+        default: return "Unknown";
+    }
+}
+static const char * parameterTypeToString(ParameterType type) {
+    switch (type) {
+        case PARAM_COLOR: return "Color";
+        case PARAM_STITCH: return "Stitch";
+        case PARAM_PATTERN: return "Pattern";
+        default: return "Unknown";
+    }
+}
 /**
- * 
- * Converts and expression type to the proper character of the operation
+ * Converts an expression type to the proper character of the operation
  * involved, or returns '\0' if that's not possible.
  */
 static const char _expressionTypeToCharacter(const ExpressionType type) {
@@ -48,19 +75,12 @@ static const char _expressionTypeToCharacter(const ExpressionType type) {
 	}
 }
 
-/**
- * Generates the output of a constant.
- */
 static void _generateConstant(const unsigned int indentationLevel, Constant * constant) {
 	_output(indentationLevel, "%s", "[ $C$, circle, draw, black!20\n");
 	_output(1 + indentationLevel, "%s%d%s", "[ $", constant->value, "$, circle, draw ]\n");
 	_output(indentationLevel, "%s", "]\n");
 }
 
-/**
- * Creates the epilogue of the generated output, that is, the final lines that
- * completes a valid Latex document.
- */
 static void _generateEpilogue(const int value) {
 	_output(0, "%s%d%s",
 		"            [ $", value, "$, circle, draw, blue ]\n"
@@ -70,9 +90,6 @@ static void _generateEpilogue(const int value) {
 	);
 }
 
-/**
- * Generates the output of an expression.
- */
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression) {
 	_output(indentationLevel, "%s", "[ $E$, circle, draw, black!20\n");
 	switch (expression->type) {
@@ -94,9 +111,7 @@ static void _generateExpression(const unsigned int indentationLevel, Expression 
 	_output(indentationLevel, "%s", "]\n");
 }
 
-/**
- * Generates the output of a factor.
- */
+
 static void _generateFactor(const unsigned int indentationLevel, Factor * factor) {
 	_output(indentationLevel, "%s", "[ $F$, circle, draw, black!20\n");
 	switch (factor->type) {
@@ -104,9 +119,9 @@ static void _generateFactor(const unsigned int indentationLevel, Factor * factor
 			_generateConstant(1 + indentationLevel, factor->constant);
 			break;
 		case EXPRESSION:
-			_output(1 + indentationLevel, "%s", "[ $($, circle, draw, purple ]\n");
+			_output(1 + indentationLevel, "%s", "[ $(, circle, draw, purple ]\n");
 			_generateExpression(1 + indentationLevel, factor->expression);
-			_output(1 + indentationLevel, "%s", "[ $)$, circle, draw, purple ]\n");
+			_output(1 + indentationLevel, "%s", "[ $), circle, draw, purple ]\n");
 			break;
 		default:
 			logError(_logger, "The specified factor type is unknown: %d", factor->type);
@@ -126,9 +141,43 @@ static void printStitch(Stitch *stitch, int indent) {
     printIndent(indent); printf("Stitch(%s)\n", name);
 }
 
+static void printParameter(Parameter *param, int indent) {
+    if (!param) return;
+    printIndent(indent);
+    printf("Parameter(name=%s, type=%s)\n",
+           param->name,
+           parameterTypeToString(param->paramType));
+}
+
 static void printArgument(Argument *arg, int indent) {
     if (!arg) return;
-    printIndent(indent); printf("Argument(%d)\n", arg->argumentType);
+
+    printIndent(indent);
+    printf("Argument(type=%s, valueType=%s)\n",
+           itemTypeToString(arg->type),
+           itemTypeToString(arg->argumentType));
+
+    if (arg->value) {
+        printIndent(indent + 2);
+        printf("value: ");
+        switch (arg->argumentType) {
+            case ITEM_IDENTIFIER:
+                printf("%s\n", (char*)arg->value);
+                break;
+            case ITEM_COLOR_VALUE:
+                printf("%s\n", (char*)arg->value);
+                break;
+            case ITEM_STITCH:
+                printStitch((Stitch *)arg->value, 0);
+                break;
+            case ITEM_PATTERN_USE:
+                printPatternUse((PatternUse *)arg->value, indent + 2);
+                break;
+            default:
+                printf("0x%p\n", arg->value);
+                break;
+        }
+    }
 }
 
 static void printRow(Row *row, int indent) {
@@ -188,6 +237,7 @@ static void printRepeat(Repeat *repeat, int indent) {
     if (repeat->pattern) printPatternUse(repeat->pattern, indent + 2);
 }
 
+
 static void printSequence(Sequence *seq, int indent) {
     if (!seq) return;
     for (int i = 0; i < seq->count; ++i) {
@@ -214,7 +264,7 @@ static void printSequence(Sequence *seq, int indent) {
                 printPatternUse((PatternUse*)seq->items[i], indent);
                 break;
             case ITEM_PARAMETER:
-                printIndent(indent); printf("Parameter\n");
+                printParameter((Parameter*)seq->items[i], indent);
                 break;
             case ITEM_ARGUMENT:
                 printArgument((Argument*)seq->items[i], indent);
@@ -240,14 +290,6 @@ static void printProgram(Program *program, int indent) {
     if (program->body) printSequence(program->body, indent + 4);
 }
 
-
-
-/**
- * Creates the prologue of the generated output, a Latex document that renders
- * a tree thanks to the Forest package.
- *
- * @see https://ctan.dcc.uchile.cl/graphics/pgf/contrib/forest/forest-doc.pdf
- */
 static void _generatePrologue(void) {
 	_output(0, "%s",
 		"\\documentclass{standalone}\n\n"
@@ -263,18 +305,10 @@ static void _generatePrologue(void) {
 	);
 }
 
-/**
- * Generates an indentation string for the specified level.
- */
 static char * _indentation(const unsigned int level) {
 	return indentation(_indentationCharacter, level, _indentationSize);
 }
 
-/**
- * Outputs a formatted string to standard output. The "fflush" instruction
- * allows to see the output even close to a failure, because it drops the
- * buffering.
- */
 static void _output(const unsigned int indentationLevel, const char * const format, ...) {
 	va_list arguments;
 	va_start(arguments, format);
@@ -287,14 +321,9 @@ static void _output(const unsigned int indentationLevel, const char * const form
 	va_end(arguments);
 }
 
-/** PUBLIC FUNCTIONS */
-
 void generate(CompilerState * compilerState) {
-
     logDebugging(_logger, "Generating final output...");
     Program *program = (Program*)compilerState->abstractSyntaxtTree;
     printProgram(program, 0);
     logDebugging(_logger, "Generation is done.");
-
 }
-
