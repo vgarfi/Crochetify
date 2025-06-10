@@ -51,7 +51,7 @@ void addSymbolTableEntry(ScopeListADT list, char* identifier, VariableType type)
 }
 
 void removeLastScope(ScopeListADT list) {
-    if (!list->head) return NULL;
+    if (!list->head) return;
     ScopeNode * scopeNode = list->head;
     freeSymbolTable(scopeNode->symbolTable);
     list->head = scopeNode->next;

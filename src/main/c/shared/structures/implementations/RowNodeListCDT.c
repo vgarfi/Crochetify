@@ -1,5 +1,5 @@
-#include "../RowNodeListADT.h"
 #include "../../Type.h"
+#include "../RowNodeListADT.h"
 #include <stdlib.h>
 
 typedef struct RowNode{
@@ -33,7 +33,6 @@ void createRowNode(RowNodeListADT rnl, RowData data){
     }
     rnl->last = node;
     rnl->itActual = NULL;
-    return node;
 }	
 
 void freeRowNodeList(RowNodeListADT rnl){
