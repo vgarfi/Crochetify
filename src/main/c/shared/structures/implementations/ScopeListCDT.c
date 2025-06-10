@@ -3,28 +3,14 @@
 #include "../SymbolTable.h"
 #include "../KHash.h"
 
-// Mapa <String, SymbolTableEntry*>
-KHASH_MAP_INIT_STR(SYMBOL_TABLE_NAME, SymbolTableEntry*)
-
-/*
-nt ret, is_missing;
-	khiter_t k;
-	khash_t(32) *h = kh_init(32);
-	k = kh_put(32, h, 5, &ret);
-	kh_value(h, k) = 10;
-	k = kh_get(32, h, 10);
-
-*/
-
 typedef struct ScopeNode {
-    khash_t(SYMBOL_TABLE_NAME)* symbolTable;
-    struct ScopeNode * next;
+    SymbolTablePtr symbolTable;
+    struct ScopeNode * next;    
 } ScopeNode;
 
 struct ScopeListCDT {
     ScopeNode * head;
 } ScopeListCDT;
-
 
 ScopeListADT newScopeList(void) {
     ScopeListADT list = malloc(sizeof(struct ScopeListCDT));
@@ -32,22 +18,21 @@ ScopeListADT newScopeList(void) {
     return list;
 }
 
-void free(ScopeListADT list) {
+void freeScopeList(ScopeListADT list) {
     ScopeNode * curr = list->head;
     while (curr) {
         ScopeNode * tmp = curr;
         curr = curr->next;
+        freeSymbolTable(tmp->symbolTable);
         free(tmp);
     }
     free(list);
 }
 
-SymbolTableEntry * getIdentifierValue(char * identifier, khash_t(SYMBOL_TABLE_NAME)* symbolTablePointer){
+SymbolTableEntry * getIdentifierValue(ScopeListADT list, char * identifier){
     SymbolTableEntry* value = NULL;
-    khiter_t k = kh_get(symbolTable, symbolTablePointer, identifier);
-    
-    if (k != kh_end(symbolTablePointer)) {
-        value = kh_value(symbolTablePointer, k);
+    for(ScopeNode* current = list->head; current != NULL && value == NULL; current = current->next) {
+        value = symbolTableGetEntry(current->symbolTable, identifier);
     }
     return value;
 }
@@ -59,13 +44,15 @@ void insertNewScope(ScopeListADT list, void * data) {
     list->head = scopeNode;
 }
 
+void addSymbolTableEntry(ScopeListADT list, char* identifier, VariableType type){
+    SymbolTableEntry * symbolTableEntry = newSymbolTableEntry();
+    symbolTableEntry->type = type;
+    symbolTablePutEntry(list->head->symbolTable, identifier, symbolTableEntry);
+}
+
 void removeLastScope(ScopeListADT list) {
     if (!list->head) return NULL;
     ScopeNode * scopeNode = list->head;
-    // if (scopeNode->symbolTable) {
-    //     kh_clear(symbolTable, scopeNode->symbolTable);
-    // }
-    // kh_destroy(symbolTable, scopeNode->symbolTable);
     freeSymbolTable(scopeNode->symbolTable);
     list->head = scopeNode->next;
     free(scopeNode);

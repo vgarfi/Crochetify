@@ -120,9 +120,9 @@ parameter_list: parameter												{ $$ = SequenceSemanticAction($1, ITEM_PARA
     | parameter COMMA parameter_list									{ $$ = AppendToSequenceSemanticAction($3, $1, ITEM_PARAMETER); }
     ;
 
-parameter: COLOR IDENTIFIER												{ $$ = ParameterSemanticAction(PARAM_COLOR, $2); free($2);}
-    | STITCH IDENTIFIER													{ $$ = ParameterSemanticAction(PARAM_STITCH, $2);free($2); }
-    | PATTERN IDENTIFIER											    { $$ = ParameterSemanticAction(PARAM_PATTERN, $2); free($2);}
+parameter: COLOR IDENTIFIER												{ $$ = ParameterSemanticAction(COLOR, $2); free($2);}
+    | STITCH IDENTIFIER													{ $$ = ParameterSemanticAction(STITCH, $2);free($2); }
+    | PATTERN IDENTIFIER											    { $$ = ParameterSemanticAction(PATTERN, $2); free($2);}
     ;
 
 argument_list: argument													{ $$ = SequenceSemanticAction($1, ITEM_ARGUMENT); }
@@ -136,7 +136,7 @@ argument: IDENTIFIER													{ $$ = ArgumentSemanticAction($1, ITEM_IDENTIFI
     | OPEN_BRACKET stitch_list CLOSE_BRACKET                            { $$ = ArgumentSemanticAction($2, ITEM_SEQUENCE); }
     ;
 
-pattern_def: PATTERN IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS OPEN_BRACE sequence CLOSE_BRACE SEMICOLON                                     { $$ = PatternSemanticAction($2, $4, $7);free($2);  }
+pattern_def: PATTERN IDENTIFIER OPEN_PARENTHESIS { insertNewScope(); } parameter_list CLOSE_PARENTHESIS OPEN_BRACE sequence CLOSE_BRACE { removeLastScope(); } SEMICOLON                                     { $$ = PatternSemanticAction($2, $4, $7);free($2);  }
     | PATTERN IDENTIFIER OPEN_PARENTHESIS CLOSE_PARENTHESIS OPEN_BRACE sequence CLOSE_BRACE SEMICOLON                                                           { $$ = PatternSemanticAction($2, NULL, $6);free($2);  }
     ;
 

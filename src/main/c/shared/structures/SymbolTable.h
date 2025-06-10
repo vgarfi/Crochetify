@@ -5,19 +5,21 @@
 #include "RowNodeListADT.h"
 #include "KHash.h"
 
+typedef khash_t(symbol_table) * SymbolTablePtr;
+
 typedef struct {
     VariableType type;
     union {
         StitchType stitchType;
         char color[7];
-        RowNodeListADT * head;
+        RowNodeListADT * rowList;
     } data;
 } SymbolTableEntry;
 
-void symbolTablePutEntry(khash_t(SYMBOL_TABLE_NAME)* symbolTablePtr,char* key,SymbolTableEntry* value);
-SymbolTableEntry* symbolTableGetEntry(khash_t(SYMBOL_TABLE_NAME)* symbolTablePtr,char* key);
-boolean symbolTableEntryExists(khash_t(SYMBOL_TABLE_NAME)* symbolTablePtr,char* key);
-khash_t(SYMBOL_TABLE_NAME)* initSymbolTable();
-void freeSymbolTable(khash_t(SYMBOL_TABLE_NAME)* symbolTablePtr);
-
+void symbolTablePutEntry(SymbolTablePtr symbolTablePtr,char* key,SymbolTableEntry* value);
+SymbolTableEntry* symbolTableGetEntry(SymbolTablePtr symbolTablePtr,char* key);
+boolean symbolTableEntryExists(SymbolTablePtr symbolTablePtr,char* key);
+SymbolTablePtr initSymbolTable();
+void freeSymbolTable(SymbolTablePtr symbolTablePtr);
+SymbolTableEntry* newSymbolTableEntry();
 #endif

@@ -63,15 +63,9 @@ typedef enum {
     ITEM_SEQUENCE
 } ItemType;
 
-typedef enum {
-    PARAM_COLOR,
-    PARAM_STITCH,
-    PARAM_PATTERN
-} ParameterType;
-
 struct Parameter {
     ItemType type;
-    ParameterType paramType;
+    VariableType paramType;
     char *name;
 };
 

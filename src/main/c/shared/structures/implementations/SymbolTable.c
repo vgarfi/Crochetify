@@ -1,58 +1,53 @@
 #include "../SymbolTable.h"
+#include "../../Type.h"
 #include "../KHash.h"
 
-SymbolTableEntry* newSymbolCreateEntry();
+KHASH_MAP_INIT_STR(symbol_table, SymbolTableEntry*)
 
-void symbolTablePutEntry(khash_t(SYMBOL_TABLE_NAME)* symbolTablePtr,char* key,SymbolTableEntry* value){
-    if (!symbolTableEntryExists(symbolTablePtr,key)) {
-        SymbolTableEntry* symbolTableEntry = newSymbolCreateEntry();
- //       Variable* new = create_new_var(name, type);
-        int ret;
-        khiter_t k = kh_put(variables_hash_map, variables_hm, name, &ret);
-        if (ret == -1) {
-            return NULL;
-        }
+SymbolTableEntry* newSymbolTableEntry();
 
-        kh_val(variables_hm, k) = value;
+void symbolTablePutEntry(SymbolTablePtr symbolTablePtr, char* key, SymbolTableEntry* value){
+    if (symbolTableEntryExists(value,key))
+        return;
+
+    int ret;
+    khiter_t k = kh_put(symbol_table, symbolTablePtr, key, &ret);
+    
+    if (ret == -1) {
+        return;
     }
+
+    kh_val(symbolTablePtr, k) = value;
 }
 
-SymbolTableEntry* symbolTableGetEntry(khash_t(SYMBOL_TABLE_NAME)* symbolTablePtr,char* key){
-    khiter_t k = kh_get(SYMBOL_TABLE_NAME, symbolTablePtr, name);
+SymbolTableEntry* symbolTableGetEntry(SymbolTablePtr symbolTablePtr,char* key){
+    khiter_t k = kh_get(symbol_table, symbolTablePtr, key);
     if (k != kh_end(symbolTablePtr)) {
         return kh_val(symbolTablePtr, k);
     }
     return NULL;
 }
 
-boolean symbolTableEntryExists(khash_t(SYMBOL_TABLE_NAME)* symbolTablePtr,char* key){
-    khiter_t k = kh_get(SYMBOL_TABLE_NAME, symbolTablePtr, key);
+boolean symbolTableEntryExists(SymbolTablePtr symbolTablePtr,char* key){
+    khiter_t k = kh_get(symbol_table, symbolTablePtr, key);
     return k != kh_end(symbolTablePtr);
 }
 
-khash_t(SYMBOL_TABLE_NAME)* initSymbolTable(){
-    return kh_init(SYMBOL_TABLE_NAME);
+SymbolTablePtr initSymbolTable(){
+    return kh_init(symbol_table);
 }
 
-void freeSymbolTable(khash_t(SYMBOL_TABLE_NAME)* symbolTablePtr){
-
+void freeSymbolTable(SymbolTablePtr symbolTablePtr) {
+    SymbolTableEntry* symbolTableEntryPtr;
+    kh_foreach_value(symbolTablePtr, symbolTableEntryPtr, {freeSymbolTableEntry(symbolTableEntryPtr);});
+    kh_destroy(symbol_table, symbolTablePtr);
 }
 
-void freeSymbolTableEntry(SymbolTableEntry* symbolTableEntry){
-
-}
-
-/*
-typedef struct {
-    VariableType type;
-    union {
-        StitchType stitchType;
-        char color[7];
-        RowNodeListADT * head;
-    } data;
-} SymbolTableEntry;
-*/
-
-SymbolTableEntry* newSymbolCreateEntry(){
+void freeSymbolTableEntry(SymbolTableEntry* symbolTableEntryPtr) {
     
+}
+
+SymbolTableEntry* newSymbolTableEntry() {
+    SymbolTableEntry* symbolTableEntry = calloc(1,sizeof(SymbolTableEntry));
+    return symbolTableEntry;
 }
