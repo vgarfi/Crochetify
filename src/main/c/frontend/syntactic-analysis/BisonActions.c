@@ -248,14 +248,18 @@ Sequence *SequenceSemanticAction(void *item, ItemType itemType) {
 }
 
 Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, ItemType itemType) {
-  //  printf("[BisonActions] Appending to Sequence: itemType=%d, newCount=%d, item=%p\n", itemType, seq ? seq->count + 1 : 1, item);
+    // printf("[BisonActions] Prepending to Sequence: itemType=%d, newCount=%d, item=%p\n", itemType, seq ? seq->count + 1 : 1, item);
     if (seq == NULL) {
         return SequenceSemanticAction(item, itemType);
     }
     seq->items = realloc(seq->items, sizeof(void*) * (seq->count + 1));
     seq->itemTypes = realloc(seq->itemTypes, sizeof(ItemType) * (seq->count + 1));
-    seq->items[seq->count] = item;
-    seq->itemTypes[seq->count] = itemType;
+    // Move all existing elements one position to the right
+    memmove(&seq->items[1], &seq->items[0], sizeof(void*) * seq->count);
+    memmove(&seq->itemTypes[1], &seq->itemTypes[0], sizeof(ItemType) * seq->count);
+    // Insert new item at the beginning
+    seq->items[0] = item;
+    seq->itemTypes[0] = itemType;
     seq->count++;
     return seq;
 }

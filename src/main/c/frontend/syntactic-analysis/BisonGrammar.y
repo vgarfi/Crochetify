@@ -117,7 +117,7 @@ assignment: IDENTIFIER ASSIGNMENT IDENTIFIER SEMICOLON					{ $$ = AssignmentSema
     ;
 
 parameter_list: parameter												{ $$ = SequenceSemanticAction($1, ITEM_PARAMETER); }
-    | parameter_list COMMA parameter		  						{ $$ = AppendToSequenceSemanticAction($1, $3, ITEM_PARAMETER); }
+    | parameter COMMA parameter_list									{ $$ = AppendToSequenceSemanticAction($3, $1, ITEM_PARAMETER); }
     ;
 
 parameter: COLOR IDENTIFIER												{ $$ = ParameterSemanticAction(PARAM_COLOR, $2); free($2);}
@@ -155,7 +155,7 @@ row_element: stitch                                                     { $$ = $
             ;
 
 row_elements: row_element                                               { $$ = SequenceSemanticAction($1, getItemType($1)); }
-            | row_elements row_element                                  { $$ = AppendToSequenceSemanticAction($1, $2, getItemType($2)); }
+            | row_element row_elements                                { $$ = AppendToSequenceSemanticAction($2, $1, getItemType($1)); }
 
 row: row_elements SEMICOLON												{ $$ = RowSemanticAction($1, NULL, ISNOTTURN); }
 	|	COLOR_VALUE row_elements SEMICOLON								{ $$ = RowSemanticAction($2, $1, ISNOTTURN);free($1); }
