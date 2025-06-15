@@ -8,7 +8,8 @@ typedef struct ScopeListCDT * ScopeListADT;
 ScopeListADT newScopeList(void);
 void freeScopeList(ScopeListADT list);
 
-void insertNewScope(ScopeListADT list, void * data);
+void insertNewScope(ScopeListADT list);
+void putSymbolTableEntry(ScopeListADT list, char* identifier, SymbolTableEntry symbolTableEntry);
 SymbolTableEntry * getIdentifierValue(ScopeListADT list, char * identifier);
 void addSymbolTableEntry(ScopeListADT list, char* identifier, VariableType type);
 void removeLastScope(ScopeListADT list);

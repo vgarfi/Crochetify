@@ -2,7 +2,7 @@
 #include "../RowNodeListADT.h"
 #include <stdlib.h>
 
-typedef struct RowNode{
+typedef struct RowNode {
     RowData data;
     struct RowNode * next;
 } RowNode;

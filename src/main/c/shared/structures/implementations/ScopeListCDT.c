@@ -32,12 +32,12 @@ void freeScopeList(ScopeListADT list) {
 SymbolTableEntry * getIdentifierValue(ScopeListADT list, char * identifier){
     SymbolTableEntry* value = NULL;
     for(ScopeNode* current = list->head; current != NULL && value == NULL; current = current->next) {
-        value = symbolTableGetEntry(current->symbolTable, identifier);
+        // value = symbolTableGetEntry(current->symbolTable, identifier);
     }
     return value;
 }
 
-void insertNewScope(ScopeListADT list, void * data) {
+void insertNewScope(ScopeListADT list) {
     ScopeNode * scopeNode = malloc(sizeof(ScopeNode));
     scopeNode->symbolTable = initSymbolTable();
     scopeNode->next = list->head;
@@ -45,9 +45,13 @@ void insertNewScope(ScopeListADT list, void * data) {
 }
 
 void addSymbolTableEntry(ScopeListADT list, char* identifier, VariableType type){
-    SymbolTableEntry * symbolTableEntry = newSymbolTableEntry();
-    symbolTableEntry->type = type;
-    symbolTablePutEntry(list->head->symbolTable, identifier, symbolTableEntry);
+    // SymbolTableEntry * symbolTableEntry = newSymbolTableEntry();
+    // symbolTableEntry->type = type;
+    // symbolTablePutIfAbsentEntry(list->head->symbolTable, identifier, symbolTableEntry);
+}
+
+void putSymbolTableEntry(ScopeListADT list, char* identifier, SymbolTableEntry symbolTableEntry){
+    // symbolTablePutEntry(list->head->symbolTable, identifier, &entrada);
 }
 
 void removeLastScope(ScopeListADT list) {

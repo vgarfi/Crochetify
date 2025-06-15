@@ -10,9 +10,9 @@ static Logger * _logger = NULL;
 
 void initializeBisonActionsModule() {
 	_logger = createLogger("BisonActions");
-    // _rowNodeList = newRowNodeList();
-    // _scopeList = newScopeList();
-    // insertNewScope(_scopeList, NULL);
+     _rowNodeList = newRowNodeList();
+     _scopeList = newScopeList();
+     insertNewScope(_scopeList);
 }
 
 void shutdownBisonActionsModule() {
@@ -20,10 +20,10 @@ void shutdownBisonActionsModule() {
 		destroyLogger(_logger);
 	}
     if(_rowNodeList != NULL){
-        // freeRowNodeList(_rowNodeList);
+        freeRowNodeList(_rowNodeList);
     }
     if(_scopeList != NULL){
-        // freeScopeList(_scopeList);
+        freeScopeList(_scopeList);
     }
 }
 
@@ -318,4 +318,39 @@ Factor * ExpressionFactorSemanticAction(Expression * expression) {
     factor->expression = expression;
     factor->type = EXPRESSION;
     return factor;
+}
+
+void OpenAndFillNewScope(Sequence *parameters) {
+    if(parameters == NULL || 1){
+        return;
+    }
+    insertNewScope(_scopeList);
+    Parameter * currentParam;
+    VariableType currentParamType;
+
+    for(int i = 0; i < parameters->count; i++){
+        if(parameters->itemTypes[i] == ITEM_PARAMETER){
+            currentParam = (Parameter *) parameters->items[i];
+            switch(currentParam->type){
+                case PARAM_COLOR:
+                    currentParamType = COLOR_TYPE; break;
+                case PARAM_STITCH:
+                    currentParamType = STITCH_TYPE; break;
+                case PARAM_PATTERN:
+                    currentParamType = PATTERN_TYPE; break;
+                default:
+                    logError(_logger, "Error: param with no appropiate type");
+            }
+
+            addSymbolTableEntry(_scopeList, currentParam->name, currentParamType);
+        }
+    }
+}
+
+void CloseLastScope(void) {
+    // removeLastScope(_scopeList);
+}
+
+void SavePatternToCurrentScope(char* functionName, Sequence *parameters) {
+    // Chequear que no exista otro pattern con el mismo patternName
 }
