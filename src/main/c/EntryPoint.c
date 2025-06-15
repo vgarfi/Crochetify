@@ -37,10 +37,14 @@ const int main(const int count, const char ** arguments) {
 	const SyntacticAnalysisStatus syntacticAnalysisStatus = parse(&compilerState);
 	CompilationStatus compilationStatus = SUCCEED;
 	Program * program = compilerState.abstractSyntaxtTree;
+	
 	if (syntacticAnalysisStatus == ACCEPT) {
 		// ----------------------------------------------------------------------------------------
 		// Beginning of the Backend... ------------------------------------------------------------
 		/*
+
+		Nuestro computeExpression, llamado computeCrochetAST, agarra el AST y coloca en computationResult.value del structu qeu devuelve algun valor de retorno
+
 		logDebugging(logger, "Computing expression value...");
 		ComputationResult computationResult = computeExpression(program->expression);
 		if (computationResult.succeed) {

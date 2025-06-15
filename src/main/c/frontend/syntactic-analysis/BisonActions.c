@@ -1,8 +1,8 @@
 #include "BisonActions.h"
 #include "../../shared/structures/ScopeListADT.h"
 
-static RowNodeListADT _rowNodeList = NULL;
 static ScopeListADT _scopeList = NULL;
+static CompilerState * _compilerState = NULL;
 
 /* MODULE INTERNAL STATE */
 
@@ -10,18 +10,19 @@ static Logger * _logger = NULL;
 
 void initializeBisonActionsModule() {
 	_logger = createLogger("BisonActions");
-     _rowNodeList = newRowNodeList();
-     _scopeList = newScopeList();
-     insertNewScope(_scopeList);
+    _compilerState = currentCompilerState();
+
+    _compilerState->scopeList = newScopeList();
+    _scopeList = _compilerState->scopeList;
+
+    insertNewScope(_scopeList);
 }
 
 void shutdownBisonActionsModule() {
 	if (_logger != NULL) {
 		destroyLogger(_logger);
 	}
-    if(_rowNodeList != NULL){
-        freeRowNodeList(_rowNodeList);
-    }
+
     if(_scopeList != NULL){
         freeScopeList(_scopeList);
     }
@@ -339,7 +340,7 @@ void OpenAndFillNewScope(Sequence *parameters) {
                 case PARAM_PATTERN:
                     currentParamType = PATTERN_TYPE; break;
                 default:
-                    logError(_logger, "Error: param with no appropiate type");
+                    logError(_logger, "Error: parameter with no appropiate type");
             }
 
             addSymbolTableEntry(_scopeList, currentParam->name, currentParamType);

@@ -2,6 +2,7 @@
 #define COMPILER_STATE_HEADER
 
 #include "Type.h"
+#include "structures/ScopeListADT.h"
 
 /**
  * The general status of a compilation.
@@ -23,6 +24,7 @@ typedef struct {
 	boolean succeed;
 
 	// TODO: Add an stack to handle nested scopes.
+	ScopeListADT scopeList;
 	// TODO: Add a symbol table.
 	// TODO: Add configuration.
 	// TODO: ...
