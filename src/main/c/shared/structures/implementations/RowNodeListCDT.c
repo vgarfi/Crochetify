@@ -14,7 +14,7 @@ typedef struct RowNodeListCDT {
 } RowNodeListCDT;
 
 RowNodeListADT newRowNodeList(void){
-    RowNodeListADT ans = calloc(sizeof(RowNodeListCDT), 1);
+    RowNodeListADT ans = calloc(1,sizeof(RowNodeListCDT));
     return ans;
 }
 
