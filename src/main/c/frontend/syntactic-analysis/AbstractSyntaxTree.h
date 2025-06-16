@@ -48,12 +48,6 @@ void releaseAssignment(Assignment *assignment);
 void releasePatternUse(PatternUse *patternUse);
 
 typedef enum {
-    PARAM_COLOR,
-    PARAM_STITCH,
-    PARAM_PATTERN
-} ParameterType;
-
-typedef enum {
     ITEM_STITCH,
     ITEM_ROW,
     ITEM_TURN,
@@ -72,8 +66,7 @@ typedef enum {
 
 struct Parameter {
     ItemType type;
-    // VariableType paramType;
-    ParameterType paramType;
+    VariableType paramType;
     char *name;
 };
 

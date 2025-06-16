@@ -1,0 +1,24 @@
+Pattern p(){
+ CH CH CH;
+ #FFB2AC TURN DC DC DC;
+ SC SC SC;   
+ #AB2DAC TURN DC DC DC;
+ SC SC SC;
+};
+
+Pattern p(){
+ CH CH CH;
+ #DFB2AC TURN DC DC DC;
+ SC SC SC;   
+ #AE2DAC TURN DC DC DC;
+ SC SC SC;
+ TURN CH CH CH;
+};
+
+Color red = #FF0000;
+
+BEGIN CROCHET
+    p() p();
+    TURN p() CH CH CH;
+    p();
+END CROCHET

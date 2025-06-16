@@ -29,12 +29,44 @@ void freeScopeList(ScopeListADT list) {
     free(list);
 }
 
-SymbolTableEntry * getIdentifierValue(ScopeListADT list, char * identifier){
-    SymbolTableEntry* value = NULL;
-    for(ScopeNode* current = list->head; current != NULL && value == NULL; current = current->next) {
-        // value = symbolTableGetEntry(current->symbolTable, identifier);
+boolean existValueByIdentifier(ScopeListADT list, char * identifier, VariableType type){
+    for(ScopeNode* current = list->head; current != NULL; current = current->next) {
+        if(existsSymbolTableEntry(current->symbolTable,identifier,type)){
+            return true;
+        }
     }
-    return value;
+    return false;
+}
+
+void* getValueByIdentifier(ScopeListADT list, char * identifier, VariableType type) {
+    for(ScopeNode* current = list->head; current != NULL; current = current->next) {
+        switch (type) {
+        case COLOR_TYPE:
+            char* color = getColorFromSymbolTable(current->symbolTable, identifier);
+            if (color != NULL) {
+                return color;
+            }
+        break;
+        
+        case STITCH_TYPE:
+            StitchType* stitch = getStitchFromSymbolTable(current->symbolTable, identifier);
+            if (stitch != NULL) {
+                return stitch;
+            }
+            break;
+        
+        case PATTERN_TYPE:
+            PatternData* pattern = getPatternDataFromSymbolTable(current->symbolTable, identifier);
+            if (pattern != NULL) {
+                return pattern;
+            }
+            break;
+        
+        default:
+            break;
+        }
+    }
+    return NULL;
 }
 
 void insertNewScope(ScopeListADT list) {
@@ -44,14 +76,25 @@ void insertNewScope(ScopeListADT list) {
     list->head = scopeNode;
 }
 
-void addSymbolTableEntry(ScopeListADT list, char* identifier, VariableType type){
-    // SymbolTableEntry * symbolTableEntry = newSymbolTableEntry();
-    // symbolTableEntry->type = type;
-    // symbolTablePutIfAbsentEntry(list->head->symbolTable, identifier, symbolTableEntry);
-}
-
-void putSymbolTableEntry(ScopeListADT list, char* identifier, SymbolTableEntry symbolTableEntry){
-    // symbolTablePutEntry(list->head->symbolTable, identifier, &entrada);
+// Pasar como &value el &patternData
+void putSymbolInSymbolTable(ScopeListADT list, char* identifier, VariableType type, void* value){
+    switch (type) {
+        case COLOR_TYPE:
+            putColorToSymbolTable(list->head->symbolTable, identifier, (char*) value);
+            break;
+        
+        case STITCH_TYPE:
+            putStitchToSymbolTable(list->head->symbolTable, identifier, (StitchType*) value);
+            break;
+        
+        case PATTERN_TYPE:
+            putPatternDataToSymbolTable(list->head->symbolTable, identifier, (PatternData*) value);
+            break;
+        
+        default:
+            return;
+            break;
+    }
 }
 
 void removeLastScope(ScopeListADT list) {

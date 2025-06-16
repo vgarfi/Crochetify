@@ -4,6 +4,8 @@
 #include "../../shared/Logger.h"
 #include "AbstractSyntaxTree.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include <strings.h>
 #include "../../shared/CompilerState.h"
 #include "../../shared/Type.h"
 #include "SyntacticAnalyzer.h"
@@ -24,7 +26,7 @@ Repeat *RepeatSemanticAction(PatternUse *pattern, int times);
 Mirror *MirrorSemanticAction(PatternUse *pattern, int times);
 Pattern *PatternSemanticAction(char *name, Sequence *parameters, Sequence *body);
 PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments);
-Parameter *ParameterSemanticAction(ParameterType type, char *name);
+Parameter *ParameterSemanticAction(VariableType type, char *name);
 Argument *ArgumentSemanticAction(void *argumentValue, ItemType argumentType);
 Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *value);
 Assignment *AssignmentSemanticAction(char *varName, char *value);
@@ -42,6 +44,6 @@ Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Express
 // Semantic Analysis Functions for scopes
 void OpenAndFillNewScope(Sequence *parameters);
 void CloseLastScope(void);
-void SavePatternToCurrentScope(char* functionName, Sequence *parameters);
+void SavePatternToCurrentScope(char* patternName, Sequence *parameters, CompilerState * compilerState);
 
 #endif

@@ -37,6 +37,7 @@ extern int yyparse(void);
 void yyerror(const char * string) {
 	LexicalAnalyzerContext * lexicalAnalyzerContext = createLexicalAnalyzerContext();
 	logError(_logger, "Syntax error (on line %d).", lexicalAnalyzerContext->line);
+	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
 /* PUBLIC FUNCTIONS */
@@ -52,6 +53,7 @@ SyntacticAnalysisStatus parse(CompilerState * compilerState) {
 	_currentCompilerState = NULL;
 	SyntacticAnalysisStatus syntacticAnalysisStatus;
 	logDebugging(_logger, "Parsing is done.");
+	printf("%d",compilerState->succeed);
 	switch (code) {
 		case 0:
 			if (compilerState->succeed == true) {

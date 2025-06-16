@@ -15,6 +15,6 @@ Color blue = #0000FF;
 BEGIN CROCHET
     myPattern(red,CH);
     TURN CH;
-    myPattern(DC,red);
+    myPattern(red,CH);
     TURN CH;
 END CROCHET

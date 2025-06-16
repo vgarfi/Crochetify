@@ -51,11 +51,11 @@ static const char * itemTypeToString(ItemType type) {
         default: return "Unknown";
     }
 }
-static const char * parameterTypeToString(ParameterType type) {
+static const char * parameterTypeToString(VariableType type) {
     switch (type) {
-        case PARAM_COLOR: return "Color";
-        case PARAM_STITCH: return "Stitch";
-        case PARAM_PATTERN: return "Pattern";
+        case COLOR_TYPE: return "Color";
+        case STITCH_TYPE: return "Stitch";
+        case PATTERN_TYPE: return "Pattern";
         default: return "Unknown";
     }
 }

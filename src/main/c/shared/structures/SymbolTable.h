@@ -16,7 +16,7 @@ typedef struct {
 typedef struct {
     int paramCount;
     PatternParam* params;
-    RowNodeListADT * rowNodeList;
+    RowNodeListADT rowNodeList;
 } PatternData;
 
 typedef struct {
@@ -30,15 +30,15 @@ typedef struct {
 
 SymbolTablePtr initSymbolTable();
 
-void putStitchToSymbolTable(SymbolTablePtr symbolTablePtr, char* key, StitchType stitchType);
+void putStitchToSymbolTable(SymbolTablePtr symbolTablePtr, char* key, StitchType* stitchType);
 void putColorToSymbolTable(SymbolTablePtr symbolTablePtr, char* key, char* color);
-void putRowNodeListToSymbolTable(SymbolTablePtr symbolTablePtr, char* key, RowNodeListADT* rowList);
-void putPatternDataToSymbolTable(SymbolTablePtr symbolTablePtr, char* key, PatternData PatternData);
+void putRowNodeListToSymbolTable(SymbolTablePtr symbolTablePtr, char* key, RowNodeListADT rowList);
+void putPatternDataToSymbolTable(SymbolTablePtr symbolTablePtr, char* key, PatternData* PatternData);
 
-StitchType getStitchFromSymbolTable(SymbolTablePtr symbolTablePtr, char* key);
+StitchType* getStitchFromSymbolTable(SymbolTablePtr symbolTablePtr, char* key);
 char* getColorFromSymbolTable(SymbolTablePtr symbolTablePtr, char* key);
-RowNodeListADT* getRowNodeListFromSymbolTable(SymbolTablePtr symbolTablePtr, char* key);
-PatternData getPatternDataFromSymbolTable(SymbolTablePtr symbolTablePtr, char* key);
+RowNodeListADT getRowNodeListFromSymbolTable(SymbolTablePtr symbolTablePtr, char* key);
+PatternData* getPatternDataFromSymbolTable(SymbolTablePtr symbolTablePtr, char* key);
 
 boolean existsSymbolTableEntry(SymbolTablePtr symbolTablePtr, char* key, VariableType type);
 

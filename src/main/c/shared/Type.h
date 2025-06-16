@@ -9,7 +9,8 @@ typedef enum {
 typedef enum {
     STITCH_CH,
     STITCH_SC,
-    STITCH_DC
+    STITCH_DC,
+	STITCH_INVALID = -1
 } StitchType;
 
 typedef enum {

@@ -103,7 +103,6 @@ declarations_and_patterns: %empty                                       { $$ = N
 
 sequence: %empty														{ $$ = NULL; }
     | row sequence 														{ $$ = AppendToSequenceSemanticAction($2, $1, ITEM_ROW); }
-    | pattern_use  SEMICOLON sequence 									{ $$ = AppendToSequenceSemanticAction($3, $1, ITEM_PATTERN_USE); }
     | pattern_def sequence 												{ $$ = AppendToSequenceSemanticAction($2, $1, ITEM_PATTERN); }
     | declaration sequence 												{ $$ = AppendToSequenceSemanticAction($2, $1, ITEM_DECLARATION); }
     | assignment sequence												{ $$ = AppendToSequenceSemanticAction($2, $1, ITEM_ASSIGNMENT); }
@@ -120,9 +119,9 @@ parameter_list: parameter												{ $$ = SequenceSemanticAction($1, ITEM_PARA
     | parameter COMMA parameter_list									{ $$ = AppendToSequenceSemanticAction($3, $1, ITEM_PARAMETER); }
     ;
 
-parameter: COLOR IDENTIFIER												{ $$ = ParameterSemanticAction(PARAM_COLOR, $2); free($2);}
-    | STITCH IDENTIFIER													{ $$ = ParameterSemanticAction(PARAM_STITCH, $2);free($2); }
-    | PATTERN IDENTIFIER											    { $$ = ParameterSemanticAction(PARAM_PATTERN, $2); free($2);}
+parameter: COLOR IDENTIFIER												{ $$ = ParameterSemanticAction(COLOR_TYPE, $2); free($2);}
+    | STITCH IDENTIFIER													{ $$ = ParameterSemanticAction(STITCH_TYPE, $2);free($2); }
+    | PATTERN IDENTIFIER											    { $$ = ParameterSemanticAction(PATTERN_TYPE, $2); free($2);}
     ;
 
 argument_list: argument													{ $$ = SequenceSemanticAction($1, ITEM_ARGUMENT); }
@@ -136,8 +135,8 @@ argument: IDENTIFIER													{ $$ = ArgumentSemanticAction($1, ITEM_IDENTIFI
     | OPEN_BRACKET stitch_list CLOSE_BRACKET                            { $$ = ArgumentSemanticAction($2, ITEM_SEQUENCE); }
     ;
 
-pattern_def: PATTERN IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS { SavePatternToCurrentScope($2, $4); OpenAndFillNewScope($4); } OPEN_BRACE sequence CLOSE_BRACE { CloseLastScope(); } SEMICOLON                                     { $$ = PatternSemanticAction($2, $4, $8);free($2);  }
-    | PATTERN IDENTIFIER OPEN_PARENTHESIS CLOSE_PARENTHESIS OPEN_BRACE sequence CLOSE_BRACE SEMICOLON                                                           { $$ = PatternSemanticAction($2, NULL, $6);free($2);  }
+pattern_def: PATTERN IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS { SavePatternToCurrentScope($2, $4, currentCompilerState()); OpenAndFillNewScope($4); } OPEN_BRACE sequence CLOSE_BRACE { CloseLastScope(); } SEMICOLON                                     { $$ = PatternSemanticAction($2, $4, $8);free($2);  }
+    | PATTERN IDENTIFIER OPEN_PARENTHESIS CLOSE_PARENTHESIS { SavePatternToCurrentScope($2, NULL, currentCompilerState()); } OPEN_BRACE sequence CLOSE_BRACE SEMICOLON                                                           { $$ = PatternSemanticAction($2, NULL, $7); free($2);  }
     ;
 
 pattern_use: IDENTIFIER OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS    { $$ = PatternUseSemanticAction($1, $3); free($1); }
@@ -149,6 +148,7 @@ pattern_use_in_function: pattern_use                                    { $$ = $
             ;
 
 row_element: stitch                                                     { $$ = $1; }
+           | pattern_use                                                { $$ = $1; }
            | repeat                                                     { $$ = $1; }
            | mirror                                                     { $$ = $1; }
            | IDENTIFIER                                                 { $$ = ArgumentSemanticAction($1, ITEM_IDENTIFIER); }
@@ -157,7 +157,7 @@ row_element: stitch                                                     { $$ = $
 row_elements: row_element                                               { $$ = SequenceSemanticAction($1, getItemType($1)); }
             | row_element row_elements                                { $$ = AppendToSequenceSemanticAction($2, $1, getItemType($1)); }
 
-row: row_elements SEMICOLON												{ $$ = RowSemanticAction($1, NULL, ISNOTTURN); }
+row:    row_elements SEMICOLON												{ $$ = RowSemanticAction($1, NULL, ISNOTTURN); }
 	|	COLOR_VALUE row_elements SEMICOLON								{ $$ = RowSemanticAction($2, $1, ISNOTTURN);free($1); }
 	|	TURN row_elements SEMICOLON										{ $$ = RowSemanticAction($2, NULL, ISTURN); }
 	|	COLOR_VALUE TURN row_elements SEMICOLON							{ $$ = RowSemanticAction($3, $1, ISTURN); free($1);}

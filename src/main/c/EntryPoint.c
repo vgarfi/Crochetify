@@ -31,7 +31,7 @@ const int main(const int count, const char ** arguments) {
 	// Begin compilation process.
 	CompilerState compilerState = {
 		.abstractSyntaxtTree = NULL,
-		.succeed = false,
+		.succeed = true,
 		.value = 0
 	};
 	const SyntacticAnalysisStatus syntacticAnalysisStatus = parse(&compilerState);
