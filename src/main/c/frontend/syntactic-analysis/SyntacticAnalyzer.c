@@ -36,7 +36,7 @@ extern int yyparse(void);
 // Bison error-reporting function.
 void yyerror(const char * string) {
 	LexicalAnalyzerContext * lexicalAnalyzerContext = createLexicalAnalyzerContext();
-	logError(_logger, "Syntax error (on line %d).", lexicalAnalyzerContext->line);
+	logError(_logger, "Syntax error (on line %d): %s", lexicalAnalyzerContext->line, string);
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
@@ -53,7 +53,6 @@ SyntacticAnalysisStatus parse(CompilerState * compilerState) {
 	_currentCompilerState = NULL;
 	SyntacticAnalysisStatus syntacticAnalysisStatus;
 	logDebugging(_logger, "Parsing is done.");
-	printf("%d",compilerState->succeed);
 	switch (code) {
 		case 0:
 			if (compilerState->succeed == true) {

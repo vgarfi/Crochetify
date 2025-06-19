@@ -10,7 +10,7 @@
 #include "../../shared/Logger.h"
 #include "../../shared/Type.h"
 #include <limits.h>
-
+#include "../../shared/structures/ScopeListADT.h"
 /** Initialize module's internal state. */
 void initializeCrochetModule();
 
@@ -28,8 +28,8 @@ typedef struct {
 
 
 /**
- * Computes the final value of a mathematical expression.
+ * Computes the final value of a crochet pattern.
  */
-CrochetResult computeCrochet();
+CrochetResult computeCrochet(Program * program, ScopeListADT scopeList);
 
 #endif

@@ -1,0 +1,6 @@
+Stitch newVar = CH;
+Color newVar = #FF00F0;
+
+BEGIN CROCHET
+    newVar CH CH;
+END CROCHET

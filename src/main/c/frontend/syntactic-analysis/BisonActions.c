@@ -99,7 +99,7 @@ Argument *ArgumentSemanticAction(void *argumentValue, ItemType argumentType, Com
             existsIdentifier = existsValueByIdentifier(_scopeList, identifierName, types[i]);
         }
         if(!existsIdentifier){
-            logError(_logger, "Error: Identifier with name %s is never declared.", identifierName);
+            yyerror("Identifier is never declared");
             compilerState->succeed = false;
             return NULL;
         }
@@ -109,6 +109,7 @@ Argument *ArgumentSemanticAction(void *argumentValue, ItemType argumentType, Com
     a->argumentType = argumentType;
     a->value = argumentValue;
     return a;
+    
 }
 
 Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *value, CompilerState * compilerState)
@@ -118,7 +119,7 @@ Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *valu
    //   varName ? varName : "(null)",
    //   value ? value : "(null)");
     VariableType variableType = getVariableTypeByTypeName(typeName);
-    if (getValueByIdentifier(_scopeList, varName, variableType) != NULL)
+    if (existsValueByIdentifier(_scopeList, varName, variableType))
     {
         logError(_logger, "Error: Redeclaration for variable with name %s with type %s\n", varName, typeName);
         compilerState->succeed = false;
@@ -224,7 +225,7 @@ PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments, CompilerSt
     if(name != NULL){
         boolean patternExists = existsValueByIdentifier(_scopeList, name, PATTERN_TYPE);
         if(!patternExists){
-            logError(_logger, "Error: Pattern %s is not declared.", name);
+            yyerror("Pattern is never declared");
             compilerState->succeed = false;
             return NULL;
         }
@@ -279,9 +280,9 @@ Program *ProgramSemanticAction(CompilerState *compilerState, Sequence *declarati
     {
         //   printf("[BisonActions][ERROR] The final context is not the default (0): %d\n", flexCurrentContext());
         compilerState->succeed = false;
+    }else{
+        compilerState->scopeList = _scopeList;
     }
-
-    compilerState->scopeList = _scopeList;
     return program;
 }
 
@@ -330,10 +331,9 @@ Factor *ExpressionFactorSemanticAction(Expression *expression)
     return factor;
 }
 
-void OpenAndFillNewScope(Sequence *parameters)
+void OpenAndFillNewScope(Sequence *parameters, CompilerState * compilerState)
 {
-    if (parameters == NULL)
-    {
+    if (parameters == NULL) {
         return;
     }
     insertNewScope(_scopeList);
@@ -344,6 +344,12 @@ void OpenAndFillNewScope(Sequence *parameters)
         if (parameters->itemTypes[i] == ITEM_PARAMETER)
         {
             currentParam = (Parameter *)parameters->items[i];
+            if(existsValueByIdentifier(_scopeList, currentParam->name, currentParam->paramType)) {
+                yyerror("Error: Redeclaration of variable");
+                compilerState->succeed = false;
+                return;
+            }
+            
             putSymbolInSymbolTable(_scopeList, currentParam->name, currentParam->paramType, NULL);
         }
     }
@@ -351,8 +357,7 @@ void OpenAndFillNewScope(Sequence *parameters)
 
 void CloseLastScope(void)
 {
-    if (_scopeList == NULL)
-    {
+    if (_scopeList == NULL) {
         return;
     }
     removeLastScope(_scopeList);
@@ -363,8 +368,7 @@ void SavePatternToCurrentScope(char *patternName, Sequence *parameters, Compiler
     boolean patternAlreadyExists  = existsValueByIdentifier(_scopeList, patternName, PATTERN_TYPE);
     if (patternAlreadyExists)
     {
-        logError(_logger, "Error: Redeclaration for pattern %s", patternName);
-        yyerror("Error: Redeclaration for pattern %s\n");
+        yyerror("Redeclaration for pattern");
         compilerState->succeed = false;
         return;
     }
@@ -375,12 +379,6 @@ void SavePatternToCurrentScope(char *patternName, Sequence *parameters, Compiler
         patternData->paramCount = 0;
         patternData->params = NULL;
     } else {
-        // char * duplicatedDeclaration;
-        // if((duplicatedDeclaration = existsDuplicatedParamDeclarations(parameters)) != NULL){
-        //     logError(_logger, "Error: Redeclaration for variable %s during declaration of pattern %s\n", duplicatedDeclaration, patternName);
-        //     compilerState->succeed = false;
-        //     return;
-        // }
         patternData->paramCount = parameters->count;
         patternData->params = calloc(parameters->count, sizeof(PatternParam));
         VariableType currentParamType;
@@ -403,12 +401,10 @@ void SavePatternToCurrentScope(char *patternName, Sequence *parameters, Compiler
 
 VariableType getVariableTypeByTypeName(char *typeName)
 {
-    if (strcasecmp(typeName, COLOR_NAME) == 0)
-    {
+    if (strcasecmp(typeName, COLOR_NAME) == 0) {
         return COLOR_TYPE;
     }
-    else if (strcasecmp(typeName, STITCH_NAME) == 0)
-    {
+    else if (strcasecmp(typeName, STITCH_NAME) == 0)  {
         return STITCH_TYPE;
     }
     return PATTERN_TYPE;
@@ -416,8 +412,7 @@ VariableType getVariableTypeByTypeName(char *typeName)
 
 void *buildValueByVariableType(char *varValue, VariableType varType)
 {
-    switch (varType)
-    {
+    switch (varType) {
     case STITCH_TYPE:
         StitchType *newStitchType = malloc(sizeof(StitchType));
         if (newStitchType == NULL)

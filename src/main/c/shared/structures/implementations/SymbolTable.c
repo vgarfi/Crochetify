@@ -17,7 +17,7 @@ static void putEntry(SymbolTablePtr symbolTablePtr, char* compositeKey, SymbolTa
     int ret;
     khiter_t k = kh_put(symbol_table, (khash_t(symbol_table)*)symbolTablePtr, compositeKey, &ret);
     SymbolTableEntry* old = NULL;
-    if (ret == 0) { // key already existed
+    if (ret == 0) {
         old = kh_val((khash_t(symbol_table)*)symbolTablePtr, k);
         freeSymbolTableEntry(old);
         free(compositeKey); // free the new key, keep the old one
@@ -28,9 +28,9 @@ static void putEntry(SymbolTablePtr symbolTablePtr, char* compositeKey, SymbolTa
 }
 
 static char* makeCompositeKey(const char* key, VariableType type) {
-    size_t len = strlen(key) + 1 + 12; // 1 for '_' and up to 11 for int + '\0'
+    size_t len = strlen(key) + 1;
     char* composite = malloc(len);
-    snprintf(composite, len, "%s_%d", key, (int)type);
+    snprintf(composite, len, "%s", key);
     return composite;
 }
 
@@ -216,4 +216,3 @@ static void freeSymbolTableEntry(SymbolTableEntry* symbolTableEntryPtr) {
     }
     free(symbolTableEntryPtr);
 }
-

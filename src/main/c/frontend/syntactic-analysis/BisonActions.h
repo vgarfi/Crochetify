@@ -42,7 +42,7 @@ Factor * ExpressionFactorSemanticAction(Expression * expression);
 Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Expression * expression);
 
 // Semantic Analysis Functions for scopes
-void OpenAndFillNewScope(Sequence *parameters);
+void OpenAndFillNewScope(Sequence *parameters, CompilerState* compilerState);
 void CloseLastScope(void);
 void SavePatternToCurrentScope(char* patternName, Sequence *parameters, CompilerState * compilerState);
 
