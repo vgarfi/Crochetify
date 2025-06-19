@@ -29,7 +29,7 @@ void freeScopeList(ScopeListADT list) {
     free(list);
 }
 
-boolean existValueByIdentifier(ScopeListADT list, char * identifier, VariableType type){
+boolean existsValueByIdentifier(ScopeListADT list, char * identifier, VariableType type){
     for(ScopeNode* current = list->head; current != NULL; current = current->next) {
         if(existsSymbolTableEntry(current->symbolTable,identifier,type)){
             return true;

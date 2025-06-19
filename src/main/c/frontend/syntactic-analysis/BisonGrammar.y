@@ -108,8 +108,8 @@ sequence: %empty														{ $$ = NULL; }
     | assignment sequence												{ $$ = AppendToSequenceSemanticAction($2, $1, ITEM_ASSIGNMENT); }
     ;
 
-declaration: COLOR IDENTIFIER ASSIGNMENT COLOR_VALUE SEMICOLON			{ $$ = DeclarationSemanticAction(COLOR_NAME, $2, $4); free($2); free($4);}
-    | STITCH IDENTIFIER ASSIGNMENT stitch SEMICOLON						{ char * stitch = getStitchValue($4->type); $$ = DeclarationSemanticAction(STITCH_NAME, $2, stitch); free(stitch); free($2);releaseStitch($4); }
+declaration: COLOR IDENTIFIER ASSIGNMENT COLOR_VALUE SEMICOLON			{ $$ = DeclarationSemanticAction(COLOR_NAME, $2, $4, currentCompilerState()); free($2); free($4);}
+    | STITCH IDENTIFIER ASSIGNMENT stitch SEMICOLON						{ char * stitch = getStitchValue($4->type); $$ = DeclarationSemanticAction(STITCH_NAME, $2, stitch, currentCompilerState()); free(stitch); free($2);releaseStitch($4); }
     ;
 
 assignment: IDENTIFIER ASSIGNMENT IDENTIFIER SEMICOLON					{ $$ = AssignmentSemanticAction($1, $3); free($1); free($3);}
@@ -128,39 +128,40 @@ argument_list: argument													{ $$ = SequenceSemanticAction($1, ITEM_ARGUM
     | argument COMMA argument_list										{ $$ = AppendToSequenceSemanticAction($3, $1, ITEM_ARGUMENT); }
     ;
 
-argument: IDENTIFIER													{ $$ = ArgumentSemanticAction($1, ITEM_IDENTIFIER); }
-    | COLOR_VALUE														{ $$ = ArgumentSemanticAction($1, ITEM_COLOR_VALUE); }
-    | stitch															{ $$ = ArgumentSemanticAction($1, ITEM_STITCH); }
-    | pattern_use                                                       { $$ = ArgumentSemanticAction($1, ITEM_PATTERN_USE); }
-    | OPEN_BRACKET stitch_list CLOSE_BRACKET                            { $$ = ArgumentSemanticAction($2, ITEM_SEQUENCE); }
+argument: IDENTIFIER													{ $$ = ArgumentSemanticAction($1, ITEM_IDENTIFIER, currentCompilerState()); }
+    | COLOR_VALUE														{ $$ = ArgumentSemanticAction($1, ITEM_COLOR_VALUE, currentCompilerState()); }
+    | stitch															{ $$ = ArgumentSemanticAction($1, ITEM_STITCH, currentCompilerState()); }
+    | pattern_use                                                       { $$ = ArgumentSemanticAction($1, ITEM_PATTERN_USE, currentCompilerState()); }
+    | OPEN_BRACKET stitch_list CLOSE_BRACKET                            { $$ = ArgumentSemanticAction($2, ITEM_SEQUENCE, currentCompilerState()); }
     ;
 
 pattern_def: PATTERN IDENTIFIER OPEN_PARENTHESIS parameter_list CLOSE_PARENTHESIS { SavePatternToCurrentScope($2, $4, currentCompilerState()); OpenAndFillNewScope($4); } OPEN_BRACE sequence CLOSE_BRACE { CloseLastScope(); } SEMICOLON                                     { $$ = PatternSemanticAction($2, $4, $8);free($2);  }
     | PATTERN IDENTIFIER OPEN_PARENTHESIS CLOSE_PARENTHESIS { SavePatternToCurrentScope($2, NULL, currentCompilerState()); } OPEN_BRACE sequence CLOSE_BRACE SEMICOLON                                                           { $$ = PatternSemanticAction($2, NULL, $7); free($2);  }
     ;
 
-pattern_use: IDENTIFIER OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS    { $$ = PatternUseSemanticAction($1, $3); free($1); }
-           | IDENTIFIER OPEN_PARENTHESIS CLOSE_PARENTHESIS                  { $$ = PatternUseSemanticAction($1, NULL);free($1);  }
+pattern_use: IDENTIFIER OPEN_PARENTHESIS argument_list CLOSE_PARENTHESIS    { $$ = PatternUseSemanticAction($1, $3, currentCompilerState()); free($1); }
+           | IDENTIFIER OPEN_PARENTHESIS CLOSE_PARENTHESIS                  { $$ = PatternUseSemanticAction($1, NULL, currentCompilerState());free($1);  }
            ;
 
 pattern_use_in_function: pattern_use                                    { $$ = $1; }
-            |   IDENTIFIER                                              { $$ = PatternUseSemanticAction($1, NULL); free($1); }
+            |   IDENTIFIER                                              { $$ = PatternUseSemanticAction($1, NULL, currentCompilerState()); free($1); }
             ;
 
 row_element: stitch                                                     { $$ = $1; }
            | pattern_use                                                { $$ = $1; }
            | repeat                                                     { $$ = $1; }
            | mirror                                                     { $$ = $1; }
-           | IDENTIFIER                                                 { $$ = ArgumentSemanticAction($1, ITEM_IDENTIFIER); }
+           | IDENTIFIER                                                 { $$ = ArgumentSemanticAction($1, ITEM_IDENTIFIER, currentCompilerState()); }
             ;
 
 row_elements: row_element                                               { $$ = SequenceSemanticAction($1, getItemType($1)); }
             | row_element row_elements                                { $$ = AppendToSequenceSemanticAction($2, $1, getItemType($1)); }
 
-row:    row_elements SEMICOLON												{ $$ = RowSemanticAction($1, NULL, ISNOTTURN); }
+row:    row_elements SEMICOLON											{ $$ = RowSemanticAction($1, NULL, ISNOTTURN); }
 	|	COLOR_VALUE row_elements SEMICOLON								{ $$ = RowSemanticAction($2, $1, ISNOTTURN);free($1); }
 	|	TURN row_elements SEMICOLON										{ $$ = RowSemanticAction($2, NULL, ISTURN); }
 	|	COLOR_VALUE TURN row_elements SEMICOLON							{ $$ = RowSemanticAction($3, $1, ISTURN); free($1);}
+    |	IDENTIFIER TURN row_elements SEMICOLON							{ $$ = RowSemanticAction($3, NULL, ISTURN); free($1);}
     ;
 
 stitch_list: stitch	%prec REDUCE_PRECEDENCE								{ $$ = SequenceSemanticAction($1, ITEM_STITCH); }
@@ -173,12 +174,12 @@ stitch: CH																{ $$ = StitchSemanticAction(STITCH_CH); }
     ;
 
 repeat: REPEAT OPEN_PARENTHESIS pattern_use_in_function COMMA INTEGER CLOSE_PARENTHESIS								{ $$ = RepeatSemanticAction($3, $5); }
-    | REPEAT OPEN_PARENTHESIS OPEN_BRACKET stitch_list CLOSE_BRACKET COMMA INTEGER CLOSE_PARENTHESIS                { PatternUse *anon = PatternUseSemanticAction(NULL, $4);  $$ = RepeatSemanticAction(anon, $7);}
+    | REPEAT OPEN_PARENTHESIS OPEN_BRACKET stitch_list CLOSE_BRACKET COMMA INTEGER CLOSE_PARENTHESIS                { PatternUse *anon = PatternUseSemanticAction(NULL, $4, currentCompilerState());  $$ = RepeatSemanticAction(anon, $7);}
 
     ;
 
 mirror: MIRROR OPEN_PARENTHESIS pattern_use_in_function COMMA INTEGER CLOSE_PARENTHESIS								{ $$ = MirrorSemanticAction($3, $5); }
-    | MIRROR OPEN_PARENTHESIS OPEN_BRACKET stitch_list CLOSE_BRACKET COMMA INTEGER CLOSE_PARENTHESIS                { PatternUse *anon = PatternUseSemanticAction(NULL, $4);  $$ = MirrorSemanticAction(anon, $7); }
+    | MIRROR OPEN_PARENTHESIS OPEN_BRACKET stitch_list CLOSE_BRACKET COMMA INTEGER CLOSE_PARENTHESIS                { PatternUse *anon = PatternUseSemanticAction(NULL, $4, currentCompilerState());  $$ = MirrorSemanticAction(anon, $7); }
     ;
 
 %%

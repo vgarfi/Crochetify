@@ -5,14 +5,15 @@ Pattern myPattern(Color col,Stitch st){
     col CH DC CH;
 };
 
+Color blue = #0000FF;
+Color red = #FF0000;
+
 Pattern myPattern2(){
     blue CH CH CH;
     TURN CH CH CH;
     blue CH DC CH;
 };
 
-Color red = #FF0000;
-Color blue = #0000FF;
 BEGIN CROCHET
     myPattern(red,CH);
     TURN CH;

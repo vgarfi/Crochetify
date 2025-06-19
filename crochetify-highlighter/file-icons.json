@@ -1,0 +1,11 @@
+{
+  "fileExtensions": {
+    "chfy": "chfy-icon"
+  },
+  "iconDefinitions": {
+    "chfy-icon": {
+      "iconPath": "./icons/chfy-icon.png"
+    }
+  },
+  "file": "chfy-icon"
+}

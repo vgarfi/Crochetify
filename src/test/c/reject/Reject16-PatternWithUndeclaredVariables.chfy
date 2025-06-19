@@ -1,0 +1,15 @@
+Pattern myPattern(Color c, Pattern p) {
+    c p p;
+    TURN CH CH CH;
+    c p p;
+    TURN CH CH CH;
+    c p p;
+};
+
+BEGIN CROCHET
+    myPattern(green, [DC DC SC DC CH]);
+    #FAFAFA TURN CH CH CH CH;
+    myPattern(blue, [DC DC SC CH CH]);
+    #FAFAFA TURN CH CH CH CH;
+    myPattern(red, [SC CH CH CH SC]);
+END CROCHET

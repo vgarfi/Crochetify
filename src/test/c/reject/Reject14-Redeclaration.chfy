@@ -1,0 +1,6 @@
+Stitch newStitch = SC;
+Stitch newStitch = DC; // Actually not so new stitch ...
+
+BEGIN CROCHET
+    CH newStitch CH;
+END CROCHET

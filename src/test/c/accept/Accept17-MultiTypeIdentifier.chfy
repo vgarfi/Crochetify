@@ -1,0 +1,12 @@
+Stitch myDeclaration = SC;
+Color myDeclaration = #FF0000;
+
+Pattern myDeclaration(){
+    CH CH CH;
+};
+
+BEGIN CROCHET
+    myDeclaration CH CH myDeclaration;
+    TURN myDeclaration();
+    myDeclaration;
+END CROCHET

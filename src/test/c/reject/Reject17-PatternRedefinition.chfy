@@ -1,0 +1,13 @@
+Pattern patron(Color c){
+    c CH CH CH;
+};
+
+Pattern patron(Stitch x){
+    #FF0000 CH x CH;
+};
+
+BEGIN CROCHET
+    patron(#FF0000);
+    TURN CH;
+    patron(CH);
+END CROCHET

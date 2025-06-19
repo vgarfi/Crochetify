@@ -1,0 +1,12 @@
+Pattern goodPattern(){
+    blue CH CH;
+    TURN CH;
+    red SC SC;
+};
+
+Color blue = #0000FF;
+Color red = #FF0000;
+
+BEGIN CROCHET
+    goodPattern();
+END CROCHET
