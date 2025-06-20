@@ -185,7 +185,7 @@ struct Program {
         Sequence *body; // lista de Row, PatternUse, Pattern, etc.
         Expression * expression; // TODO esto vuela con la calculadora
     };
-    Sequence *declarationsAndPatterns; // lo que va antes del main
+    Sequence *declarationsAndPatterns; // lo que va antes del 
 
 };
 

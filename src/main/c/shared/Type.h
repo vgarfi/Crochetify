@@ -20,7 +20,7 @@ typedef enum {
 } VariableType;
 
 typedef struct RowData {
-	char color[7];
+	char color[8];
     StitchType* stitches;
 	int stitchCount;
 } RowData;

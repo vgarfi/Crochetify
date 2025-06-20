@@ -1,6 +1,7 @@
 #ifndef ROW_NODE_LIST_ADT_H
 #define ROW_NODE_LIST_ADT_H
 
+#include <string.h>
 #include "../Type.h"
 
 typedef struct RowNodeListCDT * RowNodeListADT;

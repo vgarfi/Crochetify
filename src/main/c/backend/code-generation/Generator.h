@@ -1,6 +1,10 @@
 #ifndef GENERATOR_HEADER
 #define GENERATOR_HEADER
 
+#define BASE_CANVAS_SIZE 100
+#define STITCH_WIDTH 40
+#define STITCH_HEIGHT 30
+
 #include "../../frontend/syntactic-analysis/AbstractSyntaxTree.h"
 #include "../../shared/CompilerState.h"
 #include "../../shared/Logger.h"

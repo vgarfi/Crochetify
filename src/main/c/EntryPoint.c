@@ -41,11 +41,50 @@ const int main(const int count, const char ** arguments) {
 	CompilationStatus compilationStatus = SUCCEED;
 	Program * program = compilerState.abstractSyntaxtTree;
 	
+	/*
+		Representation for program:
+		BEGIN CROCHET
+			CH CH CH CH CH;
+			TURN CH;
+			#FFA010 CH SC CH SC CH;
+		END CROCHET
+	*/
+	StitchType firstLine[] = {STITCH_CH, STITCH_CH, STITCH_CH, STITCH_CH, STITCH_CH};
+	StitchType secondLine[] = {STITCH_CH, STITCH_CH, STITCH_CH};
+	StitchType thirdLine[] = {STITCH_CH, STITCH_SC, STITCH_DC, STITCH_SC, STITCH_CH};
+
+	RowData rn1 = {
+		.color = {0},
+		.stitchCount = 5,
+		.stitches = firstLine
+	};
+
+	RowData rn2 = {
+		.color = {0},
+		.stitchCount = 3,
+		.stitches = secondLine
+	};
+	
+	RowData rn3 = {
+		.color = {'#', 'F', 'F', 'A', '0', '1', '0', 0},
+		.stitchCount = 5,
+		.stitches = thirdLine
+	};
+	
+	CrochetResult newResult = {
+		.succeed = true,
+		.stitchRows = newRowNodeList()
+	};
+
+	createRowNode(newResult.stitchRows, rn1);
+	createRowNode(newResult.stitchRows, rn2);
+	createRowNode(newResult.stitchRows, rn3);
+
 	if (syntacticAnalysisStatus == ACCEPT) {
 		// ----------------------------------------------------------------------------------------
 		// Beginning of the Backend... ------------------------------------------------------------
 
-		computeCrochet(program, compilerState.scopeList);
+		// computeCrochet(program, compilerState.scopeList);
 		/*
 
 		Nuestro computeExpression, llamado computeCrochetAST, agarra el AST y coloca en computationResult.value del structu qeu devuelve algun valor de retorno
@@ -63,13 +102,16 @@ const int main(const int count, const char ** arguments) {
 		// ...end of the Backend. -----------------------------------------------------------------
 		// ----------------------------------------------------------------------------------------
 		*/
-	        generate(&compilerState);
+	        generate(&newResult);
 
 		}
 	else {
 		logError(logger, "The syntactic-analysis phase rejects the input program.");
 		compilationStatus = FAILED;
 	}
+
+	freeRowNodeList(newResult.stitchRows);
+
 	logDebugging(logger, "Releasing AST resources...");
 	releaseProgram(program);
 	logDebugging(logger, "Releasing modules resources...");

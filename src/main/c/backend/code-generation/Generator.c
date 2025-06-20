@@ -5,6 +5,13 @@
 const char _indentationCharacter = ' ';
 const char _indentationSize = 4;
 static Logger * _logger = NULL;
+static char * symbolNames[] = {
+        "ch_symbol",
+        "sc_symbol",
+        "dc_symbol",
+        "ch_rotated",
+        NULL
+    };
 
 void initializeGeneratorModule() {
 	_logger = createLogger("Generator");
@@ -20,7 +27,7 @@ void shutdownGeneratorModule() {
 static void printPatternUse(PatternUse *use, int indent);
 static const char _expressionTypeToCharacter(const ExpressionType type);
 static void _generateConstant(const unsigned int indentationLevel, Constant * constant);
-static void _generateEpilogue(const int value);
+static void _generateEpilogue(void);
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression);
 static void _generateFactor(const unsigned int indentationLevel, Factor * factor);
 static void _generateProgram(Program * program);
@@ -79,15 +86,6 @@ static void _generateConstant(const unsigned int indentationLevel, Constant * co
 	_output(indentationLevel, "%s", "[ $C$, circle, draw, black!20\n");
 	_output(1 + indentationLevel, "%s%d%s", "[ $", constant->value, "$, circle, draw ]\n");
 	_output(indentationLevel, "%s", "]\n");
-}
-
-static void _generateEpilogue(const int value) {
-	_output(0, "%s%d%s",
-		"            [ $", value, "$, circle, draw, blue ]\n"
-		"        ]\n"
-		"    \\end{forest}\n"
-		"\\end{document}\n\n"
-	);
 }
 
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression) {
@@ -292,25 +290,100 @@ static void printProgram(Program *program, int indent) {
 
 static void _generatePrologue(void) {
 	_output(0, "%s",
-		"\\from PIL import Image, ImageDraw, ImageFont, ImageOps\n\n"
-		"\\def tint_symbol(image, color):\n"
-		"   \\r, g, b = color\n"
-		"   \\base = Image.new('RGBA', image.size, (r, g, b, 0))\n"
-		"   \\alpha = image.getchannel('A')\n"
-		"   \\base.putalpha(alpha)\n\n"
-		"   \\return base\n"
-		"\\def hex_to_rgb(hex_color):\n"
-		"   \\hex_color = hex_color.lstrip('#')\n"
-		"   \\if len(hex_color) == 3:\n"
-        "       \\hex_color = ''.join([c * 2 for c in hex_color])\n"
-        "   \\return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))\n\n"
+		"from PIL import Image, ImageDraw, ImageFont, ImageOps\n\n"
+		"def tint_symbol(image, color):\n"
+		"   r, g, b = color\n"
+		"   base = Image.new('RGBA', image.size, (r, g, b, 0))\n"
+		"   alpha = image.getchannel('A')\n"
+		"   base.putalpha(alpha)\n\n"
+		"   return base\n"
+		"def hex_to_rgb(hex_color):\n"
+		"   hex_color = hex_color.lstrip('#')\n"
+		"   if len(hex_color) == 3:\n"
+        "       hex_color = ''.join([c * 2 for c in hex_color])\n"
+        "   return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))\n\n"
 	);
 }
 
-static void _generateCanvas(int rowLength, int rows){
-    int width = rowLength * 40 + 100;
-    int height = rows * 30 + 100;
-    // _output(0, "%s")  
+static void _generateCanvas(int width, int height){
+    _output(0, "width, height = %d, %d\n", width, height);
+    _output(0, "%s",
+        "img = Image.new('RGB', (width, height), color='white')\n"
+        "draw = ImageDraw.Draw(img)\n\n"
+        "ch_symbol = Image.open('stitches/CH.png').convert('RGBA')\n"
+        "sc_symbol = Image.open('stitches/SC.png').convert('RGBA')\n"
+        "dc_symbol = Image.open('stitches/DC.png').convert('RGBA')\n\n"
+        "ch_size, sc_size, dc_size = (40,25), (40,25), (40,100)\n"
+        "ch_symbol, sc_symbol, dc_symbol = ch_symbol.resize(ch_size), sc_symbol.resize(sc_size), dc_symbol.resize(dc_size)\n"
+        "rotated_size = (20, 30)\n"
+        "ch_rotated = ch_symbol.rotate(90, expand=True)\n"
+        "ch_rotated = ch_rotated.resize(rotated_size)\n"
+        "x_offset, y_offset, small_y_offset = 40, 30, 20\n"
+        "x, y = 50, height - 40\n\n"
+        "# From this point onwards you start drawing your awesome crochet !\n"
+    );
+}
+
+static void _generateEpilogue(void){
+    _output(0, "%s",
+        "\n# Ding! You heard that? Your crochet's just out of the oven!\n"
+        "img = img.convert('RGB')\n"
+        "img.show()\n"
+    );
+}
+
+static void _clearColor(void){
+    for(int i = 0; symbolNames[i] != NULL; i++){
+        _output(0, "%s = tint_symbol(%s, hex_to_rgb('#000000'))\n",
+            symbolNames[i],
+            symbolNames[i]
+        );
+    }
+    _output(0, "\n");
+}
+
+static void _generateColorChange(char * colorHex){
+    for(int i = 0; symbolNames[i] != NULL; i++){
+        _output(0, "%s = tint_symbol(%s, hex_to_rgb('%s'))\n",
+            symbolNames[i],
+            symbolNames[i],
+            colorHex
+        );
+    }
+    _output(0, "\n");
+}
+
+static void _endTurn(void){
+    _output(0, "%s", 
+        "y -= small_y_offset\n"
+        "x -= x_offset\n"
+    );
+}
+
+// Only draws 'CH' stitches vertically !!
+static void _generateVerticalStitch(void){
+    _output(0, "%s", 
+        "y -= y_offset\n"
+        "img.paste(ch_rotated, (x, y), ch_rotated)\n"
+    );
+}
+
+static void _generateHorizontalStitch(StitchType stitch, boolean right){
+    switch(stitch){
+        case STITCH_CH:
+            _output(0, "%s", "img.paste(ch_symbol, (x, y), ch_symbol)\n");
+            break;
+        case STITCH_SC:
+            _output(0, "%s", "img.paste(sc_symbol, (x, y), sc_symbol)\n");
+            break;
+        case STITCH_DC:
+            _output(0, "%s", "img.paste(dc_symbol, (x, y), dc_symbol)\n");
+    }
+    if(right){
+        _output(0, "%s", "x += x_offset\n");
+    } else {
+        _output(0, "%s", "x -= x_offset\n");
+    }
 }
 
 static char * _indentation(const unsigned int level) {
@@ -334,9 +407,46 @@ void generate(CrochetResult * crochetResult) {
     RowNodeListADT rowNodeList = crochetResult->stitchRows;
     _generatePrologue();
     beginIteration(rowNodeList);
+    int canvasWidth = BASE_CANVAS_SIZE;
+    int canvasHeight = BASE_CANVAS_SIZE;
     if(hasNext(rowNodeList)){
-        int firstRowLength = next(rowNodeList).stitchCount; 
-        _generateCanvas(firstRowLength, getSize(rowNodeList));
+        canvasWidth += next(rowNodeList).stitchCount * STITCH_WIDTH;
+        canvasHeight += getSize(rowNodeList) * STITCH_HEIGHT;
     }
+    _generateCanvas(canvasWidth, canvasHeight);
+    
+    // Finally... Time to draw!
+    beginIteration(rowNodeList);
+    RowData current = {0};
+    int turn = false;
+    int right = true;
+    int color = false;
+    while(hasNext(rowNodeList)){
+        current = next(rowNodeList);
+        if(current.color[0] != '\0' && strcasecmp(current.color, "#000000") != 0){
+            _generateColorChange(current.color);
+            color = true;
+        }
+        if(turn){
+            for(int i = 0; i < current.stitchCount; i++){
+                _generateVerticalStitch();
+            }
+            _endTurn();
+            turn = false;
+            right = !right;
+        } else {
+            for(int i = 0; i < current.stitchCount; i++){
+                _generateHorizontalStitch(current.stitches[i], right);
+            }
+            turn = true;
+        }
+
+        if(color){
+            color = false;
+            _clearColor();
+        }
+    }
+
+    _generateEpilogue();
     logDebugging(_logger, "Generation is done.");
 }
