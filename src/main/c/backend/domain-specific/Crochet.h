@@ -11,6 +11,9 @@
 #include "../../shared/Type.h"
 #include <limits.h>
 #include "../../shared/structures/ScopeListADT.h"
+#include "../../shared/structures/RowNodeListADT.h"
+#include <stdarg.h>
+#include <string.h>
 /** Initialize module's internal state. */
 void initializeCrochetModule();
 
@@ -23,7 +26,7 @@ void shutdownCrochetModule();
  */
 typedef struct {
 	boolean succeed;
-	char* stiches;
+	RowNodeListADT stitchRows;
 } CrochetResult;
 
 
@@ -31,5 +34,19 @@ typedef struct {
  * Computes the final value of a crochet pattern.
  */
 CrochetResult computeCrochet(Program * program, ScopeListADT scopeList);
+
+CrochetResult computeRow(Row * row, ScopeListADT scopeList,RowNodeListADT rowNodeList);
+
+CrochetResult computePatternUse(PatternUse * patternUse,ScopeListADT scopeList,RowNodeListADT rowNodeList);
+
+CrochetResult computeArgument(Argument * argument,ScopeListADT scopeList);
+
+CrochetResult computePattern(PatternData,Pattern *,ScopeListADT scopeList,RowNodeListADT rowNodeList);
+
+CrochetResult computeStitch(Stitch * stitch, RowNodeListADT rowNodeList);
+
+CrochetResult computeStitchList(Sequence * sequence, RowNodeListADT rowNodeList);
+
+CrochetResult computeIdentifier(char * identifier, ScopeListADT scopeList);
 
 #endif

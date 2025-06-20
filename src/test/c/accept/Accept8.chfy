@@ -14,7 +14,7 @@ Pattern myPattern2(Color col,Stitch st){
 };
 
 BEGIN CROCHET
-    myPattern(red,CH);
-    TURN CH;
+    myPattern(red,DC);
+    TURN SC;
     myPattern(red,DC);
 END CROCHET

@@ -1,0 +1,12 @@
+Pattern hola(Color c, Stitch x){
+    c x x x;
+};
+
+Color blue = #FAEF00; // This is everything but blue
+Color definitelyAStitch = #0000FF;
+
+BEGIN CROCHET
+    hola(blue, CH);
+    TURN CH;
+    hola(blue, definitelyAStitch); // Surely a stitch...
+END CROCHET

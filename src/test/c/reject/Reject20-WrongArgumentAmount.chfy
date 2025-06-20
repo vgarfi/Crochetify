@@ -1,0 +1,7 @@
+Pattern hola(Color c, Stitch x){
+    x x x;
+};
+
+BEGIN CROCHET
+    hola(CH);
+END CROCHET

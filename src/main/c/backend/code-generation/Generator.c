@@ -292,17 +292,25 @@ static void printProgram(Program *program, int indent) {
 
 static void _generatePrologue(void) {
 	_output(0, "%s",
-		"\\documentclass{standalone}\n\n"
-		"\\usepackage[utf8]{inputenc}\n"
-		"\\usepackage[T1]{fontenc}\n"
-		"\\usepackage{amsmath}\n"
-		"\\usepackage{forest}\n"
-		"\\usepackage{microtype}\n\n"
-		"\\begin{document}\n"
-		"    \\centering\n"
-		"    \\begin{forest}\n"
-		"        [ \\text{$=$}, circle, draw, purple\n"
+		"\\from PIL import Image, ImageDraw, ImageFont, ImageOps\n\n"
+		"\\def tint_symbol(image, color):\n"
+		"   \\r, g, b = color\n"
+		"   \\base = Image.new('RGBA', image.size, (r, g, b, 0))\n"
+		"   \\alpha = image.getchannel('A')\n"
+		"   \\base.putalpha(alpha)\n\n"
+		"   \\return base\n"
+		"\\def hex_to_rgb(hex_color):\n"
+		"   \\hex_color = hex_color.lstrip('#')\n"
+		"   \\if len(hex_color) == 3:\n"
+        "       \\hex_color = ''.join([c * 2 for c in hex_color])\n"
+        "   \\return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))\n\n"
 	);
+}
+
+static void _generateCanvas(int rowLength, int rows){
+    int width = rowLength * 40 + 100;
+    int height = rows * 30 + 100;
+    // _output(0, "%s")  
 }
 
 static char * _indentation(const unsigned int level) {
@@ -321,9 +329,14 @@ static void _output(const unsigned int indentationLevel, const char * const form
 	va_end(arguments);
 }
 
-void generate(CompilerState * compilerState) {
+void generate(CrochetResult * crochetResult) {
     logDebugging(_logger, "Generating final output...");
-    Program *program = (Program*)compilerState->abstractSyntaxtTree;
-    printProgram(program, 0);
+    RowNodeListADT rowNodeList = crochetResult->stitchRows;
+    _generatePrologue();
+    beginIteration(rowNodeList);
+    if(hasNext(rowNodeList)){
+        int firstRowLength = next(rowNodeList).stitchCount; 
+        _generateCanvas(firstRowLength, getSize(rowNodeList));
+    }
     logDebugging(_logger, "Generation is done.");
 }

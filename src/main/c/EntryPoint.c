@@ -21,7 +21,8 @@ const int main(const int count, const char ** arguments) {
 	initializeBisonActionsModule();
 	initializeSyntacticAnalyzerModule();
 	initializeAbstractSyntaxTreeModule();
-	initializeCalculatorModule();
+
+	initializeCrochetModule();
 	initializeGeneratorModule();
 
 	// Logs the arguments of the application.
@@ -32,6 +33,7 @@ const int main(const int count, const char ** arguments) {
 	// Begin compilation process.
 	CompilerState compilerState = {
 		.abstractSyntaxtTree = NULL,
+		.scopeList = NULL,
 		.succeed = true,
 		.value = 0
 	};
@@ -43,7 +45,7 @@ const int main(const int count, const char ** arguments) {
 		// ----------------------------------------------------------------------------------------
 		// Beginning of the Backend... ------------------------------------------------------------
 
-		
+		computeCrochet(program, compilerState.scopeList);
 		/*
 
 		Nuestro computeExpression, llamado computeCrochetAST, agarra el AST y coloca en computationResult.value del structu qeu devuelve algun valor de retorno
@@ -73,6 +75,7 @@ const int main(const int count, const char ** arguments) {
 	logDebugging(logger, "Releasing modules resources...");
 	shutdownGeneratorModule();
 	shutdownCalculatorModule();
+	shutdownCrochetModule();
 	shutdownAbstractSyntaxTreeModule();
 	shutdownSyntacticAnalyzerModule();
 	shutdownBisonActionsModule();

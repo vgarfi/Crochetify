@@ -22,6 +22,7 @@ typedef enum {
 typedef struct RowData {
 	char color[7];
     StitchType* stitches;
+	int stitchCount;
 } RowData;
 
 typedef int Token;

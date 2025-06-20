@@ -2,6 +2,8 @@
 #include "../RowNodeListADT.h"
 #include <stdlib.h>
 
+static int STITCHES_CHUNK_SIZE = 10;
+
 typedef struct RowNode {
     RowData data;
     struct RowNode * next;
@@ -11,6 +13,7 @@ typedef struct RowNodeListCDT {
     RowNode * head;
     RowNode * last;
     RowNode * itActual;
+    int size;
 } RowNodeListCDT;
 
 RowNodeListADT newRowNodeList(void){
@@ -19,7 +22,7 @@ RowNodeListADT newRowNodeList(void){
 }
 
 void createRowNode(RowNodeListADT rnl, RowData data){
-    if(rnl == NULL){
+    if(rnl == NULL) {
         return;
     }
     RowNode * node = malloc(sizeof(RowNode));
@@ -33,6 +36,7 @@ void createRowNode(RowNodeListADT rnl, RowData data){
     }
     rnl->last = node;
     rnl->itActual = NULL;
+    rnl->size++;
 }	
 
 void freeRowNodeList(RowNodeListADT rnl){
@@ -69,4 +73,38 @@ RowData next(RowNodeListADT rnl){
 
 int hasNext(RowNodeListADT rnl){
     return rnl != NULL && rnl->itActual != NULL;
+}
+
+void addStitchToLastnode(RowNodeListADT rnl, StitchType data) {
+    if (rnl == NULL || rnl->last == NULL) {
+        return;
+    }
+    RowNode * lastNode = rnl->last;
+    if (lastNode->data.stitches == NULL || lastNode->data.stitchCount == 0) {
+        lastNode->data.stitches = malloc(STITCHES_CHUNK_SIZE * sizeof(StitchType));
+        lastNode->data.stitchCount = 0;
+    } else if (lastNode->data.stitchCount % STITCHES_CHUNK_SIZE == 0) {
+        lastNode->data.stitches = realloc(lastNode->data.stitches, sizeof(StitchType) * (lastNode->data.stitchCount + STITCHES_CHUNK_SIZE));
+    }
+    lastNode->data.stitches[lastNode->data.stitchCount++] = data;
+}
+
+int getSize(RowNodeListADT rnl) {
+    if (rnl == NULL) {
+        return 0;
+    }
+    return rnl->size;
+}
+
+void changeColorToLastNode(RowNodeListADT rnl, char* color) {
+    if (rnl == NULL || rnl->last == NULL) {
+        return;
+    }
+    RowNode * lastNode = rnl->last;
+    if (color != NULL) {
+        strncpy(lastNode->data.color, color, 7);
+        lastNode->data.color[6] = '\0';
+    } else {
+        lastNode->data.color[0] = '\0';
+    }
 }

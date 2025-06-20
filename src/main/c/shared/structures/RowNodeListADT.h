@@ -48,4 +48,29 @@ RowData next(RowNodeListADT rnl);
 */
 int hasNext(RowNodeListADT rnl);
 
+/**
+*   @param rnl existing ADT
+*   @param Stitch data to insert
+*
+*   Inserts the given data into the last node described by the ADT
+*/
+void addStitchToLastnode(RowNodeListADT rnl, StitchType data);
+
+
+/**
+*   @param rnl existing ADT
+*   @param color data to insert
+*
+*   Inserts the given color into the last node described by the ADT
+*/
+void changeColorToLastNode(RowNodeListADT rnl, char* color);
+
+
+/**
+*   @param rnl existing ADT
+*
+*   @return actual size of the list.
+*/
+int getSize(RowNodeListADT rnl);
+
 #endif
