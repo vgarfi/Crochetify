@@ -313,12 +313,12 @@ static void _generateCanvas(int width, int height){
         "ch_symbol = Image.open('stitches/CH.png').convert('RGBA')\n"
         "sc_symbol = Image.open('stitches/SC.png').convert('RGBA')\n"
         "dc_symbol = Image.open('stitches/DC.png').convert('RGBA')\n\n"
-        "ch_size, sc_size, dc_size = (40,25), (40,25), (40,100)\n"
+        "ch_size, sc_size, dc_size = (35,25), (35,25), (35,80)\n"
         "ch_symbol, sc_symbol, dc_symbol = ch_symbol.resize(ch_size), sc_symbol.resize(sc_size), dc_symbol.resize(dc_size)\n"
-        "rotated_size = (20, 30)\n"
+        "rotated_size = (35, 25)\n"
         "ch_rotated = ch_symbol.rotate(90, expand=True)\n"
         "ch_rotated = ch_rotated.resize(rotated_size)\n"
-        "x_offset, y_offset, small_y_offset = 40, 30, 20\n"
+        "x_offset, y_offset, small_y_offset = 35, 25, 12\n"
         "x, y = 50, height - 40\n\n"
         "# From this point onwards you start drawing your awesome crochet !\n"
     );
@@ -353,11 +353,26 @@ static void _generateColorChange(char * colorHex){
     _output(0, "\n");
 }
 
-static void _endTurn(void){
-    _output(0, "%s", 
-        "y -= small_y_offset\n"
-        "x -= x_offset\n"
-    );
+static void _beginTurn(boolean outsideTurn, boolean right){
+    if(outsideTurn){
+        return;
+    }
+
+    if (right) {
+        _output(0, "x -= x_offset\n");
+    } else {
+        _output(0, "x += x_offset\n");
+    }
+}
+
+static void _endTurn(boolean outsideTurn, boolean right){
+    char * x_offset = right ? "x -= x_offset\n" : "x += x_offset\n";
+
+    _output(0, "%s", x_offset);
+
+    if(outsideTurn){
+        _output(0, "y -= y_offset\n");
+    }
 }
 
 // Only draws 'CH' stitches vertically !!
@@ -409,8 +424,10 @@ void generate(CrochetResult * crochetResult) {
     beginIteration(rowNodeList);
     int canvasWidth = BASE_CANVAS_SIZE;
     int canvasHeight = BASE_CANVAS_SIZE;
+    int maxStitches;
     if(hasNext(rowNodeList)){
-        canvasWidth += next(rowNodeList).stitchCount * STITCH_WIDTH;
+        maxStitches = next(rowNodeList).stitchCount;
+        canvasWidth += maxStitches * STITCH_WIDTH;
         canvasHeight += getSize(rowNodeList) * STITCH_HEIGHT;
     }
     _generateCanvas(canvasWidth, canvasHeight);
@@ -418,9 +435,11 @@ void generate(CrochetResult * crochetResult) {
     // Finally... Time to draw!
     beginIteration(rowNodeList);
     RowData current = {0};
-    int turn = false;
-    int right = true;
-    int color = false;
+    boolean turn = false;
+    boolean outsideTurn = true;
+    boolean right = true;
+    boolean color = false;
+    StitchType lastStitch;
     while(hasNext(rowNodeList)){
         current = next(rowNodeList);
         if(current.color[0] != '\0' && strcasecmp(current.color, "#000000") != 0){
@@ -428,16 +447,19 @@ void generate(CrochetResult * crochetResult) {
             color = true;
         }
         if(turn){
+            _beginTurn(outsideTurn, right);
             for(int i = 0; i < current.stitchCount; i++){
                 _generateVerticalStitch();
             }
-            _endTurn();
+            _endTurn(outsideTurn, right);
             turn = false;
             right = !right;
         } else {
             for(int i = 0; i < current.stitchCount; i++){
                 _generateHorizontalStitch(current.stitches[i], right);
+                lastStitch = current.stitches[i];
             }
+            outsideTurn = lastStitch == STITCH_SC ? true : false;
             turn = true;
         }
 

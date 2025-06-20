@@ -44,18 +44,22 @@ const int main(const int count, const char ** arguments) {
 	/*
 		Representation for program:
 		BEGIN CROCHET
-			CH CH CH CH CH;
-			TURN CH;
-			#FFA010 CH SC CH SC CH;
+			CH CH CH CH CH CH CH;
+			TURN CH CH CH;
+			#FFA010 CH SC DC SC CH SC;
+			#FF0000 TURN CH CH CH;
+			 #00FF00 CH CH SC DC SC SC SC;
 		END CROCHET
 	*/
-	StitchType firstLine[] = {STITCH_CH, STITCH_CH, STITCH_CH, STITCH_CH, STITCH_CH};
+	StitchType firstLine[] = {STITCH_CH, STITCH_CH, STITCH_CH, STITCH_SC, STITCH_CH, STITCH_CH, STITCH_CH};
 	StitchType secondLine[] = {STITCH_CH, STITCH_CH, STITCH_CH};
-	StitchType thirdLine[] = {STITCH_CH, STITCH_SC, STITCH_DC, STITCH_SC, STITCH_CH};
+	StitchType thirdLine[] = {STITCH_CH, STITCH_SC, STITCH_DC, STITCH_SC, STITCH_CH, STITCH_SC};
+	StitchType fourthLine[] = {STITCH_CH, STITCH_CH, STITCH_CH};
+	StitchType fifthLine[] = {STITCH_CH, STITCH_CH, STITCH_SC, STITCH_DC, STITCH_SC, STITCH_SC, STITCH_SC};
 
 	RowData rn1 = {
 		.color = {0},
-		.stitchCount = 5,
+		.stitchCount = 7,
 		.stitches = firstLine
 	};
 
@@ -67,8 +71,20 @@ const int main(const int count, const char ** arguments) {
 	
 	RowData rn3 = {
 		.color = {'#', 'F', 'F', 'A', '0', '1', '0', 0},
-		.stitchCount = 5,
+		.stitchCount = 6,
 		.stitches = thirdLine
+	};
+
+	RowData rn4 = {
+		.color = {'#', 'F', 'F', '0', '0', '0', '0', 0},
+		.stitchCount = 3,
+		.stitches = fourthLine
+	};
+
+	RowData rn5 = {
+		.color = {'#', '0', '0', 'F', 'F', '0', '0', 0},
+		.stitchCount = 7,
+		.stitches = fifthLine
 	};
 	
 	CrochetResult newResult = {
@@ -79,6 +95,8 @@ const int main(const int count, const char ** arguments) {
 	createRowNode(newResult.stitchRows, rn1);
 	createRowNode(newResult.stitchRows, rn2);
 	createRowNode(newResult.stitchRows, rn3);
+	createRowNode(newResult.stitchRows, rn4);
+	createRowNode(newResult.stitchRows, rn5);
 
 	if (syntacticAnalysisStatus == ACCEPT) {
 		// ----------------------------------------------------------------------------------------
