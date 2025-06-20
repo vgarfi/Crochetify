@@ -328,7 +328,7 @@ static void _generateEpilogue(void){
     _output(0, "%s",
         "\n# Ding! You heard that? Your crochet's just out of the oven!\n"
         "img = img.convert('RGB')\n"
-        "img.show()\n"
+        "img.save('awesome_crochet.png')\n"
     );
 }
 
