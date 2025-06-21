@@ -284,10 +284,11 @@ CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeLi
                 printf("Computing pattern item with type: %d\n", itemType);
                 switch (itemType) {
                     case ITEM_PATTERN_USE:
-                        result = computePatternUse((PatternUse *)row->elements->items[i], scopeList, rowNodeList);
+                        result = computePatternUse((PatternUse *)row->elements->items[j], scopeList, rowNodeList);
                         break;
                     case ITEM_ARGUMENT:
-                        char* value =  ((Argument *)(row->elements->items[i]))->value;
+                        printf("value of arg is %s\n",(char*)((Argument *)(row->elements->items[j]))->value);
+                        char* value =  ((Argument *)(row->elements->items[j]))->value;
                         result = computeIdentifier(value, scopeList);
                         if(!result.succeed){
                             RowNodeListADT patternValue =  (RowNodeListADT) patterData.params[j].paramValue;
@@ -295,13 +296,13 @@ CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeLi
                         }
                         break;
                     case ITEM_MIRROR:
-                        result = computeMirror((Mirror*)row->elements->items[i], scopeList, rowNodeList);
+                        result = computeMirror((Mirror*)row->elements->items[j], scopeList, rowNodeList);
                         break;
                     case ITEM_REPEAT:
-                        result = computeRepeat((Repeat*)row->elements->items[i], scopeList, rowNodeList);
+                        result = computeRepeat((Repeat*)row->elements->items[j], scopeList, rowNodeList);
                         break;
                     case ITEM_STITCH:
-                        result = computeStitch((Stitch *)row->elements->items[i], rowNodeList);
+                        result = computeStitch((Stitch *)row->elements->items[j], rowNodeList);
                         break;
                     default:
                         if(patternHasArgs){
