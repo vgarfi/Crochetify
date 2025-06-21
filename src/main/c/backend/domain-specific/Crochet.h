@@ -41,7 +41,11 @@ CrochetResult computePatternUse(PatternUse * patternUse,ScopeListADT scopeList,R
 
 CrochetResult computeArgument(Argument * argument,ScopeListADT scopeList);
 
-CrochetResult computePattern(PatternData,Pattern *,ScopeListADT scopeList,RowNodeListADT rowNodeList);
+CrochetResult computeMirror(Mirror* mirror, ScopeListADT scopeList, RowNodeListADT rowNodeList);
+
+CrochetResult computeRepeat(Repeat* repeat, ScopeListADT scopeList, RowNodeListADT rowNodeList);
+
+CrochetResult computePattern(PatternData patternData, Pattern * pattern, ScopeListADT scopeList, RowNodeListADT rowNodeList);
 
 CrochetResult computeStitch(Stitch * stitch, RowNodeListADT rowNodeList);
 

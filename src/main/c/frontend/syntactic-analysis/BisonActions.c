@@ -59,20 +59,19 @@ ItemType getItemType(void *item)
 
 char *getStitchValue(StitchType type)
 {
+
     char *stitch = malloc(3);
     stitch[2] = '\0';
-    if (type == STITCH_CH)
-    {
+    if (type == STITCH_CH){
         strcpy(stitch, "CH");
     }
-    else if (type == STITCH_SC)
-    {
+    else if (type == STITCH_SC) {
         strcpy(stitch, "SC");
     }
-    else
-    {
+    else {
         strcpy(stitch, "DC");
     }
+
     return stitch;
 }
 
@@ -157,7 +156,7 @@ Stitch *StitchSemanticAction(StitchType type)
      //   type == STITCH_CH ? "CH" : type == STITCH_SC ? "SC" : "DC");
     Stitch *stitch = calloc(1, sizeof(Stitch));
     stitch->type = ITEM_STITCH;
-    stitch->stichType = type;
+    stitch->stitchType = type;
     return stitch;
 }
 
@@ -183,9 +182,13 @@ Turn *TurnSemanticAction(Sequence *chains, char *color)
     return turn;
 }
 
-Repeat *RepeatSemanticAction(PatternUse *pattern, int times)
+Repeat *RepeatSemanticAction(PatternUse *pattern, int times, CompilerState * compilerState)
 {
     //  printf("[BisonActions] Creating Repeat: times=%d, pattern=%p\n", times, (void*)pattern);
+    if (times <=0)
+    {
+        return raiseCompilationError("Only positive integers must be provided in REPEAT\n", compilerState);
+    }
     Repeat *repeat = calloc(1, sizeof(Repeat));
     repeat->type = ITEM_REPEAT;
     repeat->pattern = pattern;
@@ -193,9 +196,13 @@ Repeat *RepeatSemanticAction(PatternUse *pattern, int times)
     return repeat;
 }
 
-Mirror *MirrorSemanticAction(PatternUse *pattern, int times)
+Mirror *MirrorSemanticAction(PatternUse *pattern, int times, CompilerState * compilerState)
 {
     //  printf("[BisonActions] Creating Mirror: times=%d, pattern=%p\n", times, (void*)pattern);
+    if (times < 0)
+    {
+        return raiseCompilationError("Only positive integers must be provided in MIRROR\n", compilerState);
+    }
     Mirror *mirror = calloc(1, sizeof(Mirror));
     mirror->type = ITEM_MIRROR;
     mirror->pattern = pattern;
@@ -310,7 +317,6 @@ Program *ProgramSemanticAction(CompilerState *compilerState, Sequence *declarati
 
 Constant *IntegerConstantSemanticAction(const int value)
 {
-    //  printf("[BisonActions] Creating Constant: value=%d\n", value);
     Constant *constant = calloc(1, sizeof(Constant));
     constant->value = value;
     return constant;

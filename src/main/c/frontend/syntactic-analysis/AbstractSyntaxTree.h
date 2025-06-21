@@ -78,7 +78,7 @@ struct Argument {
 
 struct Stitch {
     ItemType type;
-    StitchType stichType;
+    StitchType stitchType;
 };
 
 struct Row {

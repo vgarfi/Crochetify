@@ -87,22 +87,33 @@ const int main(const int count, const char ** arguments) {
 		.stitches = fifthLine
 	};
 	
-	CrochetResult newResult = {
-		.succeed = true,
-		.stitchRows = newRowNodeList()
-	};
+	// CrochetResult newResult = {
+	// 	.succeed = true,
+	// 	.stitchRows = newRowNodeList()
+	// };
 
-	createRowNode(newResult.stitchRows, rn1);
-	createRowNode(newResult.stitchRows, rn2);
-	createRowNode(newResult.stitchRows, rn3);
-	createRowNode(newResult.stitchRows, rn4);
-	createRowNode(newResult.stitchRows, rn5);
+	// createRowNode(newResult.stitchRows, rn1);
+	// createRowNode(newResult.stitchRows, rn2);
+	// createRowNode(newResult.stitchRows, rn3);
+	// createRowNode(newResult.stitchRows, rn4);
+	// createRowNode(newResult.stitchRows, rn5);
 
 	if (syntacticAnalysisStatus == ACCEPT) {
+		logDebugging(logger, "Computing your crochet code...");
+		CrochetResult result = computeCrochet(program, compilerState.scopeList);
+		if(!result.succeed){
+			logError(logger, "The syntactic-analysis phase rejects the crochet program.");
+			compilationStatus = FAILED;
+			return -1;
+		}
+		//printRowList(result.stitchRows);
+		generate(&result);
+		freeRowNodeList(result.stitchRows);
+
 		// ----------------------------------------------------------------------------------------
 		// Beginning of the Backend... ------------------------------------------------------------
 
-		// computeCrochet(program, compilerState.scopeList);
+		// 
 		/*
 
 		Nuestro computeExpression, llamado computeCrochetAST, agarra el AST y coloca en computationResult.value del structu qeu devuelve algun valor de retorno
@@ -120,7 +131,6 @@ const int main(const int count, const char ** arguments) {
 		// ...end of the Backend. -----------------------------------------------------------------
 		// ----------------------------------------------------------------------------------------
 		*/
-	        generate(&newResult);
 
 		}
 	else {
@@ -128,7 +138,7 @@ const int main(const int count, const char ** arguments) {
 		compilationStatus = FAILED;
 	}
 
-	freeRowNodeList(newResult.stitchRows);
+	// freeRowNodeList(newResult.stitchRows);
 
 	logDebugging(logger, "Releasing AST resources...");
 	releaseProgram(program);

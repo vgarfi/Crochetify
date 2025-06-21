@@ -35,12 +35,41 @@ void freeRowNodeList(RowNodeListADT rnl);
 */
 void beginIteration(RowNodeListADT rnl);
 
+
+/*
+*   @param rnl existing ADT
+*
+*   Allows the ADT to be iterated in reverse order 
+*/
+void beginReverseIteration(RowNodeListADT rnl);
+
+/**
+*   @param rnl existing ADT
+*
+*   @return the next row data
+ */
+RowData nextReverse(RowNodeListADT rnl);
+
+
+
+
+/**
+*   @param rnl existing ADT
+*
+*   @return 1 if there is more data to extract, 0 if not.
+*/
+int hasNextReverse(RowNodeListADT rnl);
+
+
+
 /**
 *   @param rnl existing ADT
 *
 *   @return the next row data
  */
 RowData next(RowNodeListADT rnl);
+
+
 
 /**
 *   @param rnl existing ADT
@@ -59,6 +88,16 @@ void addStitchToLastnode(RowNodeListADT rnl, StitchType data);
 
 
 /**
+*   @param destRnl existing ADT to append
+*   @param sourcetRnl existing ADT to copy their elements
+
+*
+*   Inserts all the sourceNodes at the end of destRnl
+*/
+void appendList(RowNodeListADT destRnl, RowNodeListADT sourceRnl);
+
+
+/**
 *   @param rnl existing ADT
 *   @param color data to insert
 *
@@ -73,5 +112,8 @@ void changeColorToLastNode(RowNodeListADT rnl, char* color);
 *   @return actual size of the list.
 */
 int getSize(RowNodeListADT rnl);
+
+void printRowList(RowNodeListADT rnl);
+
 
 #endif

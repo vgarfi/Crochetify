@@ -27,4 +27,4 @@ python3 temp_generated_script.py
 sudo cp awesome_crochet.png "./$OUTPUT"
 sudo rm awesome_crochet.png temp_generated_script.py
 
-echo "¡Tu Crochet está listo! Generado como: $OUTPUT"
+echo "Your crochet's ready! Generated as: $OUTPUT"

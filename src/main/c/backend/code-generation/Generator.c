@@ -134,8 +134,8 @@ static void printIndent(int indent) {
 
 static void printStitch(Stitch *stitch, int indent) {
     if (!stitch) return;
-    const char *name = stitch->stichType == STITCH_CH ? "CH" :
-                       stitch->stichType == STITCH_SC ? "SC" : "DC";
+    const char *name = stitch->stitchType == STITCH_CH ? "CH" :
+                       stitch->stitchType == STITCH_SC ? "SC" : "DC";
     printIndent(indent); printf("Stitch(%s)\n", name);
 }
 
