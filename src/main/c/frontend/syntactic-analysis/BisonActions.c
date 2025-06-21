@@ -199,8 +199,7 @@ Repeat *RepeatSemanticAction(PatternUse *pattern, int times, CompilerState * com
 Mirror *MirrorSemanticAction(PatternUse *pattern, int times, CompilerState * compilerState)
 {
     //  printf("[BisonActions] Creating Mirror: times=%d, pattern=%p\n", times, (void*)pattern);
-    if (times < 0)
-    {
+    if (times <= 0) {
         return raiseCompilationError("Only positive integers must be provided in MIRROR\n", compilerState);
     }
     Mirror *mirror = calloc(1, sizeof(Mirror));

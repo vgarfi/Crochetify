@@ -55,8 +55,8 @@ typedef enum {
     ITEM_MIRROR,
     ITEM_PATTERN,
     ITEM_PATTERN_USE,
-    ITEM_PARAMETER,
-    ITEM_ARGUMENT,
+    ITEM_PARAMETER,     // 7
+    ITEM_ARGUMENT,      // 8
     ITEM_DECLARATION,
     ITEM_ASSIGNMENT,
     ITEM_IDENTIFIER,
@@ -117,7 +117,6 @@ struct PatternUse {
     ItemType type;
     char *name;
     Sequence *arguments; // lista de Argument*
-
 };
 
 struct ColorRow {

@@ -165,7 +165,7 @@ row:    row_elements SEMICOLON											{ $$ = RowSemanticAction($1, NULL, ISNO
     ;
 
 stitch_list: stitch	%prec REDUCE_PRECEDENCE								{ $$ = SequenceSemanticAction($1, ITEM_STITCH); }
-    | stitch_list stitch %prec SHIFT_PRECEDENCE							{ $$ = AppendToSequenceSemanticAction($1, $2, ITEM_STITCH); }
+    | stitch stitch_list %prec SHIFT_PRECEDENCE							{ $$ = AppendToSequenceSemanticAction($2, $1, ITEM_STITCH); }
     ;
 
 stitch: CH																{ $$ = StitchSemanticAction(STITCH_CH); }

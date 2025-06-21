@@ -26,6 +26,7 @@ void shutdownCrochetModule();
  */
 typedef struct {
 	boolean succeed;
+	char * errorMsg;
 	RowNodeListADT stitchRows;
 } CrochetResult;
 

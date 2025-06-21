@@ -1,7 +1,7 @@
 Pattern myPattern(Color col, Stitch st){
     st st st;
     TURN CH CH CH;
-    col CH DC CH;
+    CH DC CH;
 };
 
 Color red = #FF0000;
