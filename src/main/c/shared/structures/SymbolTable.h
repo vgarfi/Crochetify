@@ -23,7 +23,7 @@ typedef struct {
     VariableType type;
     union {
         StitchType stitchType;
-        char color[7];
+        char color[8];
         PatternData PatternData;
     } data;
 } SymbolTableEntry;

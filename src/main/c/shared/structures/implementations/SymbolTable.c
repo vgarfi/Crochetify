@@ -177,7 +177,7 @@ SymbolTablePtr initSymbolTable(){
 void freeSymbolTable(SymbolTablePtr symbolTablePtr) {
     SymbolTableEntry* symbolTableEntryPtr;
     kh_foreach_value((khash_t(symbol_table) *)symbolTablePtr, symbolTableEntryPtr, {
-        freeSymbolTableEntry(symbolTableEntryPtr);
+         freeSymbolTableEntry(symbolTableEntryPtr);
     });
 
     khash_t(symbol_table)* ht = (khash_t(symbol_table)*)symbolTablePtr; 
@@ -203,16 +203,19 @@ static void freeSymbolTableEntry(SymbolTableEntry* symbolTableEntryPtr) {
     if (symbolTableEntryPtr->type == PATTERN_TYPE) {
         PatternData* pd = &symbolTableEntryPtr->data.PatternData;
         if (pd->params != NULL) {
-            for (int i = 0; i < pd->paramCount; ++i) {
-                if (pd->params[i].paramValue) {
-                    free(pd->params[i].paramValue);
+            for (int i = 0; i < pd->paramCount; i++) {
+                if (((PatternParam)(pd->params[i])).paramValue != NULL && ((PatternParam)(pd->params[i])).paramType != COLOR_TYPE ) {
+                  //  free(((PatternParam)(pd->params[i])).paramValue);
                 }
             }
             free(pd->params);
         }
+       
         if (pd->rowNodeList != NULL) {
             freeRowNodeList(pd->rowNodeList);
         }
     }
     free(symbolTableEntryPtr);
 }
+
+

@@ -134,27 +134,48 @@ CrochetResult computePatternUse(PatternUse * patternUse, ScopeListADT scopeList,
         .stitchRows = NULL,
         .succeed = false
     };
-    
+
     if (patternUse->name == NULL) {
         return computeStitchList((Sequence*) patternUse->arguments, rowNodeList);
     }
-    
-    // busco primero en la tabla el patternData
 
-    RowNodeListADT rowNodeListAux = newRowNodeList();
-    PatternData patterData = *(PatternData*)getValueByIdentifier(scopeList,patternUse->name,PATTERN_TYPE);
-    Pattern * pattern = searchPatternDef(patternUse->name); 
-    if(pattern == NULL){
-        printf("qqq\n");
+    // Get the original PatternData from the symbol table
+    PatternData* original = (PatternData*)getValueByIdentifier(scopeList, patternUse->name, PATTERN_TYPE);
+    if (!original) {
+        crochetResult.errorMsg = "Pattern not found in scope";
+        return crochetResult;
     }
-    for (int i = 0; i < patternUse->arguments->count; i++){   
-        ItemType itemType = ((Argument*)(patternUse->arguments->items[i]))->argumentType; // todos por def son tipo argumento
-                                                                                        // entoces del item argumuento quiero su tipo argumento
+    Pattern * pattern = searchPatternDef(patternUse->name);
+    if (pattern == NULL) {
+        crochetResult.errorMsg = "Pattern definition not found";
+        return crochetResult;
+    }
+
+    // Deep copy PatternData and its params
+    PatternData patterData;
+    patterData.paramCount = original->paramCount;
+    patterData.rowNodeList = original->rowNodeList;
+    if (patterData.paramCount > 0) {
+        patterData.params = malloc(patterData.paramCount * sizeof(PatternParam));
+        for (int i = 0; i < patterData.paramCount; ++i) {
+            patterData.params[i].paramType = original->params[i].paramType;
+            patterData.params[i].paramValue = original->params[i].paramValue;
+        }
+    } else {
+        patterData.params = NULL;
+    }
+
+    // Prepare for argument evaluation
+    RowNodeListADT rowNodeListAux = newRowNodeList();
+
+    // Evaluate arguments and assign to params
+    for (int i = 0; i < patternUse->arguments->count; i++) {
+        ItemType itemType = ((Argument*)(patternUse->arguments->items[i]))->argumentType;
         Argument * arg = ((Argument*)(patternUse->arguments->items[i]));
-        printf("Item type vale %d\n", itemType);
-        switch (itemType){
-            case ITEM_IDENTIFIER:
-                char* value =  (char*) arg->value;
+        // arguments es Sequence *, items de la secuencia, donde es Arg *
+        switch (itemType) {
+            case ITEM_IDENTIFIER: {
+                char* value = (char*) arg->value;
                 void* isColor = getValueByIdentifier(scopeList, value, COLOR_TYPE);
                 void* isStitch = getValueByIdentifier(scopeList, value, STITCH_TYPE);
                 if (isColor != NULL) {
@@ -163,14 +184,21 @@ CrochetResult computePatternUse(PatternUse * patternUse, ScopeListADT scopeList,
                     patterData.params[i].paramValue = isStitch;
                 } else {
                     logError(_logger, "Identifier '%s' not found in scope list.", value);
+                    // Clean up
+                    if (rowNodeListAux) freeRowNodeList(rowNodeListAux);
+                    if (patterData.params) free(patterData.params);
                     return crochetResult;
                 }
-            break;
+                break;
+            }
             case ITEM_COLOR_VALUE:
                 patterData.params[i].paramValue = arg->value;
                 break;
             case ITEM_STITCH:
-                patterData.params[i].paramValue = arg->value;
+                Stitch *stitch = (Stitch *)arg->value;
+                StitchType *typePtr = malloc(sizeof(StitchType));
+                *typePtr = stitch->stitchType;
+                patterData.params[i].paramValue = typePtr;
                 break;
             case ITEM_PATTERN_USE:
                 computePatternUse((PatternUse *) arg->value, scopeList, rowNodeListAux);
@@ -184,20 +212,29 @@ CrochetResult computePatternUse(PatternUse * patternUse, ScopeListADT scopeList,
                 break;
             default:
                 crochetResult.errorMsg = "Default value";
+                // Clean up
+                if (rowNodeListAux) freeRowNodeList(rowNodeListAux);
+                if (patterData.params) free(patterData.params);
                 return crochetResult;
-                break;
-        }
-    }
-    crochetResult = computePattern(patterData,pattern,scopeList,rowNodeList);
-    for(int i =0; i < patternUse->arguments->count;i++){
-        printf("ITerating %d\n", i);
-        ItemType itemType = ((Argument*)(patternUse->arguments->items[i]))->argumentType; 
-        if(itemType == ITEM_SEQUENCE || itemType == ITEM_PATTERN_USE){
-            freeRowNodeList((RowNodeListADT)patterData.params[i].paramValue);
         }
     }
 
-    if(!crochetResult.succeed){
+    // Compute the pattern with the filled params
+    crochetResult = computePattern(patterData, pattern, scopeList, rowNodeList);
+
+    // Free any heap-allocated paramValue created for this call
+    for (int i = 0; i < patternUse->arguments->count; i++) {
+        ItemType itemType = ((Argument*)(patternUse->arguments->items[i]))->argumentType;
+        if (itemType == ITEM_SEQUENCE || itemType == ITEM_PATTERN_USE) {
+            freeRowNodeList((RowNodeListADT)patterData.params[i].paramValue);
+        }else if(itemType == ITEM_STITCH){
+            free(patterData.params[i].paramValue); 
+        }
+    }
+    if (rowNodeListAux) freeRowNodeList(rowNodeListAux);
+    if (patterData.params) free(patterData.params);
+
+    if (!crochetResult.succeed) {
         crochetResult.errorMsg = "ComputePattern Error";
     }
 
@@ -263,13 +300,13 @@ CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeLi
             putSymbolInSymbolTable(scopeList,((Parameter *)(pattern->parameters->items[i]))->name, patterData.params[i].paramType, patterData.params[i].paramValue);
         }
     }
-    printf("Logre pasar paramCOutn\n");
+   // printf("Logre pasar paramCOutn\n");
    
 
-    printf("patternbodycount: %d\n", pattern->body->count);
+    //printf("patternbodycount: %d\n", pattern->body->count);
     for(int i = 0; i < pattern->body->count; i++) {
         ItemType itemType = pattern->body->itemTypes[i];
-        printf("Computing row %d\n", i);
+       // printf("Computing row %d\n", i);
         if (itemType == ITEM_ROW) {
             Row * row = (Row *)pattern->body->items[i];
             crochetBuildingState.currentWasTurn = row->isTurn;
@@ -281,7 +318,7 @@ CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeLi
             for (int j = 0; j < row->elements->count; j++) {   
                 ItemType itemType = row->elements->itemTypes[j];
                 CrochetResult result;
-                printf("Computing pattern item with type: %d\n", itemType);
+               // printf("Computing pattern item with type: %d\n", itemType);
                 switch (itemType) {
                     case ITEM_PATTERN_USE:
                         result = computePatternUse((PatternUse *)row->elements->items[j], scopeList, rowNodeList);
@@ -328,11 +365,11 @@ CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeLi
             return crochetResult;
         }
     }
-    printf("AAA\n");
+   // printf("AAA\n");
     if(patternHasArgs){
-        printf("BBB\n");
+     //   printf("BBB\n");
         removeLastScope(scopeList);
-        printf("CCC\n");
+     //   printf("CCC\n");
     }
 
     crochetResult.succeed = true;

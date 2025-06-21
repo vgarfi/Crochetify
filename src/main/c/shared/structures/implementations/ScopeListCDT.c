@@ -2,7 +2,7 @@
 #include "../ScopeListADT.h"
 #include "../SymbolTable.h"
 #include "../KHash.h"
-
+#include <stdio.h>
 typedef struct ScopeNode {
     SymbolTablePtr symbolTable;
     struct ScopeNode * next;    
@@ -19,13 +19,18 @@ ScopeListADT newScopeList(void) {
 }
 
 void freeScopeList(ScopeListADT list) {
+   //  printf("empieza la liberacion 🎶\n");
     ScopeNode * curr = list->head;
     while (curr) {
+     //   printf(" voy a liberar scope\n");
         ScopeNode * tmp = curr;
         curr = curr->next;
         freeSymbolTable(tmp->symbolTable);
+    ///     printf("libero symbolTable del scope\n");
         free(tmp);
+    //     printf("libere symbolTable del scope\\n");
     }
+ //   printf("libere todo \n");
     free(list);
 }
 
