@@ -41,6 +41,7 @@ RowNodeListADT getRowNodeListFromSymbolTable(SymbolTablePtr symbolTablePtr, char
 PatternData* getPatternDataFromSymbolTable(SymbolTablePtr symbolTablePtr, char* key);
 
 boolean existsSymbolTableEntry(SymbolTablePtr symbolTablePtr, char* key, VariableType type);
+boolean existsSymbolTableEntryWithSameType(SymbolTablePtr symbolTablePtr, char * key, VariableType type);
 
 void freeSymbolTable(SymbolTablePtr symbolTablePtr);
 #endif

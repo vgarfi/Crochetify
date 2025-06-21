@@ -37,7 +37,7 @@ static char* makeCompositeKey(const char* key, VariableType type) {
 static SymbolTableEntry* getEntry(SymbolTablePtr symbolTablePtr, const char* key, VariableType type) {
     char* compositeKey = makeCompositeKey(key, type);
     khiter_t k = kh_get(symbol_table, (khash_t(symbol_table)*)symbolTablePtr, compositeKey);
-    free(compositeKey); // compositeKey is not stored, just used for lookup
+    free(compositeKey);
     if (k != kh_end((khash_t(symbol_table)*)symbolTablePtr)) {
         return kh_val((khash_t(symbol_table)*)symbolTablePtr, k);
     }
@@ -193,8 +193,14 @@ void freeSymbolTable(SymbolTablePtr symbolTablePtr) {
 boolean existsSymbolTableEntry(SymbolTablePtr symbolTablePtr, char* key, VariableType type) {
     char* compositeKey = makeCompositeKey(key, type);
     khiter_t k = kh_get(symbol_table, (khash_t(symbol_table)*)symbolTablePtr, compositeKey);
+    SymbolTableEntry* entry = getEntry(symbolTablePtr, key, type);
     free(compositeKey);
-    return k != kh_end((khash_t(symbol_table)*)symbolTablePtr);
+    return entry != NULL;
+}
+
+boolean existsSymbolTableEntryWithSameType(SymbolTablePtr symbolTablePtr, char * key, VariableType type){
+    SymbolTableEntry* entry = getEntry(symbolTablePtr, key, type);
+    return entry != NULL && entry->type == type;
 }
 
 static void freeSymbolTableEntry(SymbolTableEntry* symbolTableEntryPtr) {
@@ -204,8 +210,9 @@ static void freeSymbolTableEntry(SymbolTableEntry* symbolTableEntryPtr) {
         PatternData* pd = &symbolTableEntryPtr->data.PatternData;
         if (pd->params != NULL) {
             for (int i = 0; i < pd->paramCount; i++) {
-                if (((PatternParam)(pd->params[i])).paramValue != NULL && ((PatternParam)(pd->params[i])).paramType != COLOR_TYPE ) {
-                  //  free(((PatternParam)(pd->params[i])).paramValue);
+                if (((PatternParam)(pd->params[i])).paramValue != NULL  ) {
+                   printf("Freeing paramvalue\n");
+                    free(((PatternParam)(pd->params[i])).paramValue);
                 }
             }
             free(pd->params);
@@ -213,9 +220,8 @@ static void freeSymbolTableEntry(SymbolTableEntry* symbolTableEntryPtr) {
        
         if (pd->rowNodeList != NULL) {
             freeRowNodeList(pd->rowNodeList);
+            pd->rowNodeList = NULL;
         }
     }
     free(symbolTableEntryPtr);
 }
-
-

@@ -230,33 +230,31 @@ PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments, CompilerSt
         }
     }
     // Check whether the arguments are correct
-    // PatternData * patternData = getValueByIdentifier(_scopeList, name, PATTERN_TYPE);
-    // if(patternData->paramCount != arguments->count){
-    //     return raiseCompilationError("Pattern is called with wrong argument count", compilerState);
-    // }
-    // for(int i=0; i < patternData->paramCount; i++){
-    //     Argument * currentArg = arguments->items[i];
-    //     ItemType currentType = arguments->itemTypes[i];
-    //     switch(patternData->params[i].paramType){
-    //         case STITCH_TYPE:
-    //             if(currentType != ITEM_STITCH && !(currentType == ITEM_IDENTIFIER 
-    //                 && existsValueByIdentifier(_scopeList, (char *)currentArg->value, STITCH_TYPE))){
-    //                 return raiseCompilationError("Expected stitch as argument", compilerState);
-    //             }
-    //             break;
-    //         case COLOR_TYPE:
-    //             if(currentType != ITEM_COLOR_VALUE && !(currentType == ITEM_IDENTIFIER 
-    //                 && existsValueByIdentifier(_scopeList, (char *)currentArg->value, COLOR_TYPE))){
-    //                 return raiseCompilationError("Expected color as argument", compilerState);
-    //             }
-    //             break;
-    //         case PATTERN_TYPE:
-    //             if(currentType != ITEM_PATTERN_USE && currentType != ITEM_SEQUENCE 
-    //                 && !(currentType != ITEM_PATTERN && existsValueByIdentifier(_scopeList, (char *)currentArg->value, PATTERN_TYPE))){
-    //                 return raiseCompilationError("Expected pattern as argument", compilerState);
-    //             }
-    //     }
-    // }
+    PatternData * patternData = (PatternData*)getValueByIdentifier(_scopeList, name, PATTERN_TYPE);
+    if(patternData->paramCount != arguments->count){
+        return raiseCompilationError("Pattern is called with wrong argument count", compilerState);
+    }
+    for(int i=0; i < patternData->paramCount; i++){
+        Argument * currentArg = arguments->items[i];
+        ItemType currentType = currentArg->argumentType;
+        switch(patternData->params[i].paramType){
+            case STITCH_TYPE:
+                if(!(currentType == ITEM_STITCH || (currentType == ITEM_IDENTIFIER && existsValueByIdentifierAndType(_scopeList, (char *)currentArg->value, STITCH_TYPE)))){
+                    return raiseCompilationError("Expected stitch as argument", compilerState);
+                }
+                break;
+            case COLOR_TYPE:
+                if(!(currentType == ITEM_COLOR_VALUE || (currentType == ITEM_IDENTIFIER && existsValueByIdentifierAndType(_scopeList, (char *)currentArg->value, COLOR_TYPE)))){
+                    return raiseCompilationError("Expected color as argument", compilerState);
+                }
+                break;
+            case PATTERN_TYPE:
+                if(currentType != ITEM_PATTERN_USE && currentType != ITEM_SEQUENCE 
+                    && !(currentType != ITEM_PATTERN && existsValueByIdentifierAndType(_scopeList, (char *)currentArg->value, PATTERN_TYPE))){
+                    return raiseCompilationError("Expected pattern as argument", compilerState);
+                }
+        }
+    }
 
     PatternUse *use = calloc(1, sizeof(PatternUse));
     use->type = ITEM_PATTERN_USE;

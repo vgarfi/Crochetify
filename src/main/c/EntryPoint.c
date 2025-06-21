@@ -108,7 +108,10 @@ const int main(const int count, const char ** arguments) {
 		}
 		//printRowList(result.stitchRows);
 		generate(&result);
-		freeRowNodeList(result.stitchRows);
+		for(int i=0; i < result.currentFreeCount; i++){
+			freeRowNodeList(result.toFree[i]);
+		}
+		// freeRowNodeList(result.stitchRows);
 
 		// ----------------------------------------------------------------------------------------
 		// Beginning of the Backend... ------------------------------------------------------------

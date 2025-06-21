@@ -13,7 +13,7 @@ Pattern myPattern2(Color col,Stitch st,Stitch st2){
 };
 
 BEGIN CROCHET
-    myPattern(red,myPattern2(red,CH,CH));
-    TURN CH;
-    myPattern(red,myPattern2(red,CH,CH));
+    myPattern(red,myPattern2(red,CH,CH)); // computeuse(myPattern) computePattern -> computeUse(myPattern2)
+    //TURN CH;
+    //myPattern(red,myPattern2(red,CH,CH));
 END CROCHET

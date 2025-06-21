@@ -13,4 +13,5 @@ void putSymbolInSymbolTable(ScopeListADT list, char* identifier, VariableType ty
 void* getValueByIdentifier(ScopeListADT list, char * identifier, VariableType type);
 void removeLastScope(ScopeListADT list);
 boolean existsValueByIdentifier(ScopeListADT list, char * identifier, VariableType type);
+boolean existsValueByIdentifierAndType(ScopeListADT list, char * identifier, VariableType type);
 #endif

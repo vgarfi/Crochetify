@@ -43,7 +43,7 @@ void createRowNode(RowNodeListADT rnl, RowData data) {
     rnl->last = node;
     rnl->itActual = NULL;
     rnl->itReverseActual = NULL;
-    rnl->size++;
+    (rnl->size)++;
 }
 
 void freeRowNodeList(RowNodeListADT rnl) {
@@ -82,10 +82,15 @@ void addStitchToLastnode(RowNodeListADT rnl, StitchType data) {
         lastNode->data.stitches = malloc(STITCHES_CHUNK_SIZE * sizeof(StitchType));
         lastNode->data.stitchCount = 0;
     } else if (lastNode->data.stitchCount % STITCHES_CHUNK_SIZE == 0) {
+        StitchType * aux = lastNode->data.stitches;
         lastNode->data.stitches = realloc(
             lastNode->data.stitches,
             sizeof(StitchType) * (lastNode->data.stitchCount + STITCHES_CHUNK_SIZE)
         );
+        if(lastNode->data.stitches == NULL){
+            lastNode->data.stitches = aux;
+            return;
+        }
     }
     lastNode->data.stitches[lastNode->data.stitchCount++] = data;
 }
@@ -138,7 +143,6 @@ static const char* stitchTypeToString(StitchType st) {
         case STITCH_CH: return "CH";
         case STITCH_DC: return "DC";
         case STITCH_SC: return "SC";
-        // ... agrega aquí el resto de tus puntadas
         default: return "?";
     }
 }

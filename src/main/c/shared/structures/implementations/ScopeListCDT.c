@@ -43,6 +43,15 @@ boolean existsValueByIdentifier(ScopeListADT list, char * identifier, VariableTy
     return false;
 }
 
+boolean existsValueByIdentifierAndType(ScopeListADT list, char * identifier, VariableType type){
+    for(ScopeNode* current = list->head; current != NULL; current = current->next) {
+        if(existsSymbolTableEntryWithSameType(current->symbolTable,identifier,type)){
+            return true;
+        }
+    }
+    return false;
+}
+
 void* getValueByIdentifier(ScopeListADT list, char * identifier, VariableType type) {
     for(ScopeNode* current = list->head; current != NULL; current = current->next) {
         switch (type) {
@@ -51,7 +60,7 @@ void* getValueByIdentifier(ScopeListADT list, char * identifier, VariableType ty
             if (color != NULL) {
                 return color;
             }
-        break;
+            break;
         
         case STITCH_TYPE:
             StitchType* stitch = getStitchFromSymbolTable(current->symbolTable, identifier);
