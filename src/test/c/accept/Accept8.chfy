@@ -8,13 +8,26 @@ Pattern myPattern(Color col,Stitch st){
 };
 
 Pattern myPattern2(Color col,Stitch st){
-    #00FF00 st st st;
+  #00FF00 st st st;
     TURN CH CH CH;
     col CH DC CH;
 };
 
 BEGIN CROCHET
     myPattern(red,SC);
-    TURN CH CH CH;
-    myPattern(red,SC);
+    TURN CH;
+    CH SC;
+    TURN CH;
+    myPattern2(blue,SC);
 END CROCHET
+/*
+    SC SC SC;
+    TURN CH CH CH;
+    red CH DC CH;
+    TURN CH;
+    CH SC;
+    TURN CH;
+    CH CH CH;
+
+
+*/
