@@ -3,11 +3,11 @@ Pattern pat1(Color c, Stitch x){
 };
 
 Pattern pat2(Color c, Stitch x){
-    c x x x;
+    c x x;
 };
 
 BEGIN CROCHET
     pat1(#FF0000, CH);
-    TURN CH CH CH;
+    TURN CH;
     pat2(#00FF00, SC);
 END CROCHET
