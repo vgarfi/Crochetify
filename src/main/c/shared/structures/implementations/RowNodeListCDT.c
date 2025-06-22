@@ -225,7 +225,6 @@ void appendNodeandList(RowNodeListADT destRnl, RowNodeListADT sourceRnl){
 RowNodeListADT cloneRowNodeList(RowNodeListADT src) {
     if (src == NULL) return NULL;
     RowNodeListADT dst = newRowNodeList();
-    printRowList(src);
     int i = 1;
     RowNode *curr = src->head;
     while (curr != NULL) {
