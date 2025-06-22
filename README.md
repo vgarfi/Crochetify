@@ -17,8 +17,6 @@ Crochetify is a programming language designed to create filet crochet patterns i
 
 - **Functions**: Build your own crochet chart using predetermined functions such as MIRROR and REPEAT. The former mirrors a single line of crochet as many times you want, while the latter repeats a given pattern any given times.
 
-- **
-
 - **Color design**: Make sure to colorize your pattern and make it unique either by colorizing any row with the use of hexadecimal color values or Color variables.
 
 ## Docker Setup Instructions
