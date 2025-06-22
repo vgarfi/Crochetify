@@ -1,0 +1,20 @@
+Color c1 = #d14848;
+Color c2 = #394baf;
+Color c3 = #088647;
+Color c4 =  #3f1212;
+
+Pattern basePattern(){
+    DC CH DC CH DC;
+};
+
+BEGIN CROCHET
+    c1 REPEAT([CH], 6); 
+    c2 TURN CH CH CH; 
+    c2 basePattern(); 
+    c3 TURN CH CH CH; 
+    c3 basePattern(); 
+    c4 TURN CH CH CH; 
+    c4 basePattern(); 
+    TURN CH; 
+    REPEAT([SC], 4);
+END CROCHET

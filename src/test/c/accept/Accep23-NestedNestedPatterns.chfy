@@ -1,0 +1,47 @@
+Pattern myRedPattern(Color color,Pattern lambda) {
+    CH CH CH CH CH;
+    TURN CH;
+    color lambda;
+};
+
+Pattern myOrangePattern(Color color,Pattern lambda){
+    lambda;
+    TURN CH;
+    color SC SC SC SC SC;
+};
+
+Pattern myYellowPattern(Color color,Pattern lambda) {
+    lambda;
+    TURN CH;
+    color SC SC SC SC SC;
+};
+
+Pattern myGreenPattern(Color color,Pattern lambda) {
+    lambda;
+    TURN CH;
+    color SC SC SC SC SC;
+};
+
+Pattern myBluePattern(Color color,Pattern lambda) {
+    lambda;
+    TURN CH;
+    color SC SC SC SC SC;
+};
+
+Pattern myPurplePattern(Color color,Pattern lambda) {
+    lambda;
+    TURN CH;
+    color SC SC SC SC SC;
+
+};
+Color purple =#4100b9;
+Color blue = #0000FF;
+Color green = #00FF00;
+Color orange =#ff6f00;
+Color yellow =#f6ff00;
+Color red =#ff0000;
+BEGIN CROCHET
+    //REPEAT([CH],100);
+    myPurplePattern(red,myBluePattern(orange,myGreenPattern(yellow,myOrangePattern(green,myYellowPattern(blue,myRedPattern(purple,[SC SC SC SC]))))));
+END CROCHET
+

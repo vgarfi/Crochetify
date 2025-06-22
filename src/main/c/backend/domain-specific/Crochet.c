@@ -120,18 +120,18 @@ CrochetResult computeCrochet(Program * program, ScopeListADT scopeList) {
     int iteration = 0;
     StitchType lastRowStitch = STITCH_INVALID; 
     RowData nextNode = {0};
-    while(hasNext(_rowNodeList)){
+    while(hasNext(_rowNodeList)) {
         nextNode = next(_rowNodeList);
-        if(iteration % 2 == 1){
+        if(iteration % 2 == 1) {
             iteration++;
             continue;
         }
-        if(firstRowLength == -1){
+        if(firstRowLength == -1) {
             firstRowLength = nextNode.stitchCount;
             lastRowStitch = nextNode.stitches[nextNode.stitchCount - 1];
         } else {
             if(!validateRowLength(firstRowLength, nextNode.stitchCount, lastRowStitch)){
-                logError(_logger, "Invalid row length at row: must match previous row or be one less if last stitch was CH or DC.");
+                logError(_logger, "Invalid row length: must match previous row or be one less if last stitch was CH or DC.");
                 return crochetResult;
             }
             lastRowStitch = nextNode.stitches[nextNode.stitchCount - 1];
@@ -227,17 +227,17 @@ CrochetResult computePatternUse(PatternUse * patternUse, ScopeListADT scopeList,
         return crochetResult;
     }
     
-    PatternData patterData;
-    patterData.paramCount = original->paramCount;
-    patterData.rowNodeList = original->rowNodeList;
-    if (patterData.paramCount > 0) {
-        patterData.params = malloc(patterData.paramCount * sizeof(PatternParam));
-        for (int i = 0; i < patterData.paramCount; i++) {
-            patterData.params[i].paramType = original->params[i].paramType;
-            patterData.params[i].paramValue = original->params[i].paramValue;
+    PatternData patternData;
+    patternData.paramCount = original->paramCount;
+    patternData.rowNodeList = original->rowNodeList;
+    if (patternData.paramCount > 0) {
+        patternData.params = malloc(patternData.paramCount * sizeof(PatternParam));
+        for (int i = 0; i < patternData.paramCount; i++) {
+            patternData.params[i].paramType = original->params[i].paramType;
+            patternData.params[i].paramValue = original->params[i].paramValue;
         }
     } else {
-        patterData.params = NULL;
+        patternData.params = NULL;
     }
     RowNodeListADT rowNodeListAux = newRowNodeList();
 
@@ -251,32 +251,32 @@ CrochetResult computePatternUse(PatternUse * patternUse, ScopeListADT scopeList,
                 void* isColor = getValueByIdentifier(scopeList, value, COLOR_TYPE);
                 void* isStitch = getValueByIdentifier(scopeList, value, STITCH_TYPE);
                 if (isColor != NULL) {
-                    patterData.params[i].paramValue = isColor;
+                    patternData.params[i].paramValue = isColor;
                 } else if (isStitch != NULL) {
-                    patterData.params[i].paramValue = isStitch;
+                    patternData.params[i].paramValue = isStitch;
                 } else {
                     logError(_logger, "Identifier '%s' not found in scope list.", value);
                     if (rowNodeListAux){
                         freeRowNodeList(rowNodeListAux);
                         rowNodeListAux = NULL;
                     } 
-                    if (patterData.params){
-                        free(patterData.params);
-                        patterData.params = NULL;
+                    if (patternData.params){
+                        free(patternData.params);
+                        patternData.params = NULL;
                     } 
                     return crochetResult;
                 }
                 break;
             }
             case ITEM_COLOR_VALUE:
-                patterData.params[i].paramValue = arg->value;
+                patternData.params[i].paramValue = arg->value;
                 break;
             case ITEM_STITCH:
                 {
                 Stitch *stitch = (Stitch *)arg->value;
                 StitchType *typePtr = malloc(sizeof(StitchType));
                 *typePtr = stitch->stitchType;
-                patterData.params[i].paramValue = typePtr;
+                patternData.params[i].paramValue = typePtr;
                 }
                 break;
             case ITEM_PATTERN_USE:
@@ -284,14 +284,14 @@ CrochetResult computePatternUse(PatternUse * patternUse, ScopeListADT scopeList,
                 createRowNode(rowNodeListAux,createRowData("#000000"));
                 computePatternUse((PatternUse *) arg->value, scopeList, rowNodeListAux);
                 processingPattern--;
-                patterData.params[i].paramValue = rowNodeListAux;
-                patterData.startsWithTurn = lastPatternStartTurn;
+                patternData.params[i].paramValue = rowNodeListAux;
+                patternData.startsWithTurn = lastPatternStartTurn;
                 rowNodeListAux = newRowNodeList();
                 break;
             case ITEM_SEQUENCE:
                 computeStitchList((Sequence *) arg->value, rowNodeListAux);
-                patterData.params[i].paramValue = rowNodeListAux;
-                patterData.params[i].paramType = STITCH_LIST_TYPE;
+                patternData.params[i].paramValue = rowNodeListAux;
+                patternData.params[i].paramType = STITCH_LIST_TYPE;
                 rowNodeListAux = newRowNodeList();
                 break;
             default:
@@ -300,24 +300,24 @@ CrochetResult computePatternUse(PatternUse * patternUse, ScopeListADT scopeList,
                     freeRowNodeList(rowNodeListAux);
                     rowNodeListAux = NULL;
                 } 
-                if (patterData.params){
-                    free(patterData.params);
-                    patterData.params = NULL;
+                if (patternData.params){
+                    free(patternData.params);
+                    patternData.params = NULL;
                 } 
                 return crochetResult;
         }
     }
 
-    crochetResult = computePattern(patterData, pattern, scopeList, rowNodeList);
+    crochetResult = computePattern(patternData, pattern, scopeList, rowNodeList);
 
     for (int i = 0; i < argCount; i++) {
         ItemType itemType = ((Argument*)(patternUse->arguments->items[i]))->argumentType;
         if ((itemType == ITEM_SEQUENCE ) &&
-            patterData.params[i].paramValue != original->params[i].paramValue &&
-            patterData.params[i].paramValue != crochetResult.stitchRows) {
-            freeRowNodeList((RowNodeListADT)patterData.params[i].paramValue);
-        } else if(itemType == ITEM_STITCH && patterData.params[i].paramValue != original->params[i].paramValue) {
-            free(patterData.params[i].paramValue); 
+            patternData.params[i].paramValue != original->params[i].paramValue &&
+            patternData.params[i].paramValue != crochetResult.stitchRows) {
+            freeRowNodeList((RowNodeListADT)patternData.params[i].paramValue);
+        } else if(itemType == ITEM_STITCH && patternData.params[i].paramValue != original->params[i].paramValue) {
+            free(patternData.params[i].paramValue); 
         }
     }
     if (rowNodeListAux != NULL){
@@ -325,9 +325,9 @@ CrochetResult computePatternUse(PatternUse * patternUse, ScopeListADT scopeList,
         rowNodeListAux = NULL;
     } 
 
-    if (patterData.params){
-        free(patterData.params);
-        patterData.params = NULL;
+    if (patternData.params){
+        free(patternData.params);
+        patternData.params = NULL;
     } 
 
     if (!crochetResult.succeed) {
@@ -371,7 +371,7 @@ CrochetResult computeStitch(Stitch * stitch, RowNodeListADT rowNodeList) {
         .succeed = false
     };
 
-    if (stitch == NULL || rowNodeList == NULL || !validateStitch(stitch->stitchType)) {
+    if (stitch == NULL || rowNodeList == NULL || (!validateStitch(stitch->stitchType))) {
         return crochetResult;
     }
     if(getSize(rowNodeList) == 0){
@@ -384,7 +384,7 @@ CrochetResult computeStitch(Stitch * stitch, RowNodeListADT rowNodeList) {
     return crochetResult;
 }
 
-CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeListADT scopeList, RowNodeListADT rowNodeList) {
+CrochetResult computePattern(PatternData patternData, Pattern * pattern , ScopeListADT scopeList, RowNodeListADT rowNodeList) {
     boolean lastDirection = false;
     CrochetResult crochetResult = {
         .stitchRows = NULL,
@@ -406,13 +406,13 @@ CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeLi
         paramNames = malloc(paramCount * sizeof(char*));
         for (int i = 0; i < paramCount; i++) {
             paramNames[i] = ((Parameter*)pattern->parameters->items[i])->name;
-            if(patterData.params[i].paramType == PATTERN_TYPE){
-                cdtToFree[i] = (RowNodeListADT)patterData.params[i].paramValue;
+            if(patternData.params[i].paramType == PATTERN_TYPE){
+                cdtToFree[i] = (RowNodeListADT)patternData.params[i].paramValue;
             }
         }
         for (int i = 0; i < paramCount; i++) {
-            if (patterData.params[i].paramType != PATTERN_TYPE) {
-                putSymbolInSymbolTable(scopeList, ((Parameter *)(pattern->parameters->items[i]))->name, patterData.params[i].paramType, patterData.params[i].paramValue);
+            if (patternData.params[i].paramType != PATTERN_TYPE) {
+                putSymbolInSymbolTable(scopeList, ((Parameter *)(pattern->parameters->items[i]))->name, patternData.params[i].paramType, patternData.params[i].paramValue);
             }
         }
     }
@@ -456,8 +456,8 @@ CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeLi
                                 if (patternHasArgs) removeLastScope(scopeList);
                                 return crochetResult;
                             }
-                            if (patterData.params[argIdx].paramType == PATTERN_TYPE) {
-                                RowNodeListADT patternValue = (RowNodeListADT) patterData.params[argIdx].paramValue;
+                            if (patternData.params[argIdx].paramType == PATTERN_TYPE) {
+                                RowNodeListADT patternValue = (RowNodeListADT) patternData.params[argIdx].paramValue;
                                 RowNodeListADT patternValueCopy = cloneRowNodeList(patternValue);
 
                                 if(lastPatternStartTurn == false){
@@ -473,8 +473,8 @@ CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeLi
                                 }
                                 
                                 result.succeed = (patternValue != NULL);
-                            }else if(patterData.params[argIdx].paramType == STITCH_LIST_TYPE){
-                                RowNodeListADT patternValue = (RowNodeListADT) patterData.params[argIdx].paramValue;
+                            }else if(patternData.params[argIdx].paramType == STITCH_LIST_TYPE){
+                                RowNodeListADT patternValue = (RowNodeListADT) patternData.params[argIdx].paramValue;
                                 appendNodeandList(rowNodeList,patternValue);
 
                             }else {
@@ -686,6 +686,7 @@ CrochetResult computeIdentifier(char * identifier, ScopeListADT scopeList, RowNo
 }
 
 static boolean validateStitch(StitchType stitchType) {
+    if(processingPattern > 0) return true;
     if (crochetBuildingState.currentWasTurn) {
         if (stitchType != STITCH_CH) {
             logError(_logger, "You can only make TURN columns with CH stitches");
@@ -713,6 +714,7 @@ static boolean validateStitch(StitchType stitchType) {
 }
 
 static boolean validateRowLength(int firstRowLength, int currentRowLength, StitchType lastRowStitch) {
+    if (processingPattern > 0) return true;
     if (lastRowStitch == STITCH_CH || lastRowStitch == STITCH_DC) {
         return currentRowLength == firstRowLength - 1;
     }

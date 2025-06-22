@@ -46,10 +46,10 @@ const int main(const int count, const char ** arguments) {
 		if(!result.succeed){
 			logError(logger, "The syntactic-analysis phase rejects the crochet program.");
 			compilationStatus = FAILED;
-			return -1;
+		} else {
+			generate(&result);
 		}
-		generate(&result);
-		}
+	}
 	else {
 		logError(logger, "The syntactic-analysis phase rejects the input program.");
 		compilationStatus = FAILED;

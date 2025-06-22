@@ -1,25 +1,24 @@
-Pattern myPattern4(Stitch s, Stitch s2, Stitch s3, Pattern pattern){
-    pattern;
-    TURN CH CH CH s;
-    pattern;
+Color blue = #0000FF;
+Pattern myPattern(Color color, Pattern lambda){
+    REPEAT([CH],5);
+    TURN CH;
+    REPEAT([CH],3) SC;
+    TURN CH;
+    lambda;
 };
 
-Pattern myPattern(Color col, Pattern pattern){
-    pattern;
-    TURN CH CH CH;
-    col pattern;
-};
-
-Color red = #FF0000;
-
-Pattern myPattern2(Color col,Stitch st,Stitch st2){
-    st st2 st;
-    red TURN CH CH CH;
-    col CH CH CH;
+Pattern mySecondPattern(Stitch s) {
+    s s s s s;
+    TURN CH;
+    s s s s s;
 };
 
 BEGIN CROCHET
-    myPattern(red,[CH CH CH SC SC]);
-    TURN CH CH CH;
-    myPattern(red,[DC SC CH DC SC]);
+#5136ca myPattern(blue, [SC SC CH SC SC]);
+    TURN CH;
+#7b025c mySecondPattern(SC);
 END CROCHET
+
+/*
+ This is getting awesome! And so colorful
+*/
