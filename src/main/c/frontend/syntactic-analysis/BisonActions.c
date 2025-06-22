@@ -223,18 +223,28 @@ PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments, CompilerSt
 {
     //  printf("[BisonActions] Creating PatternUse: name=%s, arguments=%p\n",
     //    name ? name : "(null)", (void*)arguments);
-    if(name != NULL){
-        boolean patternExists = existsValueByIdentifier(_scopeList, name, PATTERN_TYPE);
-        if(!patternExists){
-            return raiseCompilationError("Pattern is never declared", compilerState);
-        }
+
+    // Si name es NULL, es un pattern anónimo (ej: repeat/mirror con secuencia)
+    if(name == NULL){
+        PatternUse *use = calloc(1, sizeof(PatternUse));
+        use->type = ITEM_PATTERN_USE;
+        use->name = NULL;
+        use->arguments = arguments;
+        return use;
     }
-    // Check whether the arguments are correct
+
+    boolean patternExists = existsValueByIdentifier(_scopeList, name, PATTERN_TYPE);
+    if(!patternExists){
+        return raiseCompilationError("Pattern is never declared", compilerState);
+    }
     PatternData * patternData = (PatternData*)getValueByIdentifier(_scopeList, name, PATTERN_TYPE);
-    if(patternData->paramCount != arguments->count){
+
+    int argCount = arguments ? arguments->count : 0;
+    if(patternData->paramCount != argCount){
         return raiseCompilationError("Pattern is called with wrong argument count", compilerState);
     }
     for(int i=0; i < patternData->paramCount; i++){
+        if (!arguments) break; // Defensive, should not happen if paramCount==0
         Argument * currentArg = arguments->items[i];
         ItemType currentType = currentArg->argumentType;
         switch(patternData->params[i].paramType){
@@ -258,11 +268,11 @@ PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments, CompilerSt
 
     PatternUse *use = calloc(1, sizeof(PatternUse));
     use->type = ITEM_PATTERN_USE;
-    if (name)
-        use->name = strdup(name);
+    use->name = strdup(name);
     use->arguments = arguments;
     return use;
 }
+
 
 Sequence *SequenceSemanticAction(void *item, ItemType itemType)
 {

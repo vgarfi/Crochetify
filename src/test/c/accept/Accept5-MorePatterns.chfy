@@ -4,7 +4,7 @@ Pattern myPattern4(Stitch s, Stitch s2, Stitch s3, Pattern pattern){
     pattern;
 };
 
-Pattern myPattern(Color col,Pattern pattern){
+Pattern myPattern(Color col, Pattern pattern){
     pattern;
     TURN CH CH CH;
     col pattern;
@@ -19,7 +19,7 @@ Pattern myPattern2(Color col,Stitch st,Stitch st2){
 };
 
 BEGIN CROCHET
-    myPattern(red,CH);
+    myPattern(red,[CH CH CH DC CH]);
     TURN CH;
-    myPattern(red,DC);
+    myPattern(red,[DC SC CH DC CH]);
 END CROCHET

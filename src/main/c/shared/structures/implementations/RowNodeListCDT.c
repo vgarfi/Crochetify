@@ -76,21 +76,26 @@ int hasNext(RowNodeListADT rnl) {
 }
 
 void addStitchToLastnode(RowNodeListADT rnl, StitchType data) {
-    if (rnl == NULL || rnl->last == NULL) return;
+    if (rnl == NULL || rnl->last == NULL) {
+        return;
+    }
     RowNode *lastNode = rnl->last;
+
     if (lastNode->data.stitches == NULL || lastNode->data.stitchCount == 0) {
         lastNode->data.stitches = malloc(STITCHES_CHUNK_SIZE * sizeof(StitchType));
+        if (lastNode->data.stitches == NULL) {
+            return;
+        }
         lastNode->data.stitchCount = 0;
     } else if (lastNode->data.stitchCount % STITCHES_CHUNK_SIZE == 0) {
-        StitchType * aux = lastNode->data.stitches;
-        lastNode->data.stitches = realloc(
+        StitchType *newPtr = realloc(
             lastNode->data.stitches,
             sizeof(StitchType) * (lastNode->data.stitchCount + STITCHES_CHUNK_SIZE)
         );
-        if(lastNode->data.stitches == NULL){
-            lastNode->data.stitches = aux;
+        if (newPtr == NULL) {
             return;
         }
+        lastNode->data.stitches = newPtr;
     }
     lastNode->data.stitches[lastNode->data.stitchCount++] = data;
 }
@@ -113,10 +118,19 @@ void changeColorToLastNode(RowNodeListADT rnl, char* color) {
 
 void appendList(RowNodeListADT destRnl, RowNodeListADT sourceRnl) {
     if (destRnl == NULL || sourceRnl == NULL) return;
-    beginIteration(sourceRnl);
-    while (hasNext(sourceRnl)) {
-        createRowNode(destRnl, next(sourceRnl));
+
+    if (sourceRnl->head == NULL) return; // Nothing to append
+    if (destRnl->head == NULL) {
+        destRnl->head = sourceRnl->head;
+        destRnl->last = sourceRnl->last;
+    } else {
+        destRnl->last->next = sourceRnl->head;
+        sourceRnl->head->prev = destRnl->last;
+        destRnl->last = sourceRnl->last;
     }
+    destRnl->size += sourceRnl->size;
+    destRnl->itActual = NULL;
+    destRnl->itReverseActual = NULL;
 }
 
 void beginReverseIteration(RowNodeListADT rnl) {
@@ -154,14 +168,43 @@ void printRowList(RowNodeListADT rnl) {
     while (hasNext(rnl)) {
         RowData rd = next(rnl);
         if ((count++) % 2 == 1) {
-            printf("(TURN) ");
+            printf("TURN");
         }
 
         for (int i = 0; i < rd.stitchCount; ++i) {
             printf("%s", stitchTypeToString(rd.stitches[i]));
-            if (i + 1 < rd.stitchCount) printf(" ");
+            if (i + 1 < rd.stitchCount) printf("  ");
         }
 
-        printf("\n");
     }
+}
+
+void deintegrateList(RowNodeListADT rnl) {
+    if (rnl == NULL) return;
+    rnl->head = NULL;
+}
+
+void appendNodeandList(RowNodeListADT destRnl, RowNodeListADT sourceRnl){
+    if (destRnl == NULL || sourceRnl == NULL) return;
+    if (sourceRnl->head == NULL || destRnl->last == NULL) return; // Nada que hacer
+
+    // Tomar el primer nodo de sourceRnl
+    RowNode *srcNode = sourceRnl->head;
+
+    // Agregar todos los stitches del primer nodo de sourceRnl al último nodo de destRnl
+    for (int i = 0; i < srcNode->data.stitchCount; ++i) {
+        addStitchToLastnode(destRnl, srcNode->data.stitches[i]);
+    }
+     if (srcNode->next != NULL) {
+        destRnl->last->next = srcNode->next;
+        srcNode->next->prev = destRnl->last;
+        destRnl->last = sourceRnl->last;
+        // Ajustar el size (sumar todos menos el primero de sourceRnl)
+        destRnl->size += (sourceRnl->size - 1);
+    }
+
+    destRnl->itActual = NULL;
+    destRnl->itReverseActual = NULL;
+    // Opcional: también puedes copiar el color si lo deseas
+    // changeColorToLastNode(destRnl, srcNode->data.color);
 }

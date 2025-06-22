@@ -1,0 +1,9 @@
+Pattern myPat1(){
+    SC SC SC;
+    TURN CH;
+};
+
+BEGIN CROCHET
+    REPEAT(myPat1(), 3);
+    REPEAT([CH], 3);
+END CROCHET 

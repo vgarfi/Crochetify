@@ -211,8 +211,14 @@ static void freeSymbolTableEntry(SymbolTableEntry* symbolTableEntryPtr) {
         if (pd->params != NULL) {
             for (int i = 0; i < pd->paramCount; i++) {
                 if (((PatternParam)(pd->params[i])).paramValue != NULL  ) {
-                   printf("Freeing paramvalue\n");
-                    free(((PatternParam)(pd->params[i])).paramValue);
+                   if (pd->params[i].paramType == PATTERN_TYPE) {
+                       RowNodeListADT rnl = (RowNodeListADT)pd->params[i].paramValue;
+                       if (rnl != NULL) {
+                           freeRowNodeList(rnl);
+                       }
+                   } else {
+                       free(((PatternParam)(pd->params[i])).paramValue);
+                   }
                 }
             }
             free(pd->params);

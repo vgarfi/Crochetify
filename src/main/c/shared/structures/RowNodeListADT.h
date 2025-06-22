@@ -97,6 +97,17 @@ void addStitchToLastnode(RowNodeListADT rnl, StitchType data);
 void appendList(RowNodeListADT destRnl, RowNodeListADT sourceRnl);
 
 
+
+/**
+*   @param destRnl existing ADT to append
+*   @param sourcetRnl existing ADT to copy their elements
+
+*
+*   Inserts all the sourceNodes at the end of destRnl except the first
+*/
+void appendNodeandList(RowNodeListADT destRnl, RowNodeListADT sourceRnl);
+
+
 /**
 *   @param rnl existing ADT
 *   @param color data to insert
@@ -115,5 +126,6 @@ int getSize(RowNodeListADT rnl);
 
 void printRowList(RowNodeListADT rnl);
 
+void deintegrateList(RowNodeListADT rnl);
 
 #endif

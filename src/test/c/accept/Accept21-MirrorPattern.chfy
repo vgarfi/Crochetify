@@ -1,0 +1,12 @@
+Pattern myPat(Stitch s) {
+    s s s;
+    TURN DC DC;
+    s s s;
+    TURN DC DC;
+};
+
+BEGIN CROCHET
+    MIRROR([CH SC DC], 3);
+    TURN CH CH;
+    // MIRROR(myPat(SC), 3);
+END CROCHET
