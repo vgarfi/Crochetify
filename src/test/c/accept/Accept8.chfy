@@ -20,14 +20,3 @@ BEGIN CROCHET
     TURN CH;
     myPattern2(blue,SC);
 END CROCHET
-/*
-    SC SC SC;
-    TURN CH CH CH;
-    red CH DC CH;
-    TURN CH;
-    CH SC;
-    TURN CH;
-    CH CH CH;
-
-
-*/
