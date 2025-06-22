@@ -1,0 +1,5 @@
+BEGIN CROCHET
+    SC CH SC CH SC CH;
+    TURN DC DC; // This is not allowed
+    SC SC SC;
+END CROCHET

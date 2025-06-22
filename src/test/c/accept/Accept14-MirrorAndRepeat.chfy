@@ -22,8 +22,8 @@ Pattern anidatedRepeatMirror(Pattern p){
 
 BEGIN CROCHET
     CH CH CH;
-    TURN CH CH;
+    TURN CH CH CH;
     anidatedRepeatMirror(repeatPat());
-    TURN CH CH;
+    TURN CH CH CH;
     anidatedRepeatMirror(mirrorPat());
 END CROCHET

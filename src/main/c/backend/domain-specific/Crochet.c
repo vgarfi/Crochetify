@@ -12,6 +12,8 @@ static RowNodeListADT _rowNodeList = NULL;
 
 static Sequence * definitions = NULL;
 
+static boolean validateStitch(StitchType stitchType);
+
 typedef struct {
     StitchType lastRowStitch;
     int lastRowLength;
@@ -37,7 +39,6 @@ void shutdownCrochetModule() {
 		destroyLogger(_logger);
 	}
 }
-
 
 static RowData createRowData(char * color){
     RowData node = {
@@ -80,13 +81,31 @@ CrochetResult computeCrochet(Program * program, ScopeListADT scopeList) {
 
     for(int i = 0; i < program->body->count; i++) {
         ItemType itemType = program->body->itemTypes[i];
+        
         if (itemType == ITEM_ROW) {
             Row * row = (Row *)program->body->items[i];
-        // if(crochetBuildingState.currentWasTurn && row->isTurn){
-        //     logError(_logger, "Two consecutive turn rows in row number %d\n", i+1);
-        //     return crochetResult;
-        // }
-            computeRow(row, scopeList, _rowNodeList);
+            if(crochetBuildingState.currentWasTurn && row->isTurn){
+                logError(_logger, "Two consecutive turn rows in row number %d\n", i+1);
+                return crochetResult;
+            }
+            
+            
+            if (row->isTurn) {
+                crochetBuildingState.currentHeight = 0;
+            }
+            
+            crochetBuildingState.currentWasTurn = row->isTurn;
+                        
+            CrochetResult result = computeRow(row, scopeList, _rowNodeList);
+            
+            if (!result.succeed) {
+                logError(_logger, "Failed to compute row at index %d", i+1);
+                return crochetResult;
+            }
+            if (crochetBuildingState.currentWasTurn && crochetBuildingState.currentHeight != 1 && crochetBuildingState.currentHeight != 3) {
+                logError(_logger, "Invalid TURN row height at index %d", i+1);
+                return crochetResult;
+            }
         } else {
             logError(_logger, "A program row inside the crochet body contains an invalid item type: %d", itemType);
             return crochetResult;
@@ -105,6 +124,7 @@ CrochetResult computeRow(Row * row, ScopeListADT scopeList, RowNodeListADT rowNo
     };
     RowData node = createRowData(row->color);
     createRowNode(rowNodeList, node);
+
     
     for (int i = 0; i < row->elements->count; i++) {   
         ItemType itemType = row->elements->itemTypes[i];
@@ -137,7 +157,8 @@ CrochetResult computeRow(Row * row, ScopeListADT scopeList, RowNodeListADT rowNo
             return crochetResult;
         }
     }
-    
+
+    crochetResult.succeed = true;
     return crochetResult;
 }
 
@@ -312,9 +333,10 @@ CrochetResult computeStitch(Stitch * stitch, RowNodeListADT rowNodeList) {
         .succeed = false
     };
 
-    if (stitch == NULL || rowNodeList == NULL) {
+    if (stitch == NULL || rowNodeList == NULL || !validateStitch(stitch->stitchType)) {
         return crochetResult;
     }
+
     addStitchToLastnode(rowNodeList, stitch->stitchType);
     crochetResult.succeed = true;
     return crochetResult;
@@ -352,7 +374,6 @@ CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeLi
         ItemType itemType = pattern->body->itemTypes[i];
         if (itemType == ITEM_ROW) {
             Row * row = (Row *)pattern->body->items[i];
-            crochetBuildingState.currentWasTurn = row->isTurn;
             if (lastDirection != row->isTurn) {
                 RowData node = createRowData(row->color);
                 createRowNode(rowNodeList, node);
@@ -443,14 +464,23 @@ CrochetResult computeMirror(Mirror* mirror, ScopeListADT scopeList, RowNodeListA
 
     // Ejecutar el patrón una vez en una lista auxiliar
     RowNodeListADT auxList = newRowNodeList();
+    // beginReverseIteration(rowNodeList);
+    // if(hasNextReverse(rowNodeList)){
+    //     RowData nextNode = nextReverse(rowNodeList);
+    //     createRowNode(auxList, nextNode);
+    // }
+
     CrochetResult innerResult = computePatternUse((PatternUse *)(mirror->pattern), scopeList, auxList);
     if (!innerResult.succeed) {
+        // printf("Ahora si\n");
         freeRowNodeList(auxList);
         return crochetResult;
     }
+    boolean isAnonPattern = mirror->pattern->name == NULL ? true : false;
 
     int rowCount = getSize(auxList);
     if (rowCount == 0) {
+        // printf("QUEEEE\n");
         freeRowNodeList(auxList);
         crochetResult.succeed = true;
         crochetResult.stitchRows = rowNodeList;
@@ -460,6 +490,7 @@ CrochetResult computeMirror(Mirror* mirror, ScopeListADT scopeList, RowNodeListA
     // Guardar los RowData en un array para fácil acceso
     RowData *rows = malloc(rowCount * sizeof(RowData));
     if (!rows) {
+        // printf("QQQQ\n");
         freeRowNodeList(auxList);
         return crochetResult;
     }
@@ -470,13 +501,19 @@ CrochetResult computeMirror(Mirror* mirror, ScopeListADT scopeList, RowNodeListA
     }
 
     // Alternar entre invertido y no invertido
+    // printf("%d\n", mirror->times);
     for (int t = 0; t < mirror->times; t++) {
+        // printf("Iterating %d\n", t);
         if (t % 2 == 0) {
+            // printf("Rowcount: %d\n", rowCount);
             // Invertido: filas y stitches
             for (int i = rowCount - 1; i >= 0; i--) {
                 RowData orig = rows[i];
+                printf("oirg.stitchCount: %d\n", orig.stitchCount);
                 RowData node = createRowData(orig.color);
-                createRowNode(rowNodeList, node);
+                if(!(t == 0 && i == (rowCount - 1)) && !isAnonPattern){
+                    createRowNode(rowNodeList, node);
+                }
                 for (int j = orig.stitchCount - 1; j >= 0; j--) {
                     addStitchToLastnode(rowNodeList, orig.stitches[j]);
                 }
@@ -486,7 +523,9 @@ CrochetResult computeMirror(Mirror* mirror, ScopeListADT scopeList, RowNodeListA
             for (int i = 0; i < rowCount; i++) {
                 RowData orig = rows[i];
                 RowData node = createRowData(orig.color);
-                createRowNode(rowNodeList, node);
+                if(!isAnonPattern){
+                    createRowNode(rowNodeList, node);
+                }
                 for (int j = 0; j < orig.stitchCount; j++) {
                     addStitchToLastnode(rowNodeList, orig.stitches[j]);
                 }
@@ -554,6 +593,9 @@ CrochetResult computeIdentifier(char * identifier, ScopeListADT scopeList) {
     if (isColor != NULL) {
         changeColorToLastNode(_rowNodeList, (char *)isColor);
     } else if (isStitch != NULL) {
+        if (!validateStitch(*(StitchType *)isStitch)) {
+            return crochetResult;
+        }
         addStitchToLastnode(_rowNodeList, *(StitchType *)isStitch);
     } else {
         logError(_logger, "Identifier '%s' not found in scope list.", identifier);
@@ -564,5 +606,25 @@ CrochetResult computeIdentifier(char * identifier, ScopeListADT scopeList) {
     return crochetResult;
 }
 
+static boolean validateStitch(StitchType stitchType) {
+    if (crochetBuildingState.currentWasTurn) {
+        if (stitchType != STITCH_CH) {
+            logError(_logger, "You can only make TURN columns with CH stitches");
+            return false;
+        }
+        crochetBuildingState.currentHeight++;
+        if (crochetBuildingState.currentHeight > 3) {
+            logError(_logger, "TURN exceeds maximum height (3 CH stitches)");
+            return false;
+        }
+        return true;
+    }
 
+    if (stitchType == STITCH_DC && crochetBuildingState.currentHeight != 3) {
+        logError(_logger, "You must have a 3 height TURN before using DC stitches (current height %d)", crochetBuildingState.currentHeight);
+        return false;
+    }
 
+    // Para otros casos, el stitch es válido
+    return true;
+}

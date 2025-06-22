@@ -14,6 +14,6 @@ BEGIN CROCHET
     /*
         And doc your crochet like a pro
     */
-    TURN CH CH;
+    TURN CH CH CH;
     SC SC SC; // Ok this is enough
 END CROCHET
