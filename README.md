@@ -21,11 +21,7 @@ Crochetify is a programming language designed to create filet crochet patterns i
 
 - **Color design**: Make sure to colorize your pattern and make it unique either by colorizing any row with the use of hexadecimal color values or Color variables.
 
-## Requirements
-
-### Build docker container
-
-# Docker Setup Instructions
+## Docker Setup Instructions
 
 ### 1. Build the Docker Container
 
@@ -38,7 +34,7 @@ Crochetify is a programming language designed to create filet crochet patterns i
   ```bash
   script\windows\docker-build.bat
   ```
-### Run docker container
+### 2. Run docker container
 
 - **On Ubuntu/Linux:**
   ```bash
@@ -49,7 +45,7 @@ Crochetify is a programming language designed to create filet crochet patterns i
   ```bash
   script\windows\docker-run.bat
   ```
-### Install missing libraries
+### 3. Install missing libraries
 
 If you run and any libraries are missing make sure to use the following command inside the container:
 
@@ -57,7 +53,7 @@ If you run and any libraries are missing make sure to use the following command 
   script/ubuntu/install.sh
   ```
 
-### Process code
+### 4. Process code
 
 Make sure to have your _.chfy_ file and run the following command:
 
