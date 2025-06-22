@@ -1,0 +1,17 @@
+Pattern myPattern(Color c, Pattern p) {
+    c p p;
+};
+
+Pattern myPatternWithExtraCH(Color c, Pattern p){
+    c p p CH;
+};
+
+// Lotso' colors!
+
+BEGIN CROCHET
+    myPattern(#FF0000, [CH CH SC CH CH]);
+    #30B025 TURN CH CH CH;
+    myPatternWithExtraCH(#FFBBBB, [DC DC CH CH]);
+    #30B063 TURN CH;
+    myPatternWithExtraCH(#FFC502, [SC CH CH SC]);
+END CROCHET
