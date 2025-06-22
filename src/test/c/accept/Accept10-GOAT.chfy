@@ -1,17 +1,17 @@
-Color GOAT = #BEEE33; // 🐐
+Color THE = #BEEE33; // 🐐
 Stitch G = CH;
 Stitch O = DC;
 Stitch A = DC;
 Stitch T = DC;
 
-Pattern yourGoat(Color goatColor, Stitch g, Stitch o, Stitch a, Stitch t){
+Pattern ThisIs(Color goatColor, Stitch g, Stitch o, Stitch a, Stitch t){
     goatColor g o a t;
 };
 
 BEGIN CROCHET
-    yourGoat(#001100, CH, CH, CH, CH); // Ungoated line 🐐❌
+    ThisIs(#001100, CH, CH, CH, CH); // Ungoated line 🐐❌
     TURN CH;
     SC SC SC;
     TURN CH CH CH;
-    yourGoat(GOAT, G, O, A, T); // Now THIS is THE GOATED LINE 🐐🐐🐐🐐✅✅✅✅
+    ThisIs(THE, G, O, A, T); // Now THIS is THE GOATED LINE 🐐🐐🐐🐐✅✅✅✅
 END CROCHET
