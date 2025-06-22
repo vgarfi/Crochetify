@@ -1,29 +1,31 @@
 Pattern mirrorPat(){
     CH CH CH;
     TURN CH;
-    MIRROR([CH CH CH], 1);
+    MIRROR([CH SC], 1);
     TURN CH;
-    CH CH CH;
+    CH CH;
 };
 
 Pattern repeatPat(){
-    CH CH CH;
+    CH CH;
     TURN CH;
-    REPEAT([CH], 3);
+    REPEAT([CH], 2);
     TURN CH;
-    CH CH CH;
+    CH CH;
 };
 
 Pattern anidatedRepeatMirror(Pattern p){
-    MIRROR(p, 1);
+    p;
+    TURN CH CH CH;
+    MIRROR([CH DC], 1);
     TURN CH;
-    REPEAT(p, 1);
+    REPEAT([SC], 2);
 };
 
 BEGIN CROCHET
     CH CH CH;
-    TURN CH CH CH;
+    TURN CH;
     anidatedRepeatMirror(repeatPat());
-    TURN CH CH CH;
+    TURN CH;
     anidatedRepeatMirror(mirrorPat());
 END CROCHET
