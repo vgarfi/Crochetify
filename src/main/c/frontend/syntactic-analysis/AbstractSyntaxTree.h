@@ -138,27 +138,9 @@ struct Sequence {
     int count;
 };
 
-
-enum FactorType {
-	CONSTANT,
-	EXPRESSION
-};
-
-struct Constant {
-	int value;
-};
-enum ExpressionType {
-	ADDITION,
-	DIVISION,
-	FACTOR,
-	MULTIPLICATION,
-	SUBTRACTION
-};
-
 struct Program {
     Sequence * body;
     Sequence *declarationsAndPatterns; 
-
 };
 
 #endif
