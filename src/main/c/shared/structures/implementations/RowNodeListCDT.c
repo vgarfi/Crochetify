@@ -22,7 +22,6 @@ typedef struct RowNodeListCDT {
 
 RowNodeListADT newRowNodeList(void) {
     RowNodeListADT ans = calloc(1, sizeof(RowNodeListCDT));
-    ////printf("[RowNodeList] newRowNodeList creado: %p\n", (void*)ans);
     return ans;
 }
 
@@ -45,18 +44,14 @@ void createRowNode(RowNodeListADT rnl, RowData data) {
     rnl->itActual = NULL;
     rnl->itReverseActual = NULL;
     (rnl->size)++;
-    ////printf("[RowNodeList] createRowNode en lista %p, nodo %p\n", (void*)rnl, (void*)node);
 }
 
 void freeRowNodeList(RowNodeListADT rnl) {
     if (rnl == NULL) return;
 
-    ////printf("[RowNodeList] freeRowNodeList liberando lista %p\n", (void*)rnl);
     RowNode *current = rnl->head;
     while (current != NULL) {
-        ////printf("etoy en whik\n\n");
         RowNode *aux = current->next;
-        ////printf("[RowNodeList]   liberando nodo %p (stitches %p)\n", (void*)current, (void*)current->data.stitches);
         free(current->data.stitches);
         free(current);
         current = aux;
@@ -82,17 +77,13 @@ int hasNext(RowNodeListADT rnl) {
 
 void addStitchToLastnode(RowNodeListADT rnl, StitchType data) {
     if (rnl == NULL || rnl->last == NULL) {
-    //    printf("lista : %p  lista last: %p\n",rnl,rnl->last);
-//   printf("return \n");
         return;
     }
     RowNode *lastNode = rnl->last;
 
     if (lastNode->data.stitches == NULL || lastNode->data.stitchCount == 0) {
-       // printf(" reset conteo\n");
         lastNode->data.stitches = malloc(STITCHES_CHUNK_SIZE * sizeof(StitchType));
         if (lastNode->data.stitches == NULL) {
-          //   printf(" algo salio mal 2\n");
             return;
         }
         lastNode->data.stitchCount = 0;
@@ -102,15 +93,12 @@ void addStitchToLastnode(RowNodeListADT rnl, StitchType data) {
             sizeof(StitchType) * (lastNode->data.stitchCount + STITCHES_CHUNK_SIZE)
         );
         if (newPtr == NULL) {
-          //   printf(" algo salio mal 3\n");
             return;
         }
         lastNode->data.stitches = newPtr;
     }
 
     lastNode->data.stitches[lastNode->data.stitchCount++] = data;
-  //  printf("contador mas uno !Q!!!!!!!!!!!!!!!");
-  //  printf("el stitch en posicion %d es de tipo %d\n",lastNode->data.stitchCount-1,lastNode->data.stitches[lastNode->data.stitchCount-1]);
 }
 
 int getSize(RowNodeListADT rnl) {
@@ -132,7 +120,6 @@ void changeColorToLastNode(RowNodeListADT rnl, char* color) {
 void appendList(RowNodeListADT destRnl, RowNodeListADT sourceRnl) {
     if (destRnl == NULL || sourceRnl == NULL) return;
 
-    ////printf("[RowNodeList] appendList: destino %p, fuente %p\n", (void*)destRnl, (void*)sourceRnl);
     if (sourceRnl->head == NULL) return; // Nothing to append
     if (destRnl->head == NULL) {
         destRnl->head = sourceRnl->head;
@@ -183,12 +170,12 @@ void printRowList(RowNodeListADT rnl) {
     
         RowData rd = next(rnl);
         if ((count++) % 2 == 1) {
-            //printf("TURN");
+            printf("TURN");
         }
 
         for (int i = 0; i < rd.stitchCount; ++i) {
-            //printf("%s", stitchTypeToString(rd.stitches[i]));
-          //  if (i + 1 < rd.stitchCount) //printf("  ");
+            printf("%s", stitchTypeToString(rd.stitches[i]));
+           if (i + 1 < rd.stitchCount) printf("  ");
         }
 
     }
@@ -204,7 +191,6 @@ void deintegrateListAndFirst(RowNodeListADT rnl) {
         return;
     RowNode *first = rnl->head;
     RowNode *next = first->next;
-    ////printf("[RowNodeList] deintegrateListAndFirst liberando primer nodo %p (stitches %p)\n", (void*)first, (void*)first->data.stitches);
     if (next != NULL) {
         next->prev = NULL;
     }
@@ -221,7 +207,6 @@ void appendNodeandList(RowNodeListADT destRnl, RowNodeListADT sourceRnl){
     if (destRnl == NULL || sourceRnl == NULL) return;
     if (sourceRnl->head == NULL || destRnl->last == NULL) return; // Nada que hacer
 
-    ////printf("[RowNodeList] appendNodeandList: destino %p, fuente %p\n", (void*)destRnl, (void*)sourceRnl);
     RowNode *srcNode = sourceRnl->head;
 
     for (int i = 0; i < srcNode->data.stitchCount; ++i) {
@@ -240,13 +225,10 @@ void appendNodeandList(RowNodeListADT destRnl, RowNodeListADT sourceRnl){
 RowNodeListADT cloneRowNodeList(RowNodeListADT src) {
     if (src == NULL) return NULL;
     RowNodeListADT dst = newRowNodeList();
-    //printf("lista :");
     printRowList(src);
     int i = 1;
-    ////printf("[RowNodeList] cloneRowNodeList: origen %p, copia %p\n", (void*)src, (void*)dst);
     RowNode *curr = src->head;
     while (curr != NULL) {
-        //printf(" elemento %d copiado\n",i);
         RowData newData;
         memcpy(newData.color, curr->data.color, sizeof(newData.color));
         newData.stitchCount = curr->data.stitchCount;

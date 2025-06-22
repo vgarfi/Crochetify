@@ -20,11 +20,11 @@ else
   OUTPUT="${RAW_OUTPUT}.png"
 fi
 
-cat "$INPUT" | build/Compiler "$@" # > temp_generated_script.py
+cat "$INPUT" | build/Compiler "$@" > temp_generated_script.py
 
-# python3 temp_generated_script.py
+python3 temp_generated_script.py
 
-# sudo cp awesome_crochet.png "./$OUTPUT"
-# sudo rm awesome_crochet.png temp_generated_script.py
+sudo cp awesome_crochet.png "./$OUTPUT"
+sudo rm awesome_crochet.png temp_generated_script.py
 
-# echo "Your crochet's ready! Generated as: $OUTPUT"
+echo "Your crochet's ready! Generated as: $OUTPUT"

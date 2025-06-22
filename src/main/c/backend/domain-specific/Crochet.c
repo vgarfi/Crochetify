@@ -67,12 +67,9 @@ static Pattern * searchPatternDef(char* name){
 }
 
 CrochetResult computeCrochet(Program * program, ScopeListADT scopeList) {
-    ////printf("[Crochet] Llamando a newRowNodeList en computeCrochet\n");
     CrochetResult crochetResult = {
         .stitchRows = NULL,
-        .succeed = false,
-        .currentFreeCount = 0,
-        .toFree[0] = NULL
+        .succeed = false
     };
     
     if (program == NULL || program->body == NULL || program->body->count == 0) {
@@ -150,7 +147,6 @@ CrochetResult computeCrochet(Program * program, ScopeListADT scopeList) {
 
 CrochetResult computeRow(Row * row, ScopeListADT scopeList, RowNodeListADT rowNodeList) {
     RowData node = createRowData(row->color);
-    ////printf("[Crochet] Llamando a createRowNode en computeRow sobre lista %p\n", (void*)rowNodeList);
     createRowNode(rowNodeList, node);
 
     CrochetResult crochetResult = {
@@ -211,7 +207,6 @@ CrochetResult computeRow(Row * row, ScopeListADT scopeList, RowNodeListADT rowNo
 }
 
 CrochetResult computePatternUse(PatternUse * patternUse, ScopeListADT scopeList, RowNodeListADT rowNodeList) {
-    ////printf("[Crochet] Llamando a newRowNodeList en computePatternUse\n");
     CrochetResult crochetResult = {
         .stitchRows = NULL,
         .succeed = false
@@ -262,7 +257,6 @@ CrochetResult computePatternUse(PatternUse * patternUse, ScopeListADT scopeList,
                 } else {
                     logError(_logger, "Identifier '%s' not found in scope list.", value);
                     if (rowNodeListAux){
-                        ////printf("[Crochet] Llamando a freeRowNodeList en computePatternUse (error identifier) sobre lista %p\n", (void*)rowNodeListAux);
                         freeRowNodeList(rowNodeListAux);
                         rowNodeListAux = NULL;
                     } 
@@ -292,20 +286,17 @@ CrochetResult computePatternUse(PatternUse * patternUse, ScopeListADT scopeList,
                 processingPattern--;
                 patterData.params[i].paramValue = rowNodeListAux;
                 patterData.startsWithTurn = lastPatternStartTurn;
-                ////printf("[Crochet] Llamando a newRowNodeList en computePatternUse (ITEM_PATTERN_USE loop)\n");
                 rowNodeListAux = newRowNodeList();
                 break;
             case ITEM_SEQUENCE:
                 computeStitchList((Sequence *) arg->value, rowNodeListAux);
                 patterData.params[i].paramValue = rowNodeListAux;
                 patterData.params[i].paramType = STITCH_LIST_TYPE;
-                ////printf("[Crochet] Llamando a newRowNodeList en computePatternUse (ITEM_SEQUENCE loop)\n");
                 rowNodeListAux = newRowNodeList();
                 break;
             default:
                 crochetResult.errorMsg = "Default value";
                 if (rowNodeListAux){
-                    ////printf("[Crochet] Llamando a freeRowNodeList en computePatternUse (default) sobre lista %p\n", (void*)rowNodeListAux);
                     freeRowNodeList(rowNodeListAux);
                     rowNodeListAux = NULL;
                 } 
@@ -324,14 +315,12 @@ CrochetResult computePatternUse(PatternUse * patternUse, ScopeListADT scopeList,
         if ((itemType == ITEM_SEQUENCE ) &&
             patterData.params[i].paramValue != original->params[i].paramValue &&
             patterData.params[i].paramValue != crochetResult.stitchRows) {
-            ////printf("[Crochet] Llamando a freeRowNodeList en computePatternUse (ITEM_SEQUENCE cleanup) sobre lista %p\n", (void*)patterData.params[i].paramValue);
             freeRowNodeList((RowNodeListADT)patterData.params[i].paramValue);
         } else if(itemType == ITEM_STITCH && patterData.params[i].paramValue != original->params[i].paramValue) {
             free(patterData.params[i].paramValue); 
         }
     }
     if (rowNodeListAux != NULL){
-        ////printf("[Crochet] Llamando a freeRowNodeList en computePatternUse (final) sobre lista %p\n", (void*)rowNodeListAux);
         freeRowNodeList(rowNodeListAux);
         rowNodeListAux = NULL;
     } 
@@ -423,12 +412,10 @@ CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeLi
         }
         for (int i = 0; i < paramCount; i++) {
             if (patterData.params[i].paramType != PATTERN_TYPE) {
-              //  printf("me meti a la table \n");
                 putSymbolInSymbolTable(scopeList, ((Parameter *)(pattern->parameters->items[i]))->name, patterData.params[i].paramType, patterData.params[i].paramValue);
             }
         }
     }
-    //printf("computing pattern \n\n\n\n\n");
     for (int i = 0; i < pattern->body->count; i++) {
       
         ItemType itemType = pattern->body->itemTypes[i];
@@ -440,14 +427,12 @@ CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeLi
             if (lastDirection != row->isTurn) {
                
                 RowData node = createRowData(row->color);
-                ////printf("[Crochet] Llamando a createRowNode en computePattern sobre lista %p\n", (void*)rowNodeList);
                 createRowNode(rowNodeList, node);
             }
             if(crochetBuildingState.currentWasTurn && row->isTurn){
                 logError(_logger, "Two consecutive turn rows in row number %d inside Pattern: %s \n", i+1,pattern->name == NULL? "Anonymous" : pattern->name);
                 return crochetResult;
             }
-           // //printf("direction is turn %d\n",row->isTurn);
              crochetBuildingState.currentWasTurn = row->isTurn;
 
             if (row->isTurn) {
@@ -476,34 +461,24 @@ CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeLi
                                 RowNodeListADT patternValueCopy = cloneRowNodeList(patternValue);
 
                                 if(lastPatternStartTurn == false){
-                                    ////printf("[Crochet] Llamando a appendNodeandList en computePattern sobre lista %p y copia %p\n", (void*)rowNodeList, (void*)patternValueCopy);
                                     appendNodeandList(rowNodeList, patternValueCopy);
 
                                     deintegrateListAndFirst(patternValueCopy);
-                                    ////printf("[Crochet] Llamando a freeRowNodeList en computePattern (PATTERN_TYPE, !turn) sobre lista %p\n", (void*)patternValueCopy);
                                     free(patternValueCopy);
                                 }
                                 else{
-                            //        //printf("row list ");
-                            //        printRowList(patternValueCopy);
-                              //       //printf("\n ");
-                                    ////printf("[Crochet] Llamando a appendList en computePattern sobre lista %p y copia %p\n", (void*)rowNodeList, (void*)patternValueCopy);
                                     appendList(rowNodeList, patternValueCopy);
                                     deintegrateList(patternValueCopy);
-                                    ////printf("[Crochet] Llamando a freeRowNodeList en computePattern (PATTERN_TYPE, turn) sobre lista %p\n", (void*)patternValueCopy);
                                     free(patternValueCopy);
                                 }
                                 
                                 result.succeed = (patternValue != NULL);
                             }else if(patterData.params[argIdx].paramType == STITCH_LIST_TYPE){
                                 RowNodeListADT patternValue = (RowNodeListADT) patterData.params[argIdx].paramValue;
-                                ////printf("[Crochet] Llamando a appendNodeandList en computePattern (STITCH_LIST_TYPE) sobre lista %p y patternValue %p\n", (void*)rowNodeList, (void*)patternValue);
                                 appendNodeandList(rowNodeList,patternValue);
 
                             }else {
-                          //      printf("id : %s \n",value);
                                 result = computeIdentifier(value, scopeList,rowNodeList);
-                              //  printAllRowData(rowNodeList);
                             }
                         } else {
                             result = computeIdentifier(value, scopeList,rowNodeList);
@@ -555,8 +530,6 @@ CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeLi
         }
         free(cdtToFree);
     }
-  //  printf("lista: final ");
-   // printAllRowData(rowNodeList);
     if (paramNames) free(paramNames);
     if (patternHasArgs) removeLastScope(scopeList);
    
@@ -565,7 +538,6 @@ CrochetResult computePattern(PatternData patterData, Pattern * pattern , ScopeLi
 }
 
 CrochetResult computeMirror(Mirror* mirror, ScopeListADT scopeList, RowNodeListADT rowNodeList) {
-    ////printf("[Crochet] Llamando a newRowNodeList en computeMirror\n");
     CrochetResult crochetResult = {
         .stitchRows = NULL,
         .succeed = false
@@ -579,7 +551,6 @@ CrochetResult computeMirror(Mirror* mirror, ScopeListADT scopeList, RowNodeListA
 
     CrochetResult innerResult = computePatternUse((PatternUse *)(mirror->pattern), scopeList, auxList);
     if (!innerResult.succeed) {
-        ////printf("[Crochet] Llamando a freeRowNodeList en computeMirror (error innerResult) sobre lista %p\n", (void*)auxList);
         freeRowNodeList(auxList);
         return crochetResult;
     }
@@ -587,7 +558,6 @@ CrochetResult computeMirror(Mirror* mirror, ScopeListADT scopeList, RowNodeListA
 
     int rowCount = getSize(auxList);
     if (rowCount == 0) {
-        ////printf("[Crochet] Llamando a freeRowNodeList en computeMirror (rowCount==0) sobre lista %p\n", (void*)auxList);
         freeRowNodeList(auxList);
         crochetResult.succeed = true;
         crochetResult.stitchRows = rowNodeList;
@@ -596,7 +566,6 @@ CrochetResult computeMirror(Mirror* mirror, ScopeListADT scopeList, RowNodeListA
 
     RowData *rows = malloc(rowCount * sizeof(RowData));
     if (!rows) {
-        ////printf("[Crochet] Llamando a freeRowNodeList en computeMirror (malloc rows fail) sobre lista %p\n", (void*)auxList);
         freeRowNodeList(auxList);
         return crochetResult;
     }
@@ -612,7 +581,6 @@ CrochetResult computeMirror(Mirror* mirror, ScopeListADT scopeList, RowNodeListA
                 RowData orig = rows[i];
                 RowData node = createRowData(orig.color);
                 if(!(t == 0 && i == (rowCount - 1)) && !isAnonPattern){
-                    ////printf("[Crochet] Llamando a createRowNode en computeMirror (invertido) sobre lista %p\n", (void*)rowNodeList);
                     createRowNode(rowNodeList, node);
                 }
                 for (int j = orig.stitchCount - 1; j >= 0; j--) {
@@ -628,7 +596,6 @@ CrochetResult computeMirror(Mirror* mirror, ScopeListADT scopeList, RowNodeListA
                 RowData orig = rows[i];
                 RowData node = createRowData(orig.color);
                 if(!isAnonPattern){
-                    ////printf("[Crochet] Llamando a createRowNode en computeMirror (normal) sobre lista %p\n", (void*)rowNodeList);
                     createRowNode(rowNodeList, node);
                 }
                 for (int j = 0; j < orig.stitchCount; j++) {
@@ -646,7 +613,6 @@ CrochetResult computeMirror(Mirror* mirror, ScopeListADT scopeList, RowNodeListA
         if (rows[i].stitches) free(rows[i].stitches);
     }
     free(rows);
-    ////printf("[Crochet] Llamando a freeRowNodeList en computeMirror (final) sobre lista %p\n", (void*)auxList);
     freeRowNodeList(auxList);
 
     crochetResult.succeed = true;
@@ -679,7 +645,6 @@ CrochetResult computeRepeat(Repeat* repeat, ScopeListADT scopeList, RowNodeListA
         computePatternUse(repeat->pattern, scopeList, rowNodeList);
         if((repeat->pattern)->name != NULL && i+1 != repeat->times){
             RowData rd = {0};
-            ////printf("[Crochet] Llamando a createRowNode en computeRepeat sobre lista %p\n", (void*)rowNodeList);
             createRowNode(rowNodeList, rd);
         }
     }
@@ -697,17 +662,14 @@ CrochetResult computeIdentifier(char * identifier, ScopeListADT scopeList, RowNo
     if (identifier == NULL || scopeList == NULL) {
         return crochetResult;
     }
-   // printf("voy a buscar %s\n",identifier);
     void* isColor = getValueByIdentifier(scopeList, identifier, COLOR_TYPE);
     void* isStitch = getValueByIdentifier(scopeList, identifier, STITCH_TYPE);
     if (isColor != NULL) {
         changeColorToLastNode(rowNodeList, (char *)isColor);
     } else if (isStitch != NULL) {
         if (!validateStitch(*(StitchType *)isStitch)) {
-       //     printf("rompiste todo\n");
             return crochetResult;
         }
-      //  printf(" lo encontre!!!!!! %d\n",  *(StitchType *)isStitch);
         
         addStitchToLastnode(rowNodeList, *(StitchType *)isStitch);
         if (!crochetBuildingState.currentWasTurn) {
@@ -747,7 +709,6 @@ static boolean validateStitch(StitchType stitchType) {
         return false;
     }
 
-    // Para otros casos, el stitch es válido
     return true;
 }
 

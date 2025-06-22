@@ -77,9 +77,6 @@ char *getStitchValue(StitchType type)
 
 Parameter *ParameterSemanticAction(VariableType type, char *name)
 {
-    //    printf("[BisonActions] Creating Parameter: type=%d (%s), name=%s\n", type,
-    //      type == PARAM_COLOR ? "Color" : type == PARAM_STITCH ? "Stitch" : "Pattern",
-    //    name ? name : "(null)");
     Parameter *p = calloc(1, sizeof(Parameter));
     p->type = ITEM_PARAMETER;
     p->paramType = type;
@@ -89,7 +86,6 @@ Parameter *ParameterSemanticAction(VariableType type, char *name)
 
 Argument *ArgumentSemanticAction(void *argumentValue, ItemType argumentType, CompilerState * compilerState)
 {
-    //    printf("[BisonActions] Creating Argument: type=%d\n", argumentType);
     if(argumentType == ITEM_IDENTIFIER){
         char * identifierName = (char *)argumentValue;
         VariableType types[] = {STITCH_TYPE, COLOR_TYPE, PATTERN_TYPE};
@@ -111,10 +107,6 @@ Argument *ArgumentSemanticAction(void *argumentValue, ItemType argumentType, Com
 
 Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *value, CompilerState * compilerState)
 {
-    //  printf("[BisonActions] Creating Declaration: type=%s, var=%s, value=%s\n",
-   //     typeName ? typeName : "(null)",
-   //   varName ? varName : "(null)",
-   //   value ? value : "(null)");
     VariableType variableType = getVariableTypeByTypeName(typeName);
     if (existsValueByIdentifier(_scopeList, varName, variableType))
     {
@@ -140,9 +132,6 @@ Declaration *DeclarationSemanticAction(char *typeName, char *varName, char *valu
 
 Assignment *AssignmentSemanticAction(char *varName, char *value)
 {
-   //    printf("[BisonActions] Creating Assignment: var=%s, value=%s\n",
-    //     varName ? varName : "(null)",
-    //   value ? value : "(null)");
     Assignment *a = calloc(1, sizeof(Assignment));
     a->type = ITEM_ASSIGNMENT;
     a->varName = strdup(varName);
@@ -152,8 +141,6 @@ Assignment *AssignmentSemanticAction(char *varName, char *value)
 
 Stitch *StitchSemanticAction(StitchType type)
 {
-   //  printf("[BisonActions] Creating Stitch: type=%d (%s)\n", type,
-     //   type == STITCH_CH ? "CH" : type == STITCH_SC ? "SC" : "DC");
     Stitch *stitch = calloc(1, sizeof(Stitch));
     stitch->type = ITEM_STITCH;
     stitch->stitchType = type;
@@ -162,14 +149,12 @@ Stitch *StitchSemanticAction(StitchType type)
 
 Row *RowSemanticAction(Sequence *elements, char *color, int isTurn, boolean isIdentifier, CompilerState* compilerState)
 {
-   //   printf("[BisonActions] Creating Row: color=%s, isTurn=%d, elements=%p\n",
-    //      color ? color : "#000000", isTurn, (void*)elements);
-        if(isTurn && isIdentifier){
-        char * colorValue = getValueByIdentifier(_scopeList, color, COLOR_TYPE);
-        if(colorValue == NULL){
-            return raiseCompilationError("Color identifier in turn row is undefined\n", compilerState);
-        }
-        color = colorValue;
+    if(isTurn && isIdentifier){
+    char * colorValue = getValueByIdentifier(_scopeList, color, COLOR_TYPE);
+    if(colorValue == NULL){
+        return raiseCompilationError("Color identifier in turn row is undefined\n", compilerState);
+    }
+    color = colorValue;
     }
     Row *row = calloc(1, sizeof(Row));
     row->type = ITEM_ROW;
@@ -181,7 +166,6 @@ Row *RowSemanticAction(Sequence *elements, char *color, int isTurn, boolean isId
 
 Turn *TurnSemanticAction(Sequence *chains, char *color)
 {
-    //  printf("[BisonActions] Creating Turn: color=%s, chains=%p\n", color ? color : "(null)", (void*)chains);
     Turn *turn = calloc(1, sizeof(Turn));
     turn->type = ITEM_TURN;
     turn->chains = chains;
@@ -191,7 +175,6 @@ Turn *TurnSemanticAction(Sequence *chains, char *color)
 
 Repeat *RepeatSemanticAction(PatternUse *pattern, int times, CompilerState * compilerState)
 {
-    //  printf("[BisonActions] Creating Repeat: times=%d, pattern=%p\n", times, (void*)pattern);
     if (times <=0)
     {
         return raiseCompilationError("Only positive integers must be provided in REPEAT\n", compilerState);
@@ -205,7 +188,6 @@ Repeat *RepeatSemanticAction(PatternUse *pattern, int times, CompilerState * com
 
 Mirror *MirrorSemanticAction(PatternUse *pattern, int times, CompilerState * compilerState)
 {
-    //  printf("[BisonActions] Creating Mirror: times=%d, pattern=%p\n", times, (void*)pattern);
     if (times <= 0) {
         return raiseCompilationError("Only positive integers must be provided in MIRROR\n", compilerState);
     }
@@ -228,10 +210,6 @@ Pattern *PatternSemanticAction(char *name, Sequence *parameters, Sequence *body)
 
 PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments, CompilerState * compilerState)
 {
-    //  printf("[BisonActions] Creating PatternUse: name=%s, arguments=%p\n",
-    //    name ? name : "(null)", (void*)arguments);
-
-    // Si name es NULL, es un pattern anónimo (ej: repeat/mirror con secuencia)
     if(name == NULL){
         PatternUse *use = calloc(1, sizeof(PatternUse));
         use->type = ITEM_PATTERN_USE;
@@ -251,7 +229,7 @@ PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments, CompilerSt
         return raiseCompilationError("Pattern is called with wrong argument count", compilerState);
     }
     for(int i=0; i < patternData->paramCount; i++){
-        if (!arguments) break; // Defensive, should not happen if paramCount==0
+        if (!arguments) break;
         Argument * currentArg = arguments->items[i];
         ItemType currentType = currentArg->argumentType;
         switch(patternData->params[i].paramType){
@@ -283,7 +261,6 @@ PatternUse *PatternUseSemanticAction(char *name, Sequence *arguments, CompilerSt
 
 Sequence *SequenceSemanticAction(void *item, ItemType itemType)
 {
-    //    printf("[BisonActions] Creating Sequence: itemType=%d, item=%p\n", itemType, item);
     Sequence *seq = calloc(1, sizeof(Sequence));
     seq->items = calloc(1, sizeof(void *));
     seq->items[0] = item;
@@ -295,17 +272,14 @@ Sequence *SequenceSemanticAction(void *item, ItemType itemType)
 
 Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, ItemType itemType)
 {
-    // printf("[BisonActions] Prepending to Sequence: itemType=%d, newCount=%d, item=%p\n", itemType, seq ? seq->count + 1 : 1, item);
     if (seq == NULL)
     {
         return SequenceSemanticAction(item, itemType);
     }
     seq->items = realloc(seq->items, sizeof(void *) * (seq->count + 1));
     seq->itemTypes = realloc(seq->itemTypes, sizeof(ItemType) * (seq->count + 1));
-    // Move all existing elements one position to the right
     memmove(&seq->items[1], &seq->items[0], sizeof(void *) * seq->count);
     memmove(&seq->itemTypes[1], &seq->itemTypes[0], sizeof(ItemType) * seq->count);
-    // Insert new item at the beginning
     seq->items[0] = item;
     seq->itemTypes[0] = itemType;
     seq->count++;
@@ -314,63 +288,17 @@ Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, ItemType ite
 
 Program *ProgramSemanticAction(CompilerState *compilerState, Sequence *declarationsAndPatterns, Sequence *body)
 {
-   // printf("[BisonActions] Creating Program: declarationsAndPatterns=%p, body=%p\n", (void*)declarationsAndPatterns, (void*)body);
     Program *program = calloc(1, sizeof(Program));
     program->declarationsAndPatterns = declarationsAndPatterns;
     program->body = body;
     compilerState->abstractSyntaxtTree = program;
     if (0 < flexCurrentContext())
     {
-        //   printf("[BisonActions][ERROR] The final context is not the default (0): %d\n", flexCurrentContext());
         compilerState->succeed = false;
     }else{
         compilerState->scopeList = _scopeList;
     }
     return program;
-}
-
-Constant *IntegerConstantSemanticAction(const int value)
-{
-    Constant *constant = calloc(1, sizeof(Constant));
-    constant->value = value;
-    return constant;
-}
-
-Expression *ArithmeticExpressionSemanticAction(Expression *leftExpression, Expression *rightExpression, ExpressionType type)
-{
-    printf("[BisonActions] Creating ArithmeticExpression: type=%d, left=%p, right=%p\n", type, (void *)leftExpression, (void *)rightExpression);
-    Expression *expression = calloc(1, sizeof(Expression));
-    expression->leftExpression = leftExpression;
-    expression->rightExpression = rightExpression;
-    expression->type = type;
-    return expression;
-}
-
-Factor *ConstantFactorSemanticAction(Constant *constant)
-{
-    printf("[BisonActions] Creating ConstantFactor: constant=%p\n", (void *)constant);
-    Factor *factor = calloc(1, sizeof(Factor));
-    factor->constant = constant;
-    factor->type = CONSTANT;
-    return factor;
-}
-
-Expression *FactorExpressionSemanticAction(Factor *factor)
-{
-    printf("[BisonActions] Creating FactorExpression: factor=%p\n", (void *)factor);
-    Expression *expression = calloc(1, sizeof(Expression));
-    expression->factor = factor;
-    expression->type = FACTOR;
-    return expression;
-}
-
-Factor *ExpressionFactorSemanticAction(Expression *expression)
-{
-    printf("[BisonActions] Creating ExpressionFactor: expression=%p\n", (void *)expression);
-    Factor *factor = calloc(1, sizeof(Factor));
-    factor->expression = expression;
-    factor->type = EXPRESSION;
-    return factor;
 }
 
 void OpenAndFillNewScope(Sequence *parameters, CompilerState * compilerState)

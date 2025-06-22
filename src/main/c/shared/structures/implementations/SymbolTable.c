@@ -20,9 +20,9 @@ static void putEntry(SymbolTablePtr symbolTablePtr, char* compositeKey, SymbolTa
     if (ret == 0) {
         old = kh_val((khash_t(symbol_table)*)symbolTablePtr, k);
         freeSymbolTableEntry(old);
-        free(compositeKey); // free the new key, keep the old one
+        free(compositeKey);
     } else if (ret == 1) {
-        kh_key((khash_t(symbol_table)*)symbolTablePtr, k) = compositeKey; // assign only if new
+        kh_key((khash_t(symbol_table)*)symbolTablePtr, k) = compositeKey;
     }
     kh_val((khash_t(symbol_table)*)symbolTablePtr, k) = entry;
 }
@@ -54,14 +54,12 @@ static void* deepCopyParamValue(VariableType type, void* value) {
 
         case STITCH_TYPE:
             if (!value) return NULL;
-            // StitchType is an enum, passed as pointer to int
             StitchType* copy = malloc(sizeof(StitchType));
             *copy = *(StitchType*)value;
             return copy;
         case PATTERN_TYPE:
             if (!value) {
                 value = newRowNodeList();
-                // la otra opcion es esto devuelva null
             }
             return value;
         default:

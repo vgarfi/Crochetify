@@ -1,5 +1,4 @@
 #include "backend/code-generation/Generator.h"
-#include "backend/domain-specific/Calculator.h"
 #include "frontend/lexical-analysis/FlexActions.h"
 #include "frontend/syntactic-analysis/AbstractSyntaxTree.h"
 #include "frontend/syntactic-analysis/BisonActions.h"
@@ -40,63 +39,6 @@ const int main(const int count, const char ** arguments) {
 	const SyntacticAnalysisStatus syntacticAnalysisStatus = parse(&compilerState);
 	CompilationStatus compilationStatus = SUCCEED;
 	Program * program = compilerState.abstractSyntaxtTree;
-	
-	/*
-		Representation for program:
-		BEGIN CROCHET
-			CH CH CH CH CH CH CH;
-			TURN CH CH CH;
-			#FFA010 CH SC DC SC CH SC;
-			#FF0000 TURN CH CH CH;
-			 #00FF00 CH CH SC DC SC SC SC;
-		END CROCHET
-	*/
-	StitchType firstLine[] = {STITCH_CH, STITCH_CH, STITCH_CH, STITCH_SC, STITCH_CH, STITCH_CH, STITCH_CH};
-	StitchType secondLine[] = {STITCH_CH, STITCH_CH, STITCH_CH};
-	StitchType thirdLine[] = {STITCH_CH, STITCH_SC, STITCH_DC, STITCH_SC, STITCH_CH, STITCH_SC};
-	StitchType fourthLine[] = {STITCH_CH, STITCH_CH, STITCH_CH};
-	StitchType fifthLine[] = {STITCH_CH, STITCH_CH, STITCH_SC, STITCH_DC, STITCH_SC, STITCH_SC, STITCH_SC};
-
-	RowData rn1 = {
-		.color = {0},
-		.stitchCount = 7,
-		.stitches = firstLine
-	};
-
-	RowData rn2 = {
-		.color = {0},
-		.stitchCount = 3,
-		.stitches = secondLine
-	};
-	
-	RowData rn3 = {
-		.color = {'#', 'F', 'F', 'A', '0', '1', '0', 0},
-		.stitchCount = 6,
-		.stitches = thirdLine
-	};
-
-	RowData rn4 = {
-		.color = {'#', 'F', 'F', '0', '0', '0', '0', 0},
-		.stitchCount = 3,
-		.stitches = fourthLine
-	};
-
-	RowData rn5 = {
-		.color = {'#', '0', '0', 'F', 'F', '0', '0', 0},
-		.stitchCount = 7,
-		.stitches = fifthLine
-	};
-	
-	// CrochetResult newResult = {
-	// 	.succeed = true,
-	// 	.stitchRows = newRowNodeList()
-	// };
-
-	// createRowNode(newResult.stitchRows, rn1);
-	// createRowNode(newResult.stitchRows, rn2);
-	// createRowNode(newResult.stitchRows, rn3);
-	// createRowNode(newResult.stitchRows, rn4);
-	// createRowNode(newResult.stitchRows, rn5);
 
 	if (syntacticAnalysisStatus == ACCEPT) {
 		logDebugging(logger, "Computing your crochet code...");
@@ -106,49 +48,17 @@ const int main(const int count, const char ** arguments) {
 			compilationStatus = FAILED;
 			return -1;
 		}
-	//	printRowList(result.stitchRows);
 		generate(&result);
-	//	printAllRowData(result.stitchRows);
-		for(int i=0; i < result.currentFreeCount; i++){
-			freeRowNodeList(result.toFree[i]);
-		}
-		// freeRowNodeList(result.stitchRows);
-
-		// ----------------------------------------------------------------------------------------
-		// Beginning of the Backend... ------------------------------------------------------------
-
-		// 
-		/*
-
-		Nuestro computeExpression, llamado computeCrochetAST, agarra el AST y coloca en computationResult.value del structu qeu devuelve algun valor de retorno
-
-		logDebugging(logger, "Computing expression value...");
-		ComputationResult computationResult = computeExpression(program->expression);
-		if (computationResult.succeed) {
-			compilerState.value = computationResult.value;
-			generate(&compilerState);
-		}
-		else {
-			logError(logger, "The computation phase rejects the input program.");
-			compilationStatus = FAILED;
-		}
-		// ...end of the Backend. -----------------------------------------------------------------
-		// ----------------------------------------------------------------------------------------
-		*/
-
 		}
 	else {
 		logError(logger, "The syntactic-analysis phase rejects the input program.");
 		compilationStatus = FAILED;
 	}
 
-	// freeRowNodeList(newResult.stitchRows);
-
 	logDebugging(logger, "Releasing AST resources...");
 	releaseProgram(program);
 	logDebugging(logger, "Releasing modules resources...");
 	shutdownGeneratorModule();
-	shutdownCalculatorModule();
 	shutdownCrochetModule();
 	shutdownAbstractSyntaxTreeModule();
 	shutdownSyntacticAnalyzerModule();

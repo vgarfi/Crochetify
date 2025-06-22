@@ -1,8 +1,6 @@
 #ifndef CROCHET_HEADER
 #define CROCHET_HEADER
 
-#define ROWNODESMAXLENGTH 256
-
 /**
  * We reuse the types from the AST for convenience, but you should separate
  * the layers of the backend and frontend using another group of
@@ -30,8 +28,6 @@ typedef struct {
 	boolean succeed;
 	char * errorMsg;
 	RowNodeListADT stitchRows;
-	RowNodeListADT toFree[ROWNODESMAXLENGTH];
-	int currentFreeCount;
 } CrochetResult;
 
 

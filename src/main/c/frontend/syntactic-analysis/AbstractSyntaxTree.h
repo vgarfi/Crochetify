@@ -24,12 +24,6 @@ typedef struct Declaration Declaration;
 typedef struct Assignment Assignment;
 typedef struct Program Program;
 
-typedef struct Constant Constant;
-typedef struct Expression Expression;
-typedef struct Factor Factor;
-typedef enum ExpressionType ExpressionType;
-typedef enum FactorType FactorType;
-
 void initializeAbstractSyntaxTreeModule();
 void shutdownAbstractSyntaxTreeModule();
 
@@ -83,7 +77,7 @@ struct Stitch {
 
 struct Row {
     ItemType type;
-    Sequence *elements; // lista de Stitch, Repeat, Mirror, PatternUse, ColorRow, etc.
+    Sequence *elements;
     char * color;
     int isTurn;
 };
@@ -91,7 +85,7 @@ struct Row {
 struct Turn {
     ItemType type;
     Sequence * chains;
-    char *color; // NULL si no hay color
+    char *color;
 };
 
 struct Repeat {
@@ -109,14 +103,14 @@ struct Mirror {
 struct Pattern {
     ItemType type;
     char *name;
-    Sequence *parameters; // lista de Parameter*
+    Sequence *parameters;
     Sequence *body;
 };
 
 struct PatternUse {
     ItemType type;
     char *name;
-    Sequence *arguments; // lista de Argument*
+    Sequence *arguments;
 };
 
 struct ColorRow {
@@ -127,9 +121,9 @@ struct ColorRow {
 
 struct Declaration {
     ItemType type;
-    char *typeName; // "Color", "Stitch", etc.
+    char *typeName;
     char *varName;
-    char *value; // literal o nombre
+    char *value;
 };
 
 struct Assignment {
@@ -139,7 +133,7 @@ struct Assignment {
 };
 
 struct Sequence {
-    void **items; // array de punteros a cualquier struct anterior
+    void **items;
     ItemType * itemTypes;
     int count;
 };
@@ -160,31 +154,10 @@ enum ExpressionType {
 	MULTIPLICATION,
 	SUBTRACTION
 };
-struct Factor {
-	union {
-		Constant * constant;
-		Expression * expression;
-	};
-	FactorType type;
-};
-
-struct Expression {
-	union {
-		Factor * factor;
-		struct {
-			Expression * leftExpression;
-			Expression * rightExpression;
-		};
-	};
-	ExpressionType type;
-};
 
 struct Program {
-    union {
-        Sequence *body; // lista de Row, PatternUse, Pattern, etc.
-        Expression * expression; // TODO esto vuela con la calculadora
-    };
-    Sequence *declarationsAndPatterns; // lo que va antes del 
+    Sequence * body;
+    Sequence *declarationsAndPatterns; 
 
 };
 

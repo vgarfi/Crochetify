@@ -34,12 +34,6 @@ Sequence *SequenceSemanticAction(void *item, ItemType itemType);
 Sequence *AppendToSequenceSemanticAction(Sequence *seq, void *item, ItemType itemType);
 Program *ProgramSemanticAction(CompilerState * compilerState, Sequence *declarationsAndPatterns, Sequence *body);
 ItemType getItemType(void *item);
-Constant * IntegerConstantSemanticAction(const int value);
-Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type);
-Expression * FactorExpressionSemanticAction(Factor * factor);
-Factor * ConstantFactorSemanticAction(Constant * constant);
-Factor * ExpressionFactorSemanticAction(Expression * expression);
-Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Expression * expression);
 
 // Semantic Analysis Functions for scopes
 void OpenAndFillNewScope(Sequence *parameters, CompilerState* compilerState);

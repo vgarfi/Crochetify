@@ -22,12 +22,6 @@
     Program *program;
 	void * row_element;
     Token token;
-
-	/** Non-terminals. */
-
-	Constant * constant;
-	Expression * expression;
-	Factor * factor;
 }
 
 %destructor { releaseStitch($$); } <stitch>
