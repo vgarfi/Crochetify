@@ -16,5 +16,5 @@ BEGIN CROCHET
     c4 TURN CH CH CH; 
     c4 basePattern(); 
     TURN CH; 
-    REPEAT([SC], 4);
+    REPEAT([SC], 4) CH;
 END CROCHET

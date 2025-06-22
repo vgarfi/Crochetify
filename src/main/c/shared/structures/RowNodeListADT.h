@@ -7,131 +7,135 @@
 typedef struct RowNodeListCDT * RowNodeListADT;
 
 /**
-*   @return new ADT to be used in the following functions
-*/
+ * Creates a new RowNodeList abstract data type.
+ * @return A new RowNodeListADT instance.
+ */
 RowNodeListADT newRowNodeList(void);
 
 /**
-*   @param rnl existing ADT
-*   @param data information to insert into list
-*
-*   Inserts the given data into the list described by the ADT
-*   This action resets iteration and implies that after
-*   any insertion you must use 'beginIteration' in order to iterate elements.
-*/
+ * Inserts the given row data into the list.
+ * This action resets iteration; after any insertion you must use 'beginIteration' to iterate elements.
+ * @param rnl Existing RowNodeListADT.
+ * @param data RowData to insert into the list.
+ */
 void createRowNode(RowNodeListADT rnl, RowData data);
 
 /**
-*   @param rnl existing ADT
-*
-*   Clears the resources used for the ADT. Makes the ADT unusable.
-*/
+ * Frees all resources used by the RowNodeListADT. Makes the ADT unusable.
+ * @param rnl Existing RowNodeListADT.
+ */
 void freeRowNodeList(RowNodeListADT rnl);
 
-/*
-*   @param rnl existing ADT
-*
-*   Allows the ADT to be iterated 
-*/
+/**
+ * Prepares the RowNodeListADT for forward iteration.
+ * @param rnl Existing RowNodeListADT.
+ */
 void beginIteration(RowNodeListADT rnl);
 
-
-/*
-*   @param rnl existing ADT
-*
-*   Allows the ADT to be iterated in reverse order 
-*/
+/**
+ * Prepares the RowNodeListADT for reverse iteration.
+ * @param rnl Existing RowNodeListADT.
+ */
 void beginReverseIteration(RowNodeListADT rnl);
 
 /**
-*   @param rnl existing ADT
-*
-*   @return the next row data
+ * Returns the next row data in reverse iteration.
+ * @param rnl Existing RowNodeListADT.
+ * @return The next RowData in reverse order.
  */
 RowData nextReverse(RowNodeListADT rnl);
 
-
-
-
 /**
-*   @param rnl existing ADT
-*
-*   @return 1 if there is more data to extract, 0 if not.
-*/
+ * Checks if there is more data to extract in reverse iteration.
+ * @param rnl Existing RowNodeListADT.
+ * @return 1 if there is more data, 0 otherwise.
+ */
 int hasNextReverse(RowNodeListADT rnl);
 
-
-
 /**
-*   @param rnl existing ADT
-*
-*   @return the next row data
+ * Returns the next row data in forward iteration.
+ * @param rnl Existing RowNodeListADT.
+ * @return The next RowData in forward order.
  */
 RowData next(RowNodeListADT rnl);
 
-
-
 /**
-*   @param rnl existing ADT
-*
-*   @return 1 if there is more data to extract, 0 if not.
-*/
+ * Checks if there is more data to extract in forward iteration.
+ * @param rnl Existing RowNodeListADT.
+ * @return 1 if there is more data, 0 otherwise.
+ */
 int hasNext(RowNodeListADT rnl);
 
 /**
-*   @param rnl existing ADT
-*   @param Stitch data to insert
-*
-*   Inserts the given data into the last node described by the ADT
-*/
+ * Inserts the given stitch into the last node of the list.
+ * @param rnl Existing RowNodeListADT.
+ * @param data StitchType to insert.
+ */
 void addStitchToLastnode(RowNodeListADT rnl, StitchType data);
 
-
 /**
-*   @param destRnl existing ADT to append
-*   @param sourcetRnl existing ADT to copy their elements
-
-*
-*   Inserts all the sourceNodes at the end of destRnl
-*/
+ * Appends all nodes from the source RowNodeListADT to the end of the destination RowNodeListADT.
+ * @param destRnl Destination RowNodeListADT.
+ * @param sourceRnl Source RowNodeListADT.
+ */
 void appendList(RowNodeListADT destRnl, RowNodeListADT sourceRnl);
 
-
-
 /**
-*   @param destRnl existing ADT to append
-*   @param sourcetRnl existing ADT to copy their elements
-
-*
-*   Inserts all the sourceNodes at the end of destRnl except the first
-*/
+ * Appends all nodes from the source RowNodeListADT to the end of the destination RowNodeListADT, except the first node.
+ * @param destRnl Destination RowNodeListADT.
+ * @param sourceRnl Source RowNodeListADT.
+ */
 void appendNodeandList(RowNodeListADT destRnl, RowNodeListADT sourceRnl);
 
-
 /**
-*   @param rnl existing ADT
-*   @param color data to insert
-*
-*   Inserts the given color into the last node described by the ADT
-*/
+ * Changes the color of the last node in the list.
+ * @param rnl Existing RowNodeListADT.
+ * @param color Color string to insert.
+ */
 void changeColorToLastNode(RowNodeListADT rnl, char* color);
 
-
 /**
-*   @param rnl existing ADT
-*
-*   @return actual size of the list.
-*/
+ * Returns the actual size (number of nodes) of the list.
+ * @param rnl Existing RowNodeListADT.
+ * @return The size of the list.
+ */
 int getSize(RowNodeListADT rnl);
 
+/**
+ * Prints the contents of the RowNodeListADT.
+ * @param rnl Existing RowNodeListADT.
+ */
 void printRowList(RowNodeListADT rnl);
 
+/**
+ * Deintegration utility: detaches or clears the list.
+ * @param rnl Existing RowNodeListADT.
+ */
 void deintegrateList(RowNodeListADT rnl);
 
+/**
+ * Deintegration utility: detaches or clears the list except the first node.
+ * @param rnl Existing RowNodeListADT.
+ */
 void deintegrateListAndFirst(RowNodeListADT rnl);
 
+/**
+ * Creates a deep copy of the given RowNodeListADT.
+ * @param src Source RowNodeListADT.
+ * @return A new RowNodeListADT that is a clone of the source.
+ */
 RowNodeListADT cloneRowNodeList(RowNodeListADT src);
 
+/**
+ * Deintegration utility: fully detaches or clears the list.
+ * @param rnl Existing RowNodeListADT.
+ */
 void deintegrateListFull(RowNodeListADT rnl);
+
+/**
+ * Prints all RowData elements in the RowNodeListADT.
+ * @param rnl Existing RowNodeListADT.
+ */
 void printAllRowData(RowNodeListADT rnl);
+
 #endif

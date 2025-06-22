@@ -15,6 +15,11 @@ static int processingPattern = 0;
 
 static boolean validateStitch(StitchType stitchType);
 static boolean validateRowLength(int firstRowLength, int currentRowLength, StitchType lastRowStitch);
+static int findParamIndex(const char *name, const char **paramNames, int paramCount);
+static RowData createRowData(char * color);
+static Pattern * searchPatternDef(char* name);
+static RowData cloneRowData(const RowData *src);
+
 
 typedef struct {
     StitchType lastRowStitch;
@@ -26,12 +31,6 @@ typedef struct {
 
 static CrochetBuildingState crochetBuildingState = { STITCH_INVALID, 0, 0, true };
 
-static int findParamIndex(const char *name, const char **paramNames, int paramCount) {
-    for (int i = 0; i < paramCount; i++) {
-        if (strcmp(name, paramNames[i]) == 0) return i;
-    }
-    return -1;
-}
 
 void initializeCrochetModule() {
     _logger = createLogger("Crochet");
@@ -41,29 +40,6 @@ void shutdownCrochetModule() {
     if (_logger != NULL) {
         destroyLogger(_logger);
     }
-}
-
-static RowData createRowData(char * color){
-    RowData node = {
-        .stitchCount = 0,
-        .stitches = NULL
-    };
-    strncpy(node.color, color, sizeof(node.color));
-    node.color[sizeof(node.color) - 1] = '\0';
-    return node;
-}
-
-static Pattern * searchPatternDef(char* name){
-    for(int i = 0; i < definitions->count; i++) {
-        ItemType itemType = definitions->itemTypes[i];
-        if (itemType == ITEM_PATTERN ) {
-           Pattern * pattern = (Pattern *)definitions->items[i];
-           if(strcmp(name,pattern->name) == 0){
-                return pattern;
-           }
-        } 
-    }
-    return NULL;
 }
 
 CrochetResult computeCrochet(Program * program, ScopeListADT scopeList) {
@@ -620,17 +596,6 @@ CrochetResult computeMirror(Mirror* mirror, ScopeListADT scopeList, RowNodeListA
     return crochetResult;
 }
 
-static RowData cloneRowData(const RowData *src) {
-    RowData dst = *src;
-    if (src->stitchCount > 0 && src->stitches != NULL) {
-        dst.stitches = malloc(src->stitchCount * sizeof(StitchType));
-        memcpy(dst.stitches, src->stitches, src->stitchCount * sizeof(StitchType));
-    } else {
-        dst.stitches = NULL;
-    }
-    return dst;
-}
-
 CrochetResult computeRepeat(Repeat* repeat, ScopeListADT scopeList, RowNodeListADT rowNodeList) {
     CrochetResult crochetResult = {
         .stitchRows = NULL,
@@ -685,6 +650,20 @@ CrochetResult computeIdentifier(char * identifier, ScopeListADT scopeList, RowNo
     return crochetResult;
 }
 
+
+// Static helper functions
+
+static RowData cloneRowData(const RowData *src) {
+    RowData dst = *src;
+    if (src->stitchCount > 0 && src->stitches != NULL) {
+        dst.stitches = malloc(src->stitchCount * sizeof(StitchType));
+        memcpy(dst.stitches, src->stitches, src->stitchCount * sizeof(StitchType));
+    } else {
+        dst.stitches = NULL;
+    }
+    return dst;
+}
+
 static boolean validateStitch(StitchType stitchType) {
     if(processingPattern > 0) return true;
     if (crochetBuildingState.currentWasTurn) {
@@ -719,4 +698,35 @@ static boolean validateRowLength(int firstRowLength, int currentRowLength, Stitc
         return currentRowLength == firstRowLength - 1;
     }
     return currentRowLength == firstRowLength;
+}
+
+static int findParamIndex(const char *name, const char **paramNames, int paramCount) {
+    for (int i = 0; i < paramCount; i++) {
+        if (strcmp(name, paramNames[i]) == 0) return i;
+    }
+    return -1;
+}
+
+
+static RowData createRowData(char * color) {
+    RowData node = {
+        .stitchCount = 0,
+        .stitches = NULL
+    };
+    strncpy(node.color, color, sizeof(node.color));
+    node.color[sizeof(node.color) - 1] = '\0';
+    return node;
+}
+
+static Pattern * searchPatternDef(char* name) {
+    for(int i = 0; i < definitions->count; i++) {
+        ItemType itemType = definitions->itemTypes[i];
+        if (itemType == ITEM_PATTERN ) {
+           Pattern * pattern = (Pattern *)definitions->items[i];
+           if(strcmp(name,pattern->name) == 0){
+                return pattern;
+           }
+        } 
+    }
+    return NULL;
 }

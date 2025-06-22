@@ -1,0 +1,13 @@
+Color red = #FF0000;
+
+Pattern borderRow(Color c) {
+    c CH CH CH CH CH CH;
+    TURN CH;
+};
+
+BEGIN CROCHET
+    borderRow(red);
+    SC SC SC SC SC;
+    TURN CH;
+    REPEAT([CH SC], 3);
+END CROCHET
