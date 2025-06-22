@@ -1,6 +1,8 @@
 
 BEGIN CROCHET
-    CH MIRROR([CH SC], 2); // CH CH SC CH SC
+    CH CH CH CH CH;
     TURN CH;
     MIRROR([CH SC], 2); // CH CH SC CH SC
+    TURN CH;
+    CH MIRROR([CH SC], 2); // CH CH SC CH SC
 END CROCHET
