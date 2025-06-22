@@ -73,7 +73,6 @@ void EndInlineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext
 
 Token IntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	//    printf("[FLEX][TOKEN] INTEGER: '%.*s' (line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->line);
 
 	lexicalAnalyzerContext->semanticValue->integer = atoi(lexicalAnalyzerContext->lexeme);
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
@@ -82,7 +81,6 @@ Token IntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 
 Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	//    printf("[FLEX][TOKEN] PARENTHESIS: '%.*s' (token=%d, line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, token, lexicalAnalyzerContext->line);
 
 	lexicalAnalyzerContext->semanticValue->token = token;
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
@@ -91,7 +89,6 @@ Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, T
 
 Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	//    printf("[FLEX][TOKEN] UNKNOWN: '%.*s' (line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->line);
 
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 	return UNKNOWN;
@@ -99,7 +96,6 @@ Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 
 Token PatternLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-     //  printf("[FLEX][TOKEN] PATTERN: '%.*s' (line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->line);
 
 	lexicalAnalyzerContext->semanticValue->token = PATTERN;
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
@@ -108,7 +104,6 @@ Token PatternLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 
 Token EntryPointLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-    //   printf("[FLEX][TOKEN] ENTRYPOINT: '%.*s' (token=%d, line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, token, lexicalAnalyzerContext->line);
 
 	lexicalAnalyzerContext->semanticValue->token = token;
     destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
@@ -117,7 +112,6 @@ Token EntryPointLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Tok
 
 Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-    //   printf("[FLEX][TOKEN] BRACE: '%.*s' (token=%d, line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, token, lexicalAnalyzerContext->line);
 
 	lexicalAnalyzerContext->semanticValue->token = token;
     destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
@@ -126,7 +120,6 @@ Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token to
 
 Token BracketLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-   //   printf("[FLEX][TOKEN] BRACKET: '%.*s' (token=%d, line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, token, lexicalAnalyzerContext->line);
 
 	lexicalAnalyzerContext->semanticValue->token = token;
     destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
@@ -135,7 +128,6 @@ Token BracketLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token 
 
 Token TypeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-    //  printf("[FLEX][TOKEN] TYPE: '%.*s' (token=%d, line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, token, lexicalAnalyzerContext->line);
 
 	lexicalAnalyzerContext->semanticValue->token = token;
     destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
@@ -144,7 +136,6 @@ Token TypeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token tok
 
 Token StitchLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-   //    printf("[FLEX][TOKEN] STITCH: '%.*s' (token=%d, line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, token, lexicalAnalyzerContext->line);
 
 	lexicalAnalyzerContext->semanticValue->token = token;
     destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
@@ -153,7 +144,6 @@ Token StitchLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token t
 
 Token FunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-    //   printf("[FLEX][TOKEN] FUNCTION: '%.*s' (token=%d, line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, token, lexicalAnalyzerContext->line);
 
 	lexicalAnalyzerContext->semanticValue->token = token;
     destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
@@ -162,7 +152,6 @@ Token FunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token
 
 Token EndlineLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	 //   printf("[FLEX][TOKEN] ENDLINE: '%.*s' (line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->line);
 
 	lexicalAnalyzerContext->semanticValue->token = ENDLINE;
     destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
@@ -171,7 +160,6 @@ Token EndlineLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 
 Token IdentifierLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-   //   printf("[FLEX][TOKEN] IDENTIFIER: '%.*s' (line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->line);
 	lexicalAnalyzerContext->semanticValue->string = strndup(lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
     destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
     return IDENTIFIER;
@@ -179,7 +167,6 @@ Token IdentifierLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 
 Token SemicolonLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	// printf("[FLEX][TOKEN] SEMICOLON: '%.*s' (line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->line);
 	lexicalAnalyzerContext->semanticValue->token = SEMICOLON;
     destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
     return SEMICOLON;
@@ -187,7 +174,6 @@ Token SemicolonLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 
 Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-//	    printf("[FLEX][TOKEN] COMMA: '%.*s' (line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->line);
 //
 	lexicalAnalyzerContext->semanticValue->token = COMMA;
     destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
@@ -197,7 +183,6 @@ Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 
 Token TurnLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	//    printf("[FLEX][TOKEN] TURN: '%.*s' (line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->line);
 
 	lexicalAnalyzerContext->semanticValue->token = TURN;
     destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
@@ -206,7 +191,6 @@ Token TurnLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 
 Token ColorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-//	    printf("[FLEX][TOKEN] COLOR_VALUE: '%.*s' (line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->line);
 
 	lexicalAnalyzerContext->semanticValue->string = strndup(lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
@@ -215,7 +199,6 @@ Token ColorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 
 Token AssignmentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	//    printf("[FLEX][TOKEN] ASSIGNMENT: '%.*s' (line %d)\n", lexicalAnalyzerContext->length, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->line);
 
 	lexicalAnalyzerContext->semanticValue->token = ASSIGNMENT;
     destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
