@@ -8,6 +8,6 @@ BEGIN CROCHET
     CH CH CH;
     // Or inside the main program
     TURN CH CH CH;
-    CH DC DC;
+    CH DC;
     // Either way works!
 END CROCHET

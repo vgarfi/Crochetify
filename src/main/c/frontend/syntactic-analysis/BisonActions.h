@@ -20,7 +20,7 @@ void shutdownBisonActionsModule();
 /* Acciones semánticas para cada tipo de nodo */
 Stitch *StitchSemanticAction(StitchType type);
 char * getStitchValue(StitchType type);
-Row *RowSemanticAction(Sequence *elements, char * color, int isTurn);
+Row *RowSemanticAction(Sequence *elements, char *color, int isTurn, boolean isIdentifier, CompilerState* compilerState);
 Turn *TurnSemanticAction(Sequence * chains, char *color);
 Repeat *RepeatSemanticAction(PatternUse *pattern, int times,CompilerState * compilerState);
 Mirror *MirrorSemanticAction(PatternUse *pattern, int times,CompilerState * compilerState);

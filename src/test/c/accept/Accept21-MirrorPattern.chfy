@@ -7,6 +7,6 @@ Pattern myPat(Stitch s) {
 
 BEGIN CROCHET
     MIRROR([CH SC SC], 3);
-    TURN CH CH CH;
+    //TURN CH CH CH;
     // MIRROR(myPat(SC), 3);
 END CROCHET

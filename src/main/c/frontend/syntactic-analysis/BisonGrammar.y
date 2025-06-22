@@ -157,11 +157,11 @@ row_element: stitch                                                     { $$ = $
 row_elements: row_element                                               { $$ = SequenceSemanticAction($1, getItemType($1)); }
             | row_element row_elements                                { $$ = AppendToSequenceSemanticAction($2, $1, getItemType($1)); }
 
-row:    row_elements SEMICOLON											{ $$ = RowSemanticAction($1, NULL, ISNOTTURN); }
-	|	COLOR_VALUE row_elements SEMICOLON								{ $$ = RowSemanticAction($2, $1, ISNOTTURN);free($1); }
-	|	TURN row_elements SEMICOLON										{ $$ = RowSemanticAction($2, NULL, ISTURN); }
-	|	COLOR_VALUE TURN row_elements SEMICOLON							{ $$ = RowSemanticAction($3, $1, ISTURN); free($1);}
-    |	IDENTIFIER TURN row_elements SEMICOLON							{ $$ = RowSemanticAction($3, NULL, ISTURN); free($1);}
+row:    row_elements SEMICOLON											{ $$ = RowSemanticAction($1, NULL, ISNOTTURN, false, currentCompilerState()); }
+	|	COLOR_VALUE row_elements SEMICOLON								{ $$ = RowSemanticAction($2, $1, ISNOTTURN, false, currentCompilerState());free($1); }
+	|	TURN row_elements SEMICOLON										{ $$ = RowSemanticAction($2, NULL, ISTURN, false, currentCompilerState()); }
+	|	COLOR_VALUE TURN row_elements SEMICOLON							{ $$ = RowSemanticAction($3, $1, ISTURN, false, currentCompilerState()); free($1);}
+    |	IDENTIFIER TURN row_elements SEMICOLON							{ $$ = RowSemanticAction($3, $1, ISTURN, true, currentCompilerState()); free($1);}
     ;
 
 stitch_list: stitch	%prec REDUCE_PRECEDENCE								{ $$ = SequenceSemanticAction($1, ITEM_STITCH); }
@@ -178,8 +178,7 @@ repeat: REPEAT OPEN_PARENTHESIS pattern_use_in_function COMMA INTEGER CLOSE_PARE
 
     ;
 
-mirror: MIRROR OPEN_PARENTHESIS pattern_use_in_function COMMA INTEGER CLOSE_PARENTHESIS								{ $$ = MirrorSemanticAction($3, $5,currentCompilerState()); }
-    | MIRROR OPEN_PARENTHESIS OPEN_BRACKET stitch_list CLOSE_BRACKET COMMA INTEGER CLOSE_PARENTHESIS                { PatternUse *anon = PatternUseSemanticAction(NULL, $4, currentCompilerState());  $$ = MirrorSemanticAction(anon, $7,currentCompilerState()); }
+mirror: MIRROR OPEN_PARENTHESIS OPEN_BRACKET stitch_list CLOSE_BRACKET COMMA INTEGER CLOSE_PARENTHESIS                { PatternUse *anon = PatternUseSemanticAction(NULL, $4, currentCompilerState());  $$ = MirrorSemanticAction(anon, $7,currentCompilerState()); }
     ;
 
 %%

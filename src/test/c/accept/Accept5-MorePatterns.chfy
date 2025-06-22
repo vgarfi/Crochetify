@@ -19,7 +19,7 @@ Pattern myPattern2(Color col,Stitch st,Stitch st2){
 };
 
 BEGIN CROCHET
-    myPattern(red,[CH CH CH DC CH]);
-    TURN CH;
-    myPattern(red,[DC SC CH DC CH]);
+    myPattern(red,[CH CH CH DC SC]);
+    TURN CH CH CH;
+    myPattern(red,[DC SC CH DC SC]);
 END CROCHET

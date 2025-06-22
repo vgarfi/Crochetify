@@ -128,4 +128,10 @@ void printRowList(RowNodeListADT rnl);
 
 void deintegrateList(RowNodeListADT rnl);
 
+void deintegrateListAndFirst(RowNodeListADT rnl);
+
+RowNodeListADT cloneRowNodeList(RowNodeListADT src);
+
+void deintegrateListFull(RowNodeListADT rnl);
+void printAllRowData(RowNodeListADT rnl);
 #endif

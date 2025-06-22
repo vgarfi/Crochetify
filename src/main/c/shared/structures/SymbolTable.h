@@ -17,6 +17,7 @@ typedef struct {
     int paramCount;
     PatternParam* params;
     RowNodeListADT rowNodeList;
+    boolean startsWithTurn;
 } PatternData;
 
 typedef struct {

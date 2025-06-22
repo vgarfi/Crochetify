@@ -106,8 +106,9 @@ const int main(const int count, const char ** arguments) {
 			compilationStatus = FAILED;
 			return -1;
 		}
-		//printRowList(result.stitchRows);
+	//	printRowList(result.stitchRows);
 		generate(&result);
+	//	printAllRowData(result.stitchRows);
 		for(int i=0; i < result.currentFreeCount; i++){
 			freeRowNodeList(result.toFree[i]);
 		}

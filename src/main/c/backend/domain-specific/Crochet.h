@@ -56,6 +56,6 @@ CrochetResult computeStitch(Stitch * stitch, RowNodeListADT rowNodeList);
 
 CrochetResult computeStitchList(Sequence * sequence, RowNodeListADT rowNodeList);
 
-CrochetResult computeIdentifier(char * identifier, ScopeListADT scopeList);
+CrochetResult computeIdentifier(char * identifier, ScopeListADT scopeList, RowNodeListADT rowNodeList);
 
 #endif

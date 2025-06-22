@@ -160,10 +160,17 @@ Stitch *StitchSemanticAction(StitchType type)
     return stitch;
 }
 
-Row *RowSemanticAction(Sequence *elements, char *color, int isTurn)
+Row *RowSemanticAction(Sequence *elements, char *color, int isTurn, boolean isIdentifier, CompilerState* compilerState)
 {
    //   printf("[BisonActions] Creating Row: color=%s, isTurn=%d, elements=%p\n",
     //      color ? color : "#000000", isTurn, (void*)elements);
+        if(isTurn && isIdentifier){
+        char * colorValue = getValueByIdentifier(_scopeList, color, COLOR_TYPE);
+        if(colorValue == NULL){
+            return raiseCompilationError("Color identifier in turn row is undefined\n", compilerState);
+        }
+        color = colorValue;
+    }
     Row *row = calloc(1, sizeof(Row));
     row->type = ITEM_ROW;
     row->elements = elements;

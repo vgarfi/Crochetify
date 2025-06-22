@@ -10,10 +10,10 @@
 
 // You can make inline comments 
 BEGIN CROCHET
-    CH; // And even comments inside your crochet. Nice crochet tho!
+    CH CH CH CH; // And even comments inside your crochet. Nice crochet tho!
     /*
         And doc your crochet like a pro
     */
     TURN CH CH CH;
-    SC SC SC; // Ok this is enough
+    DC DC CH; // Ok this is enough
 END CROCHET

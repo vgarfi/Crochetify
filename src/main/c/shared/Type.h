@@ -16,7 +16,8 @@ typedef enum {
 typedef enum {
 	COLOR_TYPE,
 	STITCH_TYPE,
-	PATTERN_TYPE
+	PATTERN_TYPE,
+	STITCH_LIST_TYPE
 } VariableType;
 
 typedef struct RowData {

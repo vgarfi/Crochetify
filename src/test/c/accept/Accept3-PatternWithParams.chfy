@@ -1,13 +1,15 @@
 Pattern myPattern(Color col, Stitch st){
     st st st;
     TURN CH CH CH;
-    CH SC;
+    CH DC;
 };
 
 Color red = #FF0000;
 
 BEGIN CROCHET
     myPattern(red, CH);
+    TURN CH;
+    CH SC;
     TURN CH CH CH;
     myPattern(red, DC);
 END CROCHET
