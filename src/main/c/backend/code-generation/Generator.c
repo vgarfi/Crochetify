@@ -62,6 +62,10 @@ static void _generateCanvas(int width, int height){
         "ch_rotated = ch_symbol.rotate(90, expand=True)\n"
         "ch_rotated = ch_rotated.resize(rotated_size)\n"
         "x_offset, y_offset, small_y_offset = 35, 25, 12\n"
+        "dot_x = 50 - 10\n"
+        "dot_y = height - 27\n"
+        "dot_radius = 3\n"
+        "draw.ellipse((dot_x - dot_radius, dot_y - dot_radius, dot_x + dot_radius, dot_y + dot_radius),fill='black')\n"
         "x, y = 50, height - 40\n\n"
         "# From this point onwards you start drawing your awesome crochet !\n"
     );
